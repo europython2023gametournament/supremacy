@@ -16,14 +16,16 @@ class GameMap:
         self.ny = ny
         self.ng = ng
         image = np.zeros([self.nx, self.ny])
-        n = 200
-        x = np.random.randint(self.nx, size=n)
-        y = np.random.randint(self.ny, size=n)
+        self.nseeds = 200
+        self.xseed = np.random.randint(self.nx, size=self.nseeds)
+        self.yseed = np.random.randint(self.ny, size=self.nseeds)
 
-        for i in range(n):
-            image[x[i], y[i]] = 10000
+        image[(self.xseed, self.yseed)] = 10000
 
-        smooth = gaussian_filter(image, sigma=30)
+        # for i in range(self.nseeds):
+        #     image[self.xseed[i], self.yseed[i]] = 10000
+
+        smooth = gaussian_filter(image, sigma=30, mode='wrap')
 
         self.array = np.clip(smooth, 0, 1).astype(int)
         cmap = mpl.colormaps['terrain']
@@ -32,4 +34,8 @@ class GameMap:
         im.save('background.png')
 
     def add_players(self, players):
+        inds = np.random.randint(self.nseeds, size=len(players), replace=False)
+        for i, player in enumerate(players):
+            print(player)
+
         return

@@ -11,3 +11,4 @@ class Engine:
         self.ny = self.ng * 250
         self.game_map = GameMap(nx=self.nx, ny=self.ny, ng=self.ng)
         self.graphics = Graphics(game_map=self.game_map)
+        self.game_map.add_players(players)

@@ -31,6 +31,11 @@ class Graphics:
         self.screen.register_shape("ship", ship)
         self.screen.register_shape("jet", jet)
 
+        self.pen = turtle.Turtle()
+        self.pen.speed(0)
+        self.pen.hideturtle()
+        self.pen.penup()
+
         # self.screen.register_shape("jet.gif")
 
         # self.t = turtle.Turtle()
