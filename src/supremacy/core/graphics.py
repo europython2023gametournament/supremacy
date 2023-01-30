@@ -1,3 +1,4 @@
+from matplotlib import colors
 import turtle
 
 
@@ -33,8 +34,18 @@ class Graphics:
 
         self.pen = turtle.Turtle()
         self.pen.speed(0)
-        self.pen.hideturtle()
+        # self.pen.hideturtle()
         self.pen.penup()
+        self.pen.goto(self.nx, 0)
+        self.pen.color('red')
+        self.pen.setheading(90)
+        self.pen.pendown()
+        self.pen.forward(500)
+        input()
+
+        # for j in range(self.ny):
+        #     for i in range(self.nx):
+        #         s
 
         # self.screen.register_shape("jet.gif")
 
@@ -48,3 +59,17 @@ class Graphics:
 
 
 #
+
+    def draw_base_star(self, x, y, n):
+        star_size = 10
+        self.pen.penup()
+        self.pen.color(colors.to_hex(f'C{n}'))
+        self.pen.goto(x - 0.5 * star_size, y - 0.25 * star_size)
+        self.pen.setheading(0)
+        self.pen.pendown()
+        self.pen.begin_fill()
+        for i in range(5):
+            self.pen.forward(star_size)
+            self.pen.left(360 / 2.5)
+        self.pen.end_fill()
+        self.pen.penup()
