@@ -5,14 +5,21 @@ from .base import Base
 
 class Player:
 
-    def __init__(self, ai, location, number: int):
+    def __init__(self, ai, location, number: int, graphics):
         self.ai = ai
         self.ai.team = number
         self.name = ai.creator
         self.hq = location
         self.number = number
         self.color = colors.to_hex(f'C{self.number}')
-        self.bases = [Base(x=location[0], y=location[1], team=number, color=self.color)]
+        self.graphics = graphics
+        self.bases = [
+            Base(x=location[0],
+                 y=location[1],
+                 team=number,
+                 color=self.color,
+                 graphics=self.graphics)
+        ]
         # self.tanks = {}
         # self.ships = {}
         # self.jets = {}

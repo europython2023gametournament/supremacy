@@ -1,3 +1,4 @@
+import pythreejs as p3
 import uuid
 
 from .vehicles import Tank
@@ -5,7 +6,7 @@ from .vehicles import Tank
 
 class Base:
 
-    def __init__(self, x, y, team, color):
+    def __init__(self, x, y, team, color, graphics):
         self.x = x
         self.y = y
         self.team = team
@@ -15,6 +16,15 @@ class Base:
         self.jets = {}
         self.mines = 1
         self.crystal = 0
+        self.graphics = graphics
+        self.draw_base()
+
+    def draw_base(self):
+        size = 15
+        geom = p3.SphereGeometry(radius=size, widthSegments=8, heightSegments=6)
+        mat = p3.MeshBasicMaterial(color=self.color)
+        self.graphics.add(
+            p3.Mesh(geometry=geom, material=mat, position=[self.x, self.y, 0]))
 
     @property
     def vehicles(self):
@@ -32,3 +42,4 @@ class Base:
                                team=self.team,
                                heading=heading)
         self.crystal -= self.tanks[vid].cost
+        self.graphics.add(self.tanks[vid].avatar)

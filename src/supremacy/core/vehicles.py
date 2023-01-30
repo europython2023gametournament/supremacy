@@ -1,7 +1,8 @@
 import numpy as np
+import pythreejs as p3
 import turtle
 
-SPEED = {'tank': 45, 'ship': 60, 'jet': 60}
+SPEED = {'tank': 20, 'ship': 60, 'jet': 60}
 HEALTH = {'tank': 70, 'ship': 100, 'jet': 100}
 ATTACK = {'tank': 20, 'ship': 30, 'jet': 0}
 COST = {'tank': 200, 'ship': 1000, 'jet': 400, 'mine': 500}
@@ -16,34 +17,59 @@ class Vehicle:
         self.attack = ATTACK[kind]
         self.cost = COST[kind]
 
-        self.avatar = turtle.Turtle()
-        self.avatar.speed(0)
-        self.avatar.penup()
-        self.avatar.setx(x)
-        self.avatar.sety(y)
-        self.avatar.color(color)
-        self.avatar.shape(kind)
-        self.avatar.setheading(heading)
+        self.x = x
+        self.y = y
+        self.heading = heading
+
+        geometry = p3.BoxGeometry(width=10, height=10, depth=10)
+        self.avatar = p3.Mesh(geometry=geometry,
+                              material=p3.MeshBasicMaterial(color=color),
+                              position=[self.x, self.y, 0])
+
+        # self.avatar = turtle.Turtle()
+        # self.avatar.speed(0)
+        # self.avatar.penup()
+        # self.avatar.setx(x)
+        # self.avatar.sety(y)
+        # self.avatar.color(color)
+        # self.avatar.shape(kind)
+        # self.avatar.setheading(heading)
+
+    def forward(self, dist, nx, ny):
+        pos = self.position + self.vector * dist
+        x = pos[0] % nx
+        y = pos[1] % ny
+        if x < 0:
+            x = nx + x
+        if y < 0:
+            y = ny + y
+        self.x = x
+        self.y = y
+        self.avatar.position = [self.x, self.y, 0]
+
+    # @property
+    # def x(self) -> int:
+    #     return self._x
+
+    # @x.setter
+    # def x(self, value):
+    #     self._x = value
+
+    # @property
+    # def y(self) -> int:
+    #     return self._y
 
     @property
-    def x(self) -> int:
-        return int(self.avatar.xcor())
+    def position(self):
+        return np.array([self.x, self.y])
 
-    @property
-    def y(self) -> int:
-        return int(self.avatar.ycor())
+    # @property
+    # def heading(self) -> float:
+    #     return self.avatar.heading()
 
-    @property
-    def position(self) -> np.ndarray:
-        return np.array(self.avatar.position()).astype(int)
-
-    @property
-    def heading(self) -> float:
-        return self.avatar.heading()
-
-    @heading.setter
-    def heading(self, angle: float):
-        return self.avatar.setheading(angle)
+    # @heading.setter
+    # def heading(self, angle: float):
+    #     return self.avatar.setheading(angle)
 
     @property
     def vector(self) -> np.ndarray:
@@ -53,7 +79,7 @@ class Vehicle:
     def ray_trace(self, dt: float) -> np.ndarray:
         vt = self.speed * dt
         ray = self.vector.reshape((2, 1)) * np.linspace(1, vt, int(vt) + 1)
-        return (np.array(self.avatar.position()).reshape((2, 1)) + ray).astype(int)
+        return (self.position.reshape((2, 1)) + ray).astype(int)
 
     def get_distance(self, pos: tuple) -> float:
         return np.sqrt((pos[0] - self.x)**2 + (pos[1] - self.y)**2)
@@ -64,10 +90,10 @@ class Tank(Vehicle):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, kind='tank', **kwargs)
 
-    def move(self, dt, path):
+    def move(self, dt, path, nx, ny):
         no_obstacles = (np.sum(path == 0)) == 0
         if no_obstacles:
-            self.avatar.forward(self.speed * dt)
+            self.forward(self.speed * dt, nx, ny)
 
 
 class Ship(Vehicle):
@@ -76,7 +102,7 @@ class Ship(Vehicle):
         super().__init__(*args, kind='ship', **kwargs)
 
     def move(self, dt):
-        self.avatar.forward(self.speed * dt)
+        self.forward(self.speed * dt)
 
 
 class Jet(Vehicle):
@@ -85,4 +111,4 @@ class Jet(Vehicle):
         super().__init__(*args, kind='jet', **kwargs)
 
     def move(self, dt):
-        self.avatar.forward(self.speed * dt)
+        self.forward(self.speed * dt)

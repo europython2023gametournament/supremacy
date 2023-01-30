@@ -31,8 +31,9 @@ class GameMap:
         cmap = mpl.colormaps['terrain']
         norm = Normalize()
         # im = Image.fromarray((cmap(norm(smooth)) * 255).astype(np.uint8))
-        im = Image.fromarray(np.flipud(self.array * 255).astype(np.uint8)).resize(
-            (self.nx - 19, self.ny - 19))
+        im = Image.fromarray(np.flipud(self.array * 255).astype(np.uint8))
+        # .resize(
+        #     (self.nx - 19, self.ny - 19))
         # im.resize((self.nx - 20, self.ny - 20))
         im.save('background.png')
 

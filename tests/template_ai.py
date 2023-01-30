@@ -21,8 +21,8 @@ class PlayerAi(Ai):
             elif base.crystal > 200:
                 base.build_tank(heading=360 * np.random.random())
 
-            for name, tank in base.tanks.items():
-                if hasattr(tank, 'previous_position'):
-                    if all(tank.position == tank.previous_position):
-                        tank.heading = np.random.random() * 360.0
-                tank.previous_position = tank.position
+            # for name, tank in base.tanks.items():
+            #     if hasattr(tank, 'previous_position'):
+            #         if all(tank.position == tank.previous_position):
+            #             tank.heading = np.random.random() * 360.0
+            #     tank.previous_position = tank.position
