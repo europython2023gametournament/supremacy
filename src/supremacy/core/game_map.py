@@ -31,28 +31,31 @@ class GameMap:
         cmap = mpl.colormaps['terrain']
         norm = Normalize()
         # im = Image.fromarray((cmap(norm(smooth)) * 255).astype(np.uint8))
-        im = Image.fromarray(np.flipud(self.array * 255).astype(np.uint8))
+        im = Image.fromarray(np.flipud(self.array * 255).astype(np.uint8)).resize(
+            (self.nx - 19, self.ny - 19))
+        # im.resize((self.nx - 20, self.ny - 20))
         im.save('background.png')
 
-    def add_players(self, players, graphics):
+    def add_players(self, players):
         inds = np.random.choice(np.arange(self.nseeds),
                                 size=len(players),
                                 replace=False)
-        graphics.pen.showturtle()
-        print(inds)
-        print(self.xseed)
-        print(self.yseed)
+        # graphics.pen.showturtle()
+        # print(inds)
+        # print(self.xseed)
+        # print(self.yseed)
+        locations = {}
         for n, player in enumerate(players):
             direction = np.random.randint(4)
             # val = self.array[self.xseed[inds[n]], self.yseed[inds[n]]]
             i = self.xseed[inds[n]]
             j = self.yseed[inds[n]]
-            graphics.pen.penup()
-            graphics.pen.goto(i, j)
-            graphics.pen.pendown()
+            # graphics.pen.penup()
+            # graphics.pen.goto(i, j)
+            # graphics.pen.pendown()
             while self.array[j, i] > 0:
-                input()
-                print(n, i, j, self.array[j, i])
+                # input()
+                # print(n, i, j, self.array[j, i])
                 if direction == 0:
                     i += 1
                     if i >= self.nx:
@@ -69,12 +72,13 @@ class GameMap:
                     j -= 1
                     if j < 0:
                         j = self.ny - 1
-                graphics.pen.goto(i, j)
-            print('edge found', i, j, self.array[j, i])
+                # graphics.pen.goto(i, j)
+            # print('edge found', i, j, self.array[j, i])
             for ii in range(i - 1, i + 2):
                 for jj in range(j - 1, j + 2):
                     self.array[jj, ii] = 10 + n
-            graphics.pen.penup()
-            graphics.draw_base_star(x=i, y=j, n=n)
+            # graphics.pen.penup()
+            # graphics.draw_base_star(x=i, y=j, n=n)
+            locations[player.creator] = (i, j)
 
-        return
+        return locations
