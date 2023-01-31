@@ -23,7 +23,8 @@ class Engine:
             p.creator: Player(ai=p,
                               location=player_locations[p.creator],
                               number=i,
-                              graphics=self.graphics)
+                              graphics=self.graphics,
+                              game_map=np.ma.masked_where(True, self.game_map.array))
             for i, p in enumerate(players)
         }
         # self.graphics = Graphics(game_map=self.game_map, players=self.players)
@@ -47,6 +48,8 @@ class Engine:
         self.start_time = time.time()
         pyglet.clock.schedule_interval(self.update, 1 / fps)
 
+        pyglet.app.run()
+
         # dt = 1. / fps
         # start_time = time.time()
         # frame_times = np.linspace(dt, self.time_limit, int(self.time_limit / dt))
@@ -62,8 +65,8 @@ class Engine:
             raise RuntimeError('Time limit reached!')
         for name, player in self.players.items():
             for base in player.bases:
-                base.crystal += dt * base.mines * 10
-                # print(name, base.crystal)
+                base.crystal += dt * base.mines * 50
+                # print(name, t, int(base.crystal), base.mines)
             player.execute_ai(t=t,
                               dt=dt,
                               info={'bases': player.bases},

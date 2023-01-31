@@ -33,14 +33,18 @@ class Base:
 
     def build_mine(self):
         self.mines += 1
+        self.crystal -= 500
+        print('Building mine')
 
     def build_tank(self, heading, batch):
+        print('Building tank')
         vid = uuid.uuid4()
-        self.tanks[vid] = Tank(x=self.x + 5,
-                               y=self.y + 5,
-                               color=self.color,
-                               team=self.team,
-                               heading=heading,
-                               batch=batch)
+        self.tanks[vid] = Tank(
+            x=self.x + 5,
+            y=self.y + 5,
+            #    color=self.color,
+            team=self.team,
+            heading=heading,
+            batch=batch)
         self.crystal -= self.tanks[vid].cost
         # self.graphics.add(self.tanks[vid].avatar)

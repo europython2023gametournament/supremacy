@@ -15,14 +15,14 @@ class PlayerAi(Ai):
     def run(self, t: float, dt: float, info: dict, batch):
 
         for base in info['bases']:
-            if base.mines < 3:
+            if base.mines < 2:
                 if base.crystal > 500:
                     base.build_mine()
             elif base.crystal > 200:
                 base.build_tank(heading=360 * np.random.random(), batch=batch)
 
-            # for name, tank in base.tanks.items():
-            #     if hasattr(tank, 'previous_position'):
-            #         if all(tank.position == tank.previous_position):
-            #             tank.heading = np.random.random() * 360.0
-            #     tank.previous_position = tank.position
+            for name, tank in base.tanks.items():
+                if hasattr(tank, 'previous_position'):
+                    if all(tank.position == tank.previous_position):
+                        tank.heading = np.random.random() * 360.0
+                tank.previous_position = tank.position

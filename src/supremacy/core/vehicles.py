@@ -6,7 +6,7 @@ import pyglet
 SPEED = {'tank': 20, 'ship': 60, 'jet': 60}
 HEALTH = {'tank': 70, 'ship': 100, 'jet': 100}
 ATTACK = {'tank': 20, 'ship': 30, 'jet': 0}
-COST = {'tank': 200, 'ship': 1000, 'jet': 400, 'mine': 500}
+COST = {'tank': 200, 'ship': 1000, 'jet': 400}
 
 jet_image = pyglet.image.load('jet.png')
 jet_image.anchor_x = jet_image.width // 2
@@ -15,7 +15,7 @@ jet_image.anchor_y = jet_image.height // 2
 
 class Vehicle:
 
-    def __init__(self, x, y, color, team, kind, batch, heading=0):
+    def __init__(self, x, y, team, kind, batch, heading=0):
         self.team = team
         self.speed = SPEED[kind]
         self.health = HEALTH[kind]
@@ -24,11 +24,12 @@ class Vehicle:
 
         self.x = x
         self.y = y
-        self.heading = heading
+        self._heading = heading
 
         self.avatar = pyglet.sprite.Sprite(img=jet_image,
                                            x=self.x,
                                            y=self.y,
+                                           rotation=-heading,
                                            batch=batch)
         # image.anchor_x = image.width // 2
 
@@ -56,7 +57,8 @@ class Vehicle:
             y = ny + y
         self.x = x
         self.y = y
-        self.avatar.position = [self.x, self.y, 0]
+        self.avatar.x = self.x
+        self.avatar.y = self.y
 
     # @property
     # def x(self) -> int:
@@ -74,13 +76,14 @@ class Vehicle:
     def position(self):
         return np.array([self.x, self.y])
 
-    # @property
-    # def heading(self) -> float:
-    #     return self.avatar.heading()
+    @property
+    def heading(self) -> float:
+        return self._heading
 
-    # @heading.setter
-    # def heading(self, angle: float):
-    #     return self.avatar.setheading(angle)
+    @heading.setter
+    def heading(self, angle: float):
+        self._heading = angle
+        self.avatar.rotation = -angle
 
     @property
     def vector(self) -> np.ndarray:
@@ -112,8 +115,10 @@ class Ship(Vehicle):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, kind='ship', **kwargs)
 
-    def move(self, dt):
-        self.forward(self.speed * dt)
+    def move(self, dt, path, nx, ny):
+        no_obstacles = (np.sum(path == 1)) == 0
+        if no_obstacles:
+            self.forward(self.speed * dt, nx, ny)
 
 
 class Jet(Vehicle):
