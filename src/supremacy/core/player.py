@@ -7,38 +7,40 @@ from .base import Base
 
 class Player:
 
-    def __init__(self, ai, location, number: int, graphics, game_map):
+    def __init__(self, ai, location, number, team, graphics, game_map):
         self.ai = ai
-        self.ai.team = number
+        self.ai.team = team
+        self.ai.number = number
         self.name = ai.creator
         self.hq = location
         self.number = number
-        self.color = colors.to_hex(f'C{self.number}')
+        self.team = team
         self.graphics = graphics
         self.game_map = game_map
         self.bases = [
             Base(x=location[0],
                  y=location[1],
-                 team=number,
-                 color=self.color,
+                 team=team,
+                 number=number,
                  graphics=self.graphics)
         ]
         # self.tanks = {}
         # self.ships = {}
         # self.jets = {}
         # self.mines = {}
+        # self.generate_images()
 
-    def generate_images(self):
-        rgb = colors.to_rgb(f'C{self.number}')
-        for f in ('jet', 'tank', 'ship', 'base'):
-            img = Image.open(f'{f}.png')
-            img = img.convert('RGBA')
-            data = img.getdata()
-            new_data = np.array(data).reshape(img.height, img.width, 4)
-            for i in range(3):
-                new_data[..., i] = int(round(rgb[i] * 255))
-            out = Image.fromarray(new_data.astype(np.uint8))
-            out.save(f'{f}_{self.number}.png')
+    # def generate_images(self):
+    #     rgb = colors.to_rgb(f'C{self.number}')
+    #     for f in ('jet', 'tank', 'ship', 'base'):
+    #         img = Image.open(f'{f}.png')
+    #         img = img.convert('RGBA')
+    #         data = img.getdata()
+    #         new_data = np.array(data).reshape(img.height, img.width, 4)
+    #         for i in range(3):
+    #             new_data[..., i] = int(round(rgb[i] * 255))
+    #         out = Image.fromarray(new_data.astype(np.uint8))
+    #         out.save(f'{f}_{self.number}.png')
 
     def execute_ai(self, t: float, dt: float, info: dict, batch, safe: bool = False):
         if safe:

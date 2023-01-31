@@ -2,6 +2,7 @@ import numpy as np
 import pyglet
 import time
 
+from .. import config
 from .game_map import GameMap
 from .graphics import Graphics
 from .player import Player
@@ -10,6 +11,8 @@ from .player import Player
 class Engine:
 
     def __init__(self, players: list, speedup: int = 1):
+
+        config.generate_images(nplayers=len(players))
 
         self.ng = 4
         self.nx = self.ng * 475
@@ -23,6 +26,7 @@ class Engine:
             p.creator: Player(ai=p,
                               location=player_locations[p.creator],
                               number=i,
+                              team=p.creator,
                               graphics=self.graphics,
                               game_map=np.ma.masked_where(True, self.game_map.array))
             for i, p in enumerate(players)

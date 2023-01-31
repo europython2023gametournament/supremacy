@@ -3,30 +3,27 @@ import pythreejs as p3
 import turtle
 import pyglet
 
-SPEED = {'tank': 20, 'ship': 60, 'jet': 60}
-HEALTH = {'tank': 70, 'ship': 100, 'jet': 100}
-ATTACK = {'tank': 20, 'ship': 30, 'jet': 0}
-COST = {'tank': 200, 'ship': 1000, 'jet': 400}
-
-jet_image = pyglet.image.load('jet.png')
-jet_image.anchor_x = jet_image.width // 2
-jet_image.anchor_y = jet_image.height // 2
+from .. import config
 
 
 class Vehicle:
 
-    def __init__(self, x, y, team, kind, batch, heading=0):
+    def __init__(self, x, y, team, number, kind, batch, heading=0):
+
         self.team = team
-        self.speed = SPEED[kind]
-        self.health = HEALTH[kind]
-        self.attack = ATTACK[kind]
-        self.cost = COST[kind]
+        self.number = number
+        self.speed = config.speed[kind]
+        self.health = config.health[kind]
+        self.attack = config.attack[kind]
+        self.cost = config.cost[kind]
+
+        print(config.images.keys())
 
         self.x = x
         self.y = y
         self._heading = heading
 
-        self.avatar = pyglet.sprite.Sprite(img=jet_image,
+        self.avatar = pyglet.sprite.Sprite(img=config.images[f'{kind}_{self.number}'],
                                            x=self.x,
                                            y=self.y,
                                            rotation=-heading,

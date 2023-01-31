@@ -6,11 +6,11 @@ from .vehicles import Tank
 
 class Base:
 
-    def __init__(self, x, y, team, color, graphics):
+    def __init__(self, x, y, team, number, graphics):
         self.x = x
         self.y = y
         self.team = team
-        self.color = color
+        self.number = number
         self.tanks = {}
         self.ships = {}
         self.jets = {}
@@ -39,12 +39,11 @@ class Base:
     def build_tank(self, heading, batch):
         print('Building tank')
         vid = uuid.uuid4()
-        self.tanks[vid] = Tank(
-            x=self.x + 5,
-            y=self.y + 5,
-            #    color=self.color,
-            team=self.team,
-            heading=heading,
-            batch=batch)
+        self.tanks[vid] = Tank(x=self.x + 5,
+                               y=self.y + 5,
+                               team=self.team,
+                               number=self.number,
+                               heading=heading,
+                               batch=batch)
         self.crystal -= self.tanks[vid].cost
         # self.graphics.add(self.tanks[vid].avatar)
