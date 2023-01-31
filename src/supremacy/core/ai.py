@@ -20,10 +20,10 @@ class Ai:
     def run(self, *args, **kwargs):
         return
 
-    def exec(self, t: float, dt: float, info: dict):
+    def exec(self, t: float, dt: float, info: dict, batch):
         # self.heading = None
         # self.goto = None
         # self.left = None
         # self.right = None
         # self._params = info['me']
-        self.run(t=t, dt=dt, info=info)
+        self.run(t=t, dt=dt, info=info, batch=batch)

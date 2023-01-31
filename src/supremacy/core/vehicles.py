@@ -1,16 +1,21 @@
 import numpy as np
 import pythreejs as p3
 import turtle
+import pyglet
 
 SPEED = {'tank': 20, 'ship': 60, 'jet': 60}
 HEALTH = {'tank': 70, 'ship': 100, 'jet': 100}
 ATTACK = {'tank': 20, 'ship': 30, 'jet': 0}
 COST = {'tank': 200, 'ship': 1000, 'jet': 400, 'mine': 500}
 
+jet_image = pyglet.image.load('jet.png')
+jet_image.anchor_x = jet_image.width // 2
+jet_image.anchor_y = jet_image.height // 2
+
 
 class Vehicle:
 
-    def __init__(self, x, y, color, team, kind, heading=0):
+    def __init__(self, x, y, color, team, kind, batch, heading=0):
         self.team = team
         self.speed = SPEED[kind]
         self.health = HEALTH[kind]
@@ -21,10 +26,16 @@ class Vehicle:
         self.y = y
         self.heading = heading
 
-        geometry = p3.BoxGeometry(width=10, height=10, depth=10)
-        self.avatar = p3.Mesh(geometry=geometry,
-                              material=p3.MeshBasicMaterial(color=color),
-                              position=[self.x, self.y, 0])
+        self.avatar = pyglet.sprite.Sprite(img=jet_image,
+                                           x=self.x,
+                                           y=self.y,
+                                           batch=batch)
+        # image.anchor_x = image.width // 2
+
+        # geometry = p3.BoxGeometry(width=10, height=10, depth=10)
+        # self.avatar = p3.Mesh(geometry=geometry,
+        #                       material=p3.MeshBasicMaterial(color=color),
+        #                       position=[self.x, self.y, 0])
 
         # self.avatar = turtle.Turtle()
         # self.avatar.speed(0)

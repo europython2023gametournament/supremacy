@@ -1,4 +1,5 @@
 import numpy as np
+import pyglet
 import time
 
 from .game_map import GameMap
@@ -43,23 +44,32 @@ class Engine:
 
         t = 0
         self.time_limit = 30  # 5 * 60
-        dt = 1. / fps
-        start_time = time.time()
-        frame_times = np.linspace(dt, self.time_limit, int(self.time_limit / dt))
-        dt *= self.speedup
-        frame = 0
-        while t < self.time_limit:
-            t = (time.time() - start_time) * self.speedup
-            if (frame < len(frame_times)) and (t >= frame_times[frame]):
-                for name, player in self.players.items():
-                    for base in player.bases:
-                        base.crystal += dt * base.mines * 10
-                        # print(name, base.crystal)
-                    player.execute_ai(t=t,
-                                      dt=dt,
-                                      info={'bases': player.bases},
-                                      safe=safe)
-                for name, player in self.players.items():
-                    for base in player.bases:
-                        for v in base.vehicles:
-                            self.move(v, dt)
+        self.start_time = time.time()
+        pyglet.clock.schedule_interval(self.update, 1 / fps)
+
+        # dt = 1. / fps
+        # start_time = time.time()
+        # frame_times = np.linspace(dt, self.time_limit, int(self.time_limit / dt))
+        # dt *= self.speedup
+        # frame = 0
+        # while t < self.time_limit:
+        #     t = (time.time() - start_time) * self.speedup
+        #     if (frame < len(frame_times)) and (t >= frame_times[frame]):
+
+    def update(self, dt):
+        t = time.time() - self.start_time
+        if t > self.time_limit:
+            raise RuntimeError('Time limit reached!')
+        for name, player in self.players.items():
+            for base in player.bases:
+                base.crystal += dt * base.mines * 10
+                # print(name, base.crystal)
+            player.execute_ai(t=t,
+                              dt=dt,
+                              info={'bases': player.bases},
+                              safe=False,
+                              batch=self.graphics.main_batch)
+        for name, player in self.players.items():
+            for base in player.bases:
+                for v in base.vehicles:
+                    self.move(v, dt)

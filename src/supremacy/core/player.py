@@ -25,14 +25,14 @@ class Player:
         # self.jets = {}
         # self.mines = {}
 
-    def execute_ai(self, t: float, dt: float, info: dict, safe: bool = False):
+    def execute_ai(self, t: float, dt: float, info: dict, batch, safe: bool = False):
         if safe:
             try:
-                self.ai.exec(t, dt, info)
+                self.ai.exec(t=t, dt=dt, info=info, batch=batch)
             except:
                 pass
         else:
-            self.ai.exec(t, dt, info)
+            self.ai.exec(t=t, dt=dt, info=info, batch=batch)
         # if not safe:
         #     nprops = 0
         #     if self.ai.heading is not None:

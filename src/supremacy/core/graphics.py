@@ -46,7 +46,7 @@ class Graphics:
         self.window = pyglet.window.Window(self.nx, self.ny)
         self.background = pyglet.resource.image('background.png')
         self.main_batch = pyglet.graphics.Batch()
-        self.jet_image = pyglet.image.load('jet.png')
+        # self.jet_image = pyglet.image.load('jet.png')
 
         @self.window.event
         def on_draw():
