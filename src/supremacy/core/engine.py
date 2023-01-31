@@ -48,7 +48,7 @@ class Engine:
     def run(self, safe: bool = False, fps=30):
 
         t = 0
-        self.time_limit = 30  # 5 * 60
+        self.time_limit = 60  # 5 * 60
         self.start_time = time.time()
         pyglet.clock.schedule_interval(self.update, 1 / fps)
 

@@ -17,7 +17,7 @@ class Vehicle:
         self.attack = config.attack[kind]
         self.cost = config.cost[kind]
 
-        print(config.images.keys())
+        # print(config.images.keys())
 
         self.x = x
         self.y = y
@@ -26,8 +26,8 @@ class Vehicle:
         self.avatar = pyglet.sprite.Sprite(img=config.images[f'{kind}_{self.number}'],
                                            x=self.x,
                                            y=self.y,
-                                           rotation=-heading,
                                            batch=batch)
+        self.avatar.rotation = -heading
         # image.anchor_x = image.width // 2
 
         # geometry = p3.BoxGeometry(width=10, height=10, depth=10)
