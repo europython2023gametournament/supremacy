@@ -63,10 +63,19 @@ class Engine:
         #     t = (time.time() - start_time) * self.speedup
         #     if (frame < len(frame_times)) and (t >= frame_times[frame]):
 
+    def generate_info(self):
+        info = {name: {} for name in self.players}
+        for name, player in self.players.items():
+            for base in player.bases:
+                
+
     def update(self, dt):
         t = time.time() - self.start_time
         if t > self.time_limit:
-            raise RuntimeError('Time limit reached!')
+            pyglet.clock.unschedule(self.update)
+            # raise RuntimeError('Time limit reached!')
+        info = self.generate_info()
+        
         for name, player in self.players.items():
             for base in player.bases:
                 base.crystal += dt * base.mines * 50

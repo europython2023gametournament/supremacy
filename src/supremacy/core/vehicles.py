@@ -58,6 +58,21 @@ class Vehicle:
         self.avatar.x = self.x
         self.avatar.y = self.y
 
+    def as_info(self):
+        return {
+            'team': self.team,
+            'number': self.number,
+            'owner': self.owner,
+            'vid': self.vid,
+            'speed': self.speed,
+            'health': self.health,
+            'attack': self.attack,
+            'x': self.x,
+            'y': self.y,
+            'heading': self.heading,
+            'vector': self.vector
+        }
+
     # @property
     # def x(self) -> int:
     #     return self._x

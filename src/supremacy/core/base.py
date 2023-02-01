@@ -71,6 +71,19 @@ class Base:
         return list(self.tanks.values()) + list(self.ships.values()) + list(
             self.jets.values())
 
+    def as_info(self):
+        return {'x' = x
+        'y = y
+        'team = team
+        'number = number
+        'owner = owner
+        'tanks = {}
+        'ships = {}
+        'jets = {}
+        'transformed_ships = []
+        'mines = 1
+        'crystal = 0}
+
     def init_dt(self):
         self.transformed_ships.clear()
 
