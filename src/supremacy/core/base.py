@@ -1,30 +1,57 @@
-import pythreejs as p3
+import pyglet
 import uuid
 
-from .vehicles import Tank
+from .. import config
+from .vehicles import Tank, Ship, Jet
 
 
 class Base:
 
-    def __init__(self, x, y, team, number, graphics):
+    def __init__(self, x, y, team, number, batch, owner):
         self.x = x
         self.y = y
         self.team = team
         self.number = number
+        self.owner = owner
         self.tanks = {}
         self.ships = {}
         self.jets = {}
         self.mines = 1
         self.crystal = 0
-        self.graphics = graphics
+        # self.graphics = graphics
         # self.draw_base()
+        r = config.view_radius
+        ix = int(self.x)
+        iy = int(self.y)
+        self.owner.game_map[iy - r:iy + r + 1, ix - r:ix + r + 1].mask = False
+        self.avatar = pyglet.sprite.Sprite(img=config.images[f'base_{self.number}'],
+                                           x=self.x,
+                                           y=self.y,
+                                           batch=batch)
+        dx = config.vehicle_offset
+        if self.owner.game_map[iy + dx, ix + dx] == 1:
+            self.tank_offset = (dx, dx)
+        elif self.owner.game_map[iy - dx, ix + dx] == 1:
+            self.tank_offset = (dx, -dx)
+        elif self.owner.game_map[iy + dx, ix - dx] == 1:
+            self.tank_offset = (-dx, dx)
+        elif self.owner.game_map[iy - dx, ix - dx] == 1:
+            self.tank_offset = (-dx, -dx)
+        if self.owner.game_map[iy + dx, ix + dx] == 0:
+            self.ship_offset = (dx, dx)
+        elif self.owner.game_map[iy - dx, ix + dx] == 0:
+            self.ship_offset = (dx, -dx)
+        elif self.owner.game_map[iy + dx, ix - dx] == 0:
+            self.ship_offset = (-dx, dx)
+        elif self.owner.game_map[iy - dx, ix - dx] == 0:
+            self.ship_offset = (-dx, -dx)
 
-    def draw_base(self):
-        size = 15
-        geom = p3.SphereGeometry(radius=size, widthSegments=8, heightSegments=6)
-        mat = p3.MeshBasicMaterial(color=self.color)
-        self.graphics.add(
-            p3.Mesh(geometry=geom, material=mat, position=[self.x, self.y, 0]))
+    # def draw_base(self):
+    #     size = 15
+    #     geom = p3.SphereGeometry(radius=size, widthSegments=8, heightSegments=6)
+    #     mat = p3.MeshBasicMaterial(color=self.color)
+    #     self.graphics.add(
+    #         p3.Mesh(geometry=geom, material=mat, position=[self.x, self.y, 0]))
 
     @property
     def vehicles(self):
@@ -33,17 +60,33 @@ class Base:
 
     def build_mine(self):
         self.mines += 1
-        self.crystal -= 500
+        self.crystal -= config.cost['mine']
         print('Building mine')
 
     def build_tank(self, heading, batch):
         print('Building tank')
-        vid = uuid.uuid4()
-        self.tanks[vid] = Tank(x=self.x + 5,
-                               y=self.y + 5,
+        vid = uuid.uuid4().hex
+        self.tanks[vid] = Tank(x=self.x + self.tank_offset[0],
+                               y=self.y + self.tank_offset[1],
                                team=self.team,
                                number=self.number,
                                heading=heading,
-                               batch=batch)
-        self.crystal -= self.tanks[vid].cost
+                               batch=batch,
+                               owner=self,
+                               vid=vid)
+        self.crystal -= config.cost['tank']
+        # self.graphics.add(self.tanks[vid].avatar)
+
+    def build_ship(self, heading, batch):
+        print('Building ship')
+        vid = uuid.uuid4().hex
+        self.ships[vid] = Ship(x=self.x + self.ship_offset[0],
+                               y=self.y + self.ship_offset[1],
+                               team=self.team,
+                               number=self.number,
+                               heading=heading,
+                               batch=batch,
+                               owner=self,
+                               vid=vid)
+        self.crystal -= config.cost['ship']
         # self.graphics.add(self.tanks[vid].avatar)

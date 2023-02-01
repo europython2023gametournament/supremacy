@@ -8,14 +8,15 @@ from .. import config
 
 class Vehicle:
 
-    def __init__(self, x, y, team, number, kind, batch, heading=0):
+    def __init__(self, x, y, team, number, kind, batch, owner, vid, heading=0):
 
         self.team = team
         self.number = number
+        self.owner = owner
+        self.vid = vid
         self.speed = config.speed[kind]
         self.health = config.health[kind]
         self.attack = config.attack[kind]
-        self.cost = config.cost[kind]
 
         # print(config.images.keys())
 

@@ -7,7 +7,7 @@ from .base import Base
 
 class Player:
 
-    def __init__(self, ai, location, number, team, graphics, game_map):
+    def __init__(self, ai, location, number, team, batch, game_map):
         self.ai = ai
         self.ai.team = team
         self.ai.number = number
@@ -15,14 +15,15 @@ class Player:
         self.hq = location
         self.number = number
         self.team = team
-        self.graphics = graphics
+        # self.graphics = graphics
         self.game_map = game_map
         self.bases = [
             Base(x=location[0],
                  y=location[1],
                  team=team,
                  number=number,
-                 graphics=self.graphics)
+                 batch=batch,
+                 owner=self)
         ]
         # self.tanks = {}
         # self.ships = {}

@@ -27,7 +27,7 @@ class Engine:
                               location=player_locations[p.creator],
                               number=i,
                               team=p.creator,
-                              graphics=self.graphics,
+                              batch=self.graphics.main_batch,
                               game_map=np.ma.masked_where(True, self.game_map.array))
             for i, p in enumerate(players)
         }
