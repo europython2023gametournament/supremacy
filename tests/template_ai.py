@@ -31,8 +31,8 @@ class PlayerAi(Ai):
                 tank.previous_position = tank.position
 
             for name, ship in base.ships.items():
-                if hasattr(tank, 'previous_position'):
-                    if all(tank.position == tank.previous_position):
+                if hasattr(ship, 'previous_position'):
+                    if all(ship.position == ship.previous_position):
                         if ship.get_distance([base.x, base.y]) > 20:
                             ship.convert_to_base()
                         else:

@@ -118,6 +118,11 @@ class Ship(Vehicle):
         if no_obstacles:
             self.forward(self.speed * dt, nx, ny)
 
+    def convert_to_base(self):
+        self.owner.owner.build_base(x=self.x, y=self.y)
+        self.owner.transformed_ships.append(self.vid)
+        self.avatar.delete()
+
 
 class Jet(Vehicle):
 

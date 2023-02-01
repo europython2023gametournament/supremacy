@@ -26,4 +26,6 @@ class Ai:
         # self.left = None
         # self.right = None
         # self._params = info['me']
+        for base in info['bases']:
+            base.init_dt()
         self.run(t=t, dt=dt, info=info, batch=batch)

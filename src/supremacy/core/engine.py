@@ -48,7 +48,7 @@ class Engine:
     def run(self, safe: bool = False, fps=30):
 
         t = 0
-        self.time_limit = 60  # 5 * 60
+        self.time_limit = 2 * 60  # 5 * 60
         self.start_time = time.time()
         pyglet.clock.schedule_interval(self.update, 1 / fps)
 
@@ -76,6 +76,7 @@ class Engine:
                               info={'bases': player.bases},
                               safe=False,
                               batch=self.graphics.main_batch)
+            player.collect_transformed_ships()
         for name, player in self.players.items():
             for base in player.bases:
                 for v in base.vehicles:

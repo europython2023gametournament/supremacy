@@ -15,16 +15,11 @@ class Player:
         self.hq = location
         self.number = number
         self.team = team
+        self.batch = batch
         # self.graphics = graphics
         self.game_map = game_map
-        self.bases = [
-            Base(x=location[0],
-                 y=location[1],
-                 team=team,
-                 number=number,
-                 batch=batch,
-                 owner=self)
-        ]
+        self.bases = []
+        self.build_base(x=location[0], y=location[1])
         # self.tanks = {}
         # self.ships = {}
         # self.jets = {}
@@ -42,6 +37,15 @@ class Player:
     #             new_data[..., i] = int(round(rgb[i] * 255))
     #         out = Image.fromarray(new_data.astype(np.uint8))
     #         out.save(f'{f}_{self.number}.png')
+
+    def build_base(self, x, y):
+        self.bases.append(
+            Base(x=x,
+                 y=y,
+                 team=self.team,
+                 number=self.number,
+                 batch=self.batch,
+                 owner=self))
 
     def execute_ai(self, t: float, dt: float, info: dict, batch, safe: bool = False):
         if safe:
@@ -76,3 +80,8 @@ class Player:
         # # except:
         # #     print('Error in ', self.ai.creator, self.name)
         # #     pass
+
+    def collect_transformed_ships(self):
+        for base in self.bases:
+            for vid in base.transformed_ships:
+                del base.ships[vid]

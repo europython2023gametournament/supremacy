@@ -16,6 +16,7 @@ class Base:
         self.tanks = {}
         self.ships = {}
         self.jets = {}
+        self.transformed_ships = []
         self.mines = 1
         self.crystal = 0
         # self.graphics = graphics
@@ -29,22 +30,34 @@ class Base:
                                            y=self.y,
                                            batch=batch)
         dx = config.vehicle_offset
-        if self.owner.game_map[iy + dx, ix + dx] == 1:
-            self.tank_offset = (dx, dx)
-        elif self.owner.game_map[iy - dx, ix + dx] == 1:
-            self.tank_offset = (dx, -dx)
-        elif self.owner.game_map[iy + dx, ix - dx] == 1:
-            self.tank_offset = (-dx, dx)
-        elif self.owner.game_map[iy - dx, ix - dx] == 1:
-            self.tank_offset = (-dx, -dx)
-        if self.owner.game_map[iy + dx, ix + dx] == 0:
-            self.ship_offset = (dx, dx)
-        elif self.owner.game_map[iy - dx, ix + dx] == 0:
-            self.ship_offset = (dx, -dx)
-        elif self.owner.game_map[iy + dx, ix - dx] == 0:
-            self.ship_offset = (-dx, dx)
-        elif self.owner.game_map[iy - dx, ix - dx] == 0:
-            self.ship_offset = (-dx, -dx)
+        offset = None
+        while (offset is None):
+            if self.owner.game_map[iy + dx, ix + dx] == 1:
+                offset = (dx, dx)
+            elif self.owner.game_map[iy - dx, ix + dx] == 1:
+                offset = (dx, -dx)
+            elif self.owner.game_map[iy + dx, ix - dx] == 1:
+                offset = (-dx, dx)
+            elif self.owner.game_map[iy - dx, ix - dx] == 1:
+                offset = (-dx, -dx)
+            else:
+                dx += 1
+        self.tank_offset = offset
+
+        dx = config.vehicle_offset
+        offset = None
+        while (offset is None):
+            if self.owner.game_map[iy + dx, ix + dx] == 0:
+                offset = (dx, dx)
+            elif self.owner.game_map[iy - dx, ix + dx] == 0:
+                offset = (dx, -dx)
+            elif self.owner.game_map[iy + dx, ix - dx] == 0:
+                offset = (-dx, dx)
+            elif self.owner.game_map[iy - dx, ix - dx] == 0:
+                offset = (-dx, -dx)
+            else:
+                dx += 1
+        self.ship_offset = offset
 
     # def draw_base(self):
     #     size = 15
@@ -57,6 +70,9 @@ class Base:
     def vehicles(self):
         return list(self.tanks.values()) + list(self.ships.values()) + list(
             self.jets.values())
+
+    def init_dt(self):
+        self.transformed_ships.clear()
 
     def build_mine(self):
         self.mines += 1
