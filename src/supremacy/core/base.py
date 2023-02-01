@@ -21,14 +21,14 @@ class Base:
         self.crystal = 0
         # self.graphics = graphics
         # self.draw_base()
-        r = config.view_radius
-        ix = int(self.x)
-        iy = int(self.y)
-        self.owner.game_map[iy - r:iy + r + 1, ix - r:ix + r + 1].mask = False
+        self.owner.update_player_map(x=self.x, y=self.y)
         self.avatar = pyglet.sprite.Sprite(img=config.images[f'base_{self.number}'],
                                            x=self.x,
                                            y=self.y,
                                            batch=batch)
+
+        ix = int(x)
+        iy = int(y)
         dx = config.vehicle_offset
         offset = None
         while (offset is None):

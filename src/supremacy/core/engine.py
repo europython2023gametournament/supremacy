@@ -81,3 +81,4 @@ class Engine:
             for base in player.bases:
                 for v in base.vehicles:
                     self.move(v, dt)
+                    player.update_player_map(x=v.x, y=v.y)

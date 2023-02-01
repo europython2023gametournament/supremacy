@@ -2,6 +2,7 @@ from PIL import Image
 from matplotlib import colors
 import numpy as np
 
+from .. import config
 from .base import Base
 
 
@@ -37,6 +38,43 @@ class Player:
     #             new_data[..., i] = int(round(rgb[i] * 255))
     #         out = Image.fromarray(new_data.astype(np.uint8))
     #         out.save(f'{f}_{self.number}.png')
+
+    def update_player_map(self, x, y):
+        r = config.view_radius
+        ix = int(x)
+        iy = int(y)
+        ny, nx = self.game_map.shape
+        xmin = ix - r
+        xmax = ix + r + 1
+        ymin = iy - r
+        ymax = iy + r + 1
+        self.game_map[max(ymin, 0):min(ymax, ny),
+                      max(xmin, 0):min(xmax, nx)].mask = False
+        if (xmin < 0) and (ymin < 0):
+            self.game_map[0:ymax, nx + xmin:nx].mask = False
+            self.game_map[ny + ymin:ny, 0:xmax].mask = False
+            self.game_map[ny + ymin:ny, nx + xmin:nx].mask = False
+        elif (xmin < 0) and (ymax >= ny):
+            self.game_map[ymin:ny, nx + xmin:nx].mask = False
+            self.game_map[0:ymax - ny, 0:xmax].mask = False
+            self.game_map[0:ymax - ny, nx + xmin:nx].mask = False
+        elif (xmax >= nx) and (ymin < 0):
+            self.game_map[0:ymax, 0:xmax - nx].mask = False
+            self.game_map[ny + ymin:ny, xmin:nx].mask = False
+            self.game_map[ny + ymin:ny, 0:xmax - nx].mask = False
+        elif (xmax >= nx) and (ymax >= ny):
+            self.game_map[0:ymax - ny, xmin:nx].mask = False
+            self.game_map[ymin:ny, 0:xmax - nx].mask = False
+            self.game_map[0:ymax - ny, 0:xmax - nx].mask = False
+        elif xmin < 0:
+            
+
+        import matplotlib.pyplot as plt
+        fig, ax = plt.subplots()
+        ax.imshow(self.game_map.filled(fill_value=-1), origin='lower')
+        fig.savefig(f'map_{self.number}.png', bbox_inches='tight')
+        plt.close(fig)
+        input()
 
     def build_base(self, x, y):
         self.bases.append(

@@ -73,13 +73,13 @@ class GameMap:
                     j -= 1
                     if j < 0:
                         j = self.ny - 1
-                # graphics.pen.goto(i, j)
-            # print('edge found', i, j, self.array[j, i])
-            for ii in range(i - 1, i + 2):
-                for jj in range(j - 1, j + 2):
-                    self.array[jj, ii] = 10 + n
-            # graphics.pen.penup()
-            # graphics.draw_base_star(x=i, y=j, n=n)
+            #     # graphics.pen.goto(i, j)
+            # # print('edge found', i, j, self.array[j, i])
+            # for ii in range(i - 1, i + 2):
+            #     for jj in range(j - 1, j + 2):
+            #         self.array[jj, ii] = 10 + n
+            # # graphics.pen.penup()
+            # # graphics.draw_base_star(x=i, y=j, n=n)
             locations[player.creator] = (i, j)
 
         return locations
