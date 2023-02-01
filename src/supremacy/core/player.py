@@ -67,14 +67,20 @@ class Player:
             self.game_map[ymin:ny, 0:xmax - nx].mask = False
             self.game_map[0:ymax - ny, 0:xmax - nx].mask = False
         elif xmin < 0:
-            
+            self.game_map[ymin:ymax, nx + xmin:nx].mask = False
+        elif xmax >= nx:
+            self.game_map[ymin:ymax, 0:xmax - nx].mask = False
+        elif ymin < 0:
+            self.game_map[ny + ymin:ny, xmin:xmax].mask = False
+        elif ymax >= ny:
+            self.game_map[0:ymax - ny, xmin:xmax].mask = False
 
-        import matplotlib.pyplot as plt
-        fig, ax = plt.subplots()
-        ax.imshow(self.game_map.filled(fill_value=-1), origin='lower')
-        fig.savefig(f'map_{self.number}.png', bbox_inches='tight')
-        plt.close(fig)
-        input()
+        # import matplotlib.pyplot as plt
+        # fig, ax = plt.subplots()
+        # ax.imshow(self.game_map.filled(fill_value=-1), origin='lower')
+        # fig.savefig(f'map_{self.number}.png', bbox_inches='tight')
+        # plt.close(fig)
+        # input()
 
     def build_base(self, x, y):
         self.bases.append(
