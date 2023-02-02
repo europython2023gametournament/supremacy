@@ -8,12 +8,12 @@ from .. import config
 
 class Vehicle:
 
-    def __init__(self, x, y, team, number, kind, batch, owner, vid, heading=0):
+    def __init__(self, x, y, team, number, kind, batch, owner, uid, heading=0):
 
         self.team = team
         self.number = number
         self.owner = owner
-        self.vid = vid
+        self.uid = uid
         self.speed = config.speed[kind]
         self.health = config.health[kind]
         self.attack = config.attack[kind]
@@ -63,8 +63,8 @@ class Vehicle:
         return {
             'team': self.team,
             'number': self.number,
-            # 'owner': self.owner,
-            'vid': self.vid,
+            'owner': self.owner.as_info(),
+            'uid': self.uid,
             'speed': self.speed,
             'health': self.health,
             'attack': self.attack,
@@ -125,6 +125,7 @@ class VehicleProxy:
         self.get_heading = vehicle.get_heading
         self.set_heading = vehicle.set_heading
         self.get_vector = vehicle.get_vector
+        self.get_distance = vehicle.get_distance
         if vehicle.kind == 'ship':
             self.convert_to_base = vehicle.convert_to_base
 
@@ -164,7 +165,7 @@ class Ship(Vehicle):
 
     def convert_to_base(self):
         self.owner.owner.build_base(x=self.x, y=self.y)
-        self.owner.transformed_ships.append(self.vid)
+        self.owner.transformed_ships.append(self.uid)
         self.avatar.delete()
 
 

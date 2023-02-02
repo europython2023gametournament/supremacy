@@ -16,6 +16,7 @@ class Base:
         self.tanks = {}
         self.ships = {}
         self.jets = {}
+        self.uid = uuid.uuid4().hex
         self.transformed_ships = []
         self.mines = 1
         self.crystal = 0
@@ -77,13 +78,6 @@ class Base:
             'y': self.y,
             'team': self.team,
             'number': self.number,
-            # 'owner': self.owner,
-            # 'tanks': {vid: t.as_info()
-            #           for vid, t in self.tanks.items()},
-            # 'ships': {vid: s.as_info()
-            #           for vid, s in self.ships.items()},
-            # 'jets': {vid: j.as_info()
-            #          for vid, j in self.jets.items()},
             'mines': self.mines,
             'crystal': self.crystal
         }
@@ -105,15 +99,15 @@ class Base:
         if self.not_enough_crystal('tank'):
             return
         print('Building tank')
-        vid = uuid.uuid4().hex
-        self.tanks[vid] = Tank(x=self.x + self.tank_offset[0],
+        uid = uuid.uuid4().hex
+        self.tanks[uid] = Tank(x=self.x + self.tank_offset[0],
                                y=self.y + self.tank_offset[1],
                                team=self.team,
                                number=self.number,
                                heading=heading,
                                batch=batch,
                                owner=self,
-                               vid=vid)
+                               uid=uid)
         self.crystal -= config.cost['tank']
         # self.graphics.add(self.tanks[vid].avatar)
 
@@ -121,15 +115,15 @@ class Base:
         if self.not_enough_crystal('ship'):
             return
         print('Building ship')
-        vid = uuid.uuid4().hex
-        self.ships[vid] = Ship(x=self.x + self.ship_offset[0],
+        uid = uuid.uuid4().hex
+        self.ships[uid] = Ship(x=self.x + self.ship_offset[0],
                                y=self.y + self.ship_offset[1],
                                team=self.team,
                                number=self.number,
                                heading=heading,
                                batch=batch,
                                owner=self,
-                               vid=vid)
+                               uid=uid)
         self.crystal -= config.cost['ship']
         # self.graphics.add(self.tanks[vid].avatar)
 
@@ -137,15 +131,15 @@ class Base:
         if self.not_enough_crystal('jet'):
             return
         print('Building jet')
-        vid = uuid.uuid4().hex
-        self.ships[vid] = Jet(x=self.x,
-                              y=self.y,
-                              team=self.team,
-                              number=self.number,
-                              heading=heading,
-                              batch=batch,
-                              owner=self,
-                              vid=vid)
+        uid = uuid.uuid4().hex
+        self.jets[uid] = Jet(x=self.x,
+                             y=self.y,
+                             team=self.team,
+                             number=self.number,
+                             heading=heading,
+                             batch=batch,
+                             owner=self,
+                             uid=uid)
         self.crystal -= config.cost['jet']
         # self.graphics.add(self.tanks[vid].avatar)
 

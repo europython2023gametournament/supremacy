@@ -127,5 +127,5 @@ class Player:
 
     def collect_transformed_ships(self):
         for base in self.bases:
-            for vid in base.transformed_ships:
-                del base.ships[vid]
+            for uid in base.transformed_ships:
+                del base.ships[uid]
