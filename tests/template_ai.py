@@ -11,6 +11,7 @@ class PlayerAi(Ai):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, creator=CREATOR, **kwargs)
         self.previous_positions = {}
+        self.ntanks = {}
         # self.previous_health = 0
 
     def run(self, t: float, dt: float, info: dict, batch):
@@ -18,13 +19,17 @@ class PlayerAi(Ai):
         myinfo = info[self.creator]
         for base in myinfo['bases']:
             # print(base._data)
-            if base['mines'] < 2:
+            if base['uid'] not in self.ntanks:
+                self.ntanks[base['uid']] = 0
+            if base['mines'] < 3:
                 if base['crystal'] > config.cost['mine']:
                     base.build_mine()
+            elif base['crystal'] > config.cost['tank'] and self.ntanks[base['uid']] < 5:
+                base.build_tank(heading=360 * np.random.random(), batch=batch)
+                self.ntanks[base['uid']] += 1
             elif base['crystal'] > config.cost['ship']:
                 base.build_ship(heading=360 * np.random.random(), batch=batch)
-            # elif base.crystal > config.cost['tank']:
-            #     base.build_tank(heading=360 * np.random.random(), batch=batch)
+                self.ntanks[base['uid']] = 0
 
         if 'tanks' in myinfo:
             for tank in myinfo['tanks']:

@@ -79,7 +79,8 @@ class Base:
             'team': self.team,
             'number': self.number,
             'mines': self.mines,
-            'crystal': self.crystal
+            'crystal': self.crystal,
+            'uid': self.uid
         }
 
     def init_dt(self):
