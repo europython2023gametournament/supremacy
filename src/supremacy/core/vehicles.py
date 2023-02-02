@@ -62,7 +62,7 @@ class Vehicle:
         return {
             'team': self.team,
             'number': self.number,
-            'owner': self.owner,
+            # 'owner': self.owner,
             'vid': self.vid,
             'speed': self.speed,
             'health': self.health,

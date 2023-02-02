@@ -72,17 +72,21 @@ class Base:
             self.jets.values())
 
     def as_info(self):
-        return {'x' = x
-        'y = y
-        'team = team
-        'number = number
-        'owner = owner
-        'tanks = {}
-        'ships = {}
-        'jets = {}
-        'transformed_ships = []
-        'mines = 1
-        'crystal = 0}
+        return {
+            'x': self.x,
+            'y': self.y,
+            'team': self.team,
+            'number': self.number,
+            # 'owner': self.owner,
+            # 'tanks': {vid: t.as_info()
+            #           for vid, t in self.tanks.items()},
+            # 'ships': {vid: s.as_info()
+            #           for vid, s in self.ships.items()},
+            # 'jets': {vid: j.as_info()
+            #          for vid, j in self.jets.items()},
+            'mines': self.mines,
+            'crystal': self.crystal
+        }
 
     def init_dt(self):
         self.transformed_ships.clear()
@@ -90,7 +94,7 @@ class Base:
     def build_mine(self):
         self.mines += 1
         self.crystal -= config.cost['mine']
-        print('Building mine')
+        print('Building mine', self.mines)
 
     def build_tank(self, heading, batch):
         print('Building tank')
@@ -119,3 +123,13 @@ class Base:
                                vid=vid)
         self.crystal -= config.cost['ship']
         # self.graphics.add(self.tanks[vid].avatar)
+
+
+class BaseProxy:
+
+    def __init__(self, base):
+        self._data = base.as_info()
+        self.build_mine = base.build_mine
+
+    def __getitem__(self, key):
+        return self._data[key]

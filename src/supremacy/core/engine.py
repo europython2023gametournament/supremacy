@@ -3,6 +3,7 @@ import pyglet
 import time
 
 from .. import config
+from .base import BaseProxy
 from .game_map import GameMap
 from .graphics import Graphics
 from .player import Player
@@ -64,25 +65,48 @@ class Engine:
         #     if (frame < len(frame_times)) and (t >= frame_times[frame]):
 
     def generate_info(self):
+        # st = time.time()
         info = {name: {} for name in self.players}
-        for name, player in self.players.items():
+        for player in self.players.values():
             for base in player.bases:
-                
+                for n, p in self.players.items():
+                    if not p.game_map[int(base.y):int(base.y) + 1,
+                                      int(base.x):int(base.x) + 1].mask[0]:
+                        if 'bases' not in info[n]:
+                            info[n]['bases'] = []
+                        info[n]['bases'].append(BaseProxy(base))
+                    for group in ('tanks', 'ships', 'jets'):
+                        for v in getattr(base, group).values():
+                            if not p.game_map[int(v.y):int(v.y) + 1,
+                                              int(v.x):int(v.x) + 1].mask[0]:
+                                if group not in info[n]:
+                                    info[n][group] = []
+                                info[n][group].append(v.as_info())
+        # print("time to generate info", time.time() - st)
+        return info
+
+    def init_dt(self, dt):
+        for player in self.players.values():
+            for base in player.bases:
+                base.init_dt()
+                base.crystal += dt * base.mines * 50
 
     def update(self, dt):
         t = time.time() - self.start_time
         if t > self.time_limit:
             pyglet.clock.unschedule(self.update)
             # raise RuntimeError('Time limit reached!')
+        self.init_dt(dt)
+
         info = self.generate_info()
-        
+
         for name, player in self.players.items():
-            for base in player.bases:
-                base.crystal += dt * base.mines * 50
-                # print(name, t, int(base.crystal), base.mines)
+            # for base in player.bases:
+            #     base.crystal += dt * base.mines * 50
+            # print(name, t, int(base.crystal), base.mines)
             player.execute_ai(t=t,
                               dt=dt,
-                              info={'bases': player.bases},
+                              info=info[name],
                               safe=False,
                               batch=self.graphics.main_batch)
             player.collect_transformed_ships()
