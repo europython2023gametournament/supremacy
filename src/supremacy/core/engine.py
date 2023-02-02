@@ -100,6 +100,77 @@ class Engine:
                 base.init_dt()
                 base.crystal += dt * base.mines * 50
 
+    def fight(self):
+        # cooldown = 3  # 3 seconds
+        combats = {}
+        dead = {}
+        for name, player in self.players.items():
+            for base in player.bases:
+                igrid = base.x // self.game_map.ng
+                jgrid = base.y // self.game_map.ng
+                key = f'{igrid},{jgrid}'
+                li = [base] + base.mines
+                if key not in combats:
+                    combats[key] = {name: li}
+                elif name not in combats[key]:
+                    combats[key][name] = li
+                else:
+                    combats[key][name] += li
+
+                for v in base.vehicles:
+                    igrid = v.x // self.game_map.ng
+                    jgrid = v.y // self.game_map.ng
+                    key = f'{igrid},{jgrid}'
+                    if key not in combats:
+                        combats[key] = {name: [v]}
+                    elif name not in combats[key]:
+                        combats[key][name] = [v]
+                    else:
+                        combats[key][name].append(v)
+        for c in combats.values():
+            if len(c) > 1:
+                keys = list(c.keys())
+                for name in keys:
+                    for team in set(keys) - {name}:
+                        for attacker in c[name]:
+                            for defender in c[team]:
+                                defender.health -= attacker.attack
+                                if defender.health <= 0:
+                                    if team not in dead:
+                                        dead[team] = {}
+                                    owner = (defender if defender.kind == 'base' else
+                                             defender.owner)
+                                    if owner.uid not in dead[team]:
+                                        dead[team][owner.uid] = {}
+                                    if defender.kind not in dead[team][owner.uid]:
+                                        dead[team][owner.uid][defender.kind] = [
+                                            defender.uid
+                                        ]
+                                    else:
+                                        dead[team][owner.uid][defender.kind].append(
+                                            defender.uid)
+
+            # if set(combats[key]) == {'blue', 'red'}:
+            #     blue_attack = sum(
+            #         [k.attack if k.cooldown == 0 else 0 for k in combats[key]['blue']])
+            #     red_attack = sum(
+            #         [k.attack if k.cooldown == 0 else 0 for k in combats[key]['red']])
+            #     for k in combats[key]['blue']:
+            #         k.health = max(
+            #             0, k.health - int(red_attack / len(combats[key]['blue'])))
+            #         if k.health <= 0:
+            #             dead.append(k)
+            #         if k.cooldown == 0:
+            #             k.cooldown = cooldown
+            #     for k in combats[key]['red']:
+            #         k.health = max(
+            #             0, k.health - int(blue_attack / len(combats[key]['red'])))
+            #         if k.health <= 0:
+            #             dead.append(k)
+            #         if k.cooldown == 0:
+            #             k.cooldown = cooldown
+        return dead
+
     def update(self, dt):
         t = time.time() - self.start_time
         if t > self.time_limit:
@@ -124,3 +195,8 @@ class Engine:
                 for v in base.vehicles:
                     self.move(v, dt)
                     player.update_player_map(x=v.x, y=v.y)
+
+        dead = self.fight()
+        for name in dead:
+            for baseid, kinds in dead[name].items():
+                

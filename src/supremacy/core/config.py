@@ -9,8 +9,8 @@ class Config:
     def __init__(self):
 
         self.speed = {'tank': 10, 'ship': 5, 'jet': 20, 'base': 0}
-        self.health = {'tank': 50, 'ship': 80, 'jet': 50, 'base': 100}
-        self.attack = {'tank': 20, 'ship': 10, 'jet': 30, 'base': 0}
+        self.health = {'tank': 50, 'ship': 80, 'jet': 50, 'base': 100, 'mine': 50}
+        self.attack = {'tank': 20, 'ship': 10, 'jet': 30, 'base': 0, 'mine': 0}
         self.cost = {'tank': 200, 'ship': 2000, 'jet': 500, 'mine': 1000}
         self.view_radius = 20
         self.vehicle_offset = 5

@@ -7,11 +7,26 @@ from .vehicles import Tank, Ship, Jet
 from .tools import wrap_position
 
 
+class Mine:
+
+    def __init__(self, x, y, team, number, owner, uid):
+        self.x = x
+        self.y = y
+        self.team = team
+        self.number = number
+        self.owner = owner
+        self.health = config.health['mine']
+        self.attack = config.attack['mine']
+        self.kind = 'mine'
+        self.uid = uid
+
+
 class Base:
 
     def __init__(self, x, y, team, number, batch, owner):
         self.x = x
         self.y = y
+        self.kind = 'base'
         self.team = team
         self.number = number
         self.owner = owner
@@ -21,7 +36,7 @@ class Base:
         self.jets = {}
         self.uid = uuid.uuid4().hex
         self.transformed_ships = []
-        self.mines = 1
+        self.mines = {}
         self.crystal = 0
         # self.graphics = graphics
         # self.draw_base()
@@ -100,7 +115,7 @@ class Base:
             self.label.delete()
         color = colors.to_rgba(f'C{self.number}')
         self.label = pyglet.text.Label(
-            str(self.mines),
+            str(len(self.mines)),
             #   font_name='Times New Roman',
             color=tuple(int(c * 255) for c in color),
             font_size=10,
@@ -121,7 +136,7 @@ class Base:
             'y': self.y,
             'team': self.team,
             'number': self.number,
-            'mines': self.mines,
+            'mines': len(self.mines),
             'crystal': self.crystal,
             'uid': self.uid
         }
@@ -135,10 +150,12 @@ class Base:
     def build_mine(self):
         if self.not_enough_crystal('mine'):
             return
-        self.mines += 1
+        uid = uuid.uuid4().hex
+        self.mines[uid] = Mine(x=self.x, y=self.y, team=self.team, number=self.number, owner=self, uid=uid))
         self.make_label()
         self.crystal -= config.cost['mine']
         print('Building mine', self.mines)
+
 
     def build_tank(self, heading, batch):
         if self.not_enough_crystal('tank'):
@@ -187,6 +204,9 @@ class Base:
                              uid=uid)
         self.crystal -= config.cost['jet']
         # self.graphics.add(self.tanks[vid].avatar)
+
+    def remove(self, child):
+        return 
 
 
 class BaseProxy:
