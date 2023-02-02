@@ -17,6 +17,7 @@ class Vehicle:
         self.speed = config.speed[kind]
         self.health = config.health[kind]
         self.attack = config.attack[kind]
+        self.kind = kind
 
         # print(config.images.keys())
 
@@ -46,7 +47,7 @@ class Vehicle:
         # self.avatar.setheading(heading)
 
     def forward(self, dist, nx, ny):
-        pos = self.position + self.vector * dist
+        pos = self.get_position() + self.get_vector() * dist
         x = pos[0] % nx
         y = pos[1] % ny
         if x < 0:
@@ -69,8 +70,8 @@ class Vehicle:
             'attack': self.attack,
             'x': self.x,
             'y': self.y,
-            'heading': self.heading,
-            'vector': self.vector
+            'heading': self.get_heading(),
+            'vector': self.get_vector()
         }
 
     # @property
@@ -85,31 +86,59 @@ class Vehicle:
     # def y(self) -> int:
     #     return self._y
 
-    @property
-    def position(self):
+    # @property
+    def get_position(self):
         return np.array([self.x, self.y])
 
-    @property
-    def heading(self) -> float:
+    # @property
+    def get_heading(self) -> float:
         return self._heading
 
-    @heading.setter
-    def heading(self, angle: float):
+    # @heading.setter
+    def set_heading(self, angle: float):
         self._heading = angle
         self.avatar.rotation = -angle
 
-    @property
-    def vector(self) -> np.ndarray:
-        h = self.heading * np.pi / 180.0
+    # @property
+    def get_vector(self) -> np.ndarray:
+        h = self.get_heading() * np.pi / 180.0
         return np.array([np.cos(h), np.sin(h)])
+
+    # def set_vector(self, vec) -> np.ndarray:
+    #     h = self.heading * np.pi / 180.0
+    #     return np.array([np.cos(h), np.sin(h)])
 
     def ray_trace(self, dt: float) -> np.ndarray:
         vt = self.speed * dt
-        ray = self.vector.reshape((2, 1)) * np.linspace(1, vt, int(vt) + 1)
-        return (self.position.reshape((2, 1)) + ray).astype(int)
+        ray = self.get_vector().reshape((2, 1)) * np.linspace(1, vt, int(vt) + 1)
+        return (self.get_position().reshape((2, 1)) + ray).astype(int)
 
     def get_distance(self, pos: tuple) -> float:
         return np.sqrt((pos[0] - self.x)**2 + (pos[1] - self.y)**2)
+
+
+class VehicleProxy:
+
+    def __init__(self, vehicle):
+        self._data = vehicle.as_info()
+        self.get_position = vehicle.get_position
+        self.get_heading = vehicle.get_heading
+        self.set_heading = vehicle.set_heading
+        self.get_vector = vehicle.get_vector
+        if vehicle.kind == 'ship':
+            self.convert_to_base = vehicle.convert_to_base
+
+    def __getitem__(self, key):
+        return self._data[key]
+
+    def keys(self):
+        return self._data.keys()
+
+    def values(self):
+        return self._data.values()
+
+    def items(self):
+        return self._data.items()
 
 
 class Tank(Vehicle):

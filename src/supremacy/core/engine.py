@@ -7,6 +7,7 @@ from .base import BaseProxy
 from .game_map import GameMap
 from .graphics import Graphics
 from .player import Player
+from .vehicles import VehicleProxy
 
 
 class Engine:
@@ -67,22 +68,28 @@ class Engine:
     def generate_info(self):
         # st = time.time()
         info = {name: {} for name in self.players}
-        for player in self.players.values():
+        for name, player in self.players.items():
             for base in player.bases:
                 for n, p in self.players.items():
                     if not p.game_map[int(base.y):int(base.y) + 1,
                                       int(base.x):int(base.x) + 1].mask[0]:
-                        if 'bases' not in info[n]:
-                            info[n]['bases'] = []
-                        info[n]['bases'].append(BaseProxy(base))
+                        if name not in info[n]:
+                            info[n][name] = {}
+                        if 'bases' not in info[n][name]:
+                            info[n][name]['bases'] = []
+                        info[n][name]['bases'].append(BaseProxy(base))
                     for group in ('tanks', 'ships', 'jets'):
                         for v in getattr(base, group).values():
                             if not p.game_map[int(v.y):int(v.y) + 1,
                                               int(v.x):int(v.x) + 1].mask[0]:
-                                if group not in info[n]:
-                                    info[n][group] = []
-                                info[n][group].append(v.as_info())
+                                if name not in info[n]:
+                                    info[n][name] = {}
+                                if group not in info[n][name]:
+                                    info[n][name][group] = []
+                                info[n][name][group].append(VehicleProxy(v))
         # print("time to generate info", time.time() - st)
+        # print(info)
+        # assert False
         return info
 
     def init_dt(self, dt):

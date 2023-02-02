@@ -91,12 +91,19 @@ class Base:
     def init_dt(self):
         self.transformed_ships.clear()
 
+    def not_enough_crystal(self, kind):
+        return self.crystal < config.cost[kind]
+
     def build_mine(self):
+        if self.not_enough_crystal('mine'):
+            return
         self.mines += 1
         self.crystal -= config.cost['mine']
         print('Building mine', self.mines)
 
     def build_tank(self, heading, batch):
+        if self.not_enough_crystal('tank'):
+            return
         print('Building tank')
         vid = uuid.uuid4().hex
         self.tanks[vid] = Tank(x=self.x + self.tank_offset[0],
@@ -111,6 +118,8 @@ class Base:
         # self.graphics.add(self.tanks[vid].avatar)
 
     def build_ship(self, heading, batch):
+        if self.not_enough_crystal('ship'):
+            return
         print('Building ship')
         vid = uuid.uuid4().hex
         self.ships[vid] = Ship(x=self.x + self.ship_offset[0],
@@ -124,12 +133,40 @@ class Base:
         self.crystal -= config.cost['ship']
         # self.graphics.add(self.tanks[vid].avatar)
 
+    def build_jet(self, heading, batch):
+        if self.not_enough_crystal('jet'):
+            return
+        print('Building jet')
+        vid = uuid.uuid4().hex
+        self.ships[vid] = Jet(x=self.x,
+                              y=self.y,
+                              team=self.team,
+                              number=self.number,
+                              heading=heading,
+                              batch=batch,
+                              owner=self,
+                              vid=vid)
+        self.crystal -= config.cost['jet']
+        # self.graphics.add(self.tanks[vid].avatar)
+
 
 class BaseProxy:
 
     def __init__(self, base):
         self._data = base.as_info()
         self.build_mine = base.build_mine
+        self.build_tank = base.build_tank
+        self.build_ship = base.build_ship
+        self.build_jet = base.build_jet
 
     def __getitem__(self, key):
         return self._data[key]
+
+    def keys(self):
+        return self._data.keys()
+
+    def values(self):
+        return self._data.values()
+
+    def items(self):
+        return self._data.items()
