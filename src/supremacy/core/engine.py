@@ -9,6 +9,8 @@ from .graphics import Graphics
 from .player import Player
 from .vehicles import VehicleProxy
 
+from .. import config
+
 
 class Engine:
 
@@ -16,9 +18,9 @@ class Engine:
 
         config.generate_images(nplayers=len(players))
 
-        self.ng = 4
-        self.nx = self.ng * 475
-        self.ny = self.ng * 250
+        self.ng = config.ng
+        self.nx = config.nx
+        self.ny = config.ny
         self.speedup = speedup
         self.game_map = GameMap(nx=self.nx, ny=self.ny, ng=self.ng)
         self.graphics = Graphics(game_map=self.game_map)

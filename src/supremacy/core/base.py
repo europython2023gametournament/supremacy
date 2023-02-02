@@ -1,8 +1,10 @@
+from matplotlib import colors
 import pyglet
 import uuid
 
 from .. import config
 from .vehicles import Tank, Ship, Jet
+from .tools import wrap_position
 
 
 class Base:
@@ -13,6 +15,7 @@ class Base:
         self.team = team
         self.number = number
         self.owner = owner
+        self.batch = batch
         self.tanks = {}
         self.ships = {}
         self.jets = {}
@@ -27,37 +30,62 @@ class Base:
                                            x=self.x,
                                            y=self.y,
                                            batch=batch)
+        self.label = None
+        self.make_label()
+        # self.label = pyglet.text.Label(
+        #     str(self.mines),
+        #     #   font_name='Times New Roman',
+        #     font_size=12,
+        #     x=self.x,
+        #     y=self.y + 10,
+        #     anchor_x='center',
+        #     anchor_y='center',
+        #     batch=batch)
 
         ix = int(x)
         iy = int(y)
         dx = config.vehicle_offset
         offset = None
         while (offset is None):
-            if self.owner.game_map[iy + dx, ix + dx] == 1:
+            xx, yy = wrap_position(ix + dx, iy + dx)
+            if self.owner.game_map[yy, xx] == 1:
                 offset = (dx, dx)
-            elif self.owner.game_map[iy - dx, ix + dx] == 1:
+                break
+            xx, yy = wrap_position(ix + dx, iy - dx)
+            if self.owner.game_map[yy, xx] == 1:
                 offset = (dx, -dx)
-            elif self.owner.game_map[iy + dx, ix - dx] == 1:
+                break
+            xx, yy = wrap_position(ix - dx, iy + dx)
+            if self.owner.game_map[yy, xx] == 1:
                 offset = (-dx, dx)
-            elif self.owner.game_map[iy - dx, ix - dx] == 1:
+                break
+            xx, yy = wrap_position(ix - dx, iy - dx)
+            if self.owner.game_map[yy, xx] == 1:
                 offset = (-dx, -dx)
-            else:
-                dx += 1
+                break
+            dx += 1
         self.tank_offset = offset
 
         dx = config.vehicle_offset
         offset = None
         while (offset is None):
-            if self.owner.game_map[iy + dx, ix + dx] == 0:
+            xx, yy = wrap_position(ix + dx, iy + dx)
+            if self.owner.game_map[yy, xx] == 0:
                 offset = (dx, dx)
-            elif self.owner.game_map[iy - dx, ix + dx] == 0:
+                break
+            xx, yy = wrap_position(ix + dx, iy - dx)
+            if self.owner.game_map[yy, xx] == 0:
                 offset = (dx, -dx)
-            elif self.owner.game_map[iy + dx, ix - dx] == 0:
+                break
+            xx, yy = wrap_position(ix - dx, iy + dx)
+            if self.owner.game_map[yy, xx] == 0:
                 offset = (-dx, dx)
-            elif self.owner.game_map[iy - dx, ix - dx] == 0:
+                break
+            xx, yy = wrap_position(ix - dx, iy - dx)
+            if self.owner.game_map[yy, xx] == 0:
                 offset = (-dx, -dx)
-            else:
-                dx += 1
+                break
+            dx += 1
         self.ship_offset = offset
 
     # def draw_base(self):
@@ -66,6 +94,21 @@ class Base:
     #     mat = p3.MeshBasicMaterial(color=self.color)
     #     self.graphics.add(
     #         p3.Mesh(geometry=geom, material=mat, position=[self.x, self.y, 0]))
+
+    def make_label(self):
+        if self.label is not None:
+            self.label.delete()
+        color = colors.to_rgba(f'C{self.number}')
+        self.label = pyglet.text.Label(
+            str(self.mines),
+            #   font_name='Times New Roman',
+            color=tuple(int(c * 255) for c in color),
+            font_size=10,
+            x=self.x,
+            y=self.y + 18,
+            anchor_x='center',
+            anchor_y='center',
+            batch=self.batch)
 
     @property
     def vehicles(self):
@@ -93,6 +136,7 @@ class Base:
         if self.not_enough_crystal('mine'):
             return
         self.mines += 1
+        self.make_label()
         self.crystal -= config.cost['mine']
         print('Building mine', self.mines)
 

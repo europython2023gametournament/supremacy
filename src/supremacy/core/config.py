@@ -14,6 +14,9 @@ class Config:
         self.cost = {'tank': 200, 'ship': 2000, 'jet': 500, 'mine': 1000}
         self.view_radius = 20
         self.vehicle_offset = 5
+        self.ng = 4
+        self.nx = self.ng * 475
+        self.ny = self.ng * 250
         self.images = {}
 
     def generate_images(self, nplayers):

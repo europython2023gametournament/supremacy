@@ -4,6 +4,7 @@ import turtle
 import pyglet
 
 from .. import config
+from .tools import wrap_position
 
 
 class Vehicle:
@@ -20,7 +21,13 @@ class Vehicle:
         self.kind = kind
 
         # print(config.images.keys())
-
+        # x = x % config.nx
+        # y = y % config.ny
+        # if x < 0:
+        #     x = config.nx + x
+        # if y < 0:
+        #     y = config.ny + y
+        x, y = wrap_position(x, y)
         self.x = x
         self.y = y
         self._heading = heading
@@ -46,14 +53,18 @@ class Vehicle:
         # self.avatar.shape(kind)
         # self.avatar.setheading(heading)
 
+    # def wrap_position(self, x, y):
+    #     x = x % config.nx
+    #     y = y % config.ny
+    #     if x < 0:
+    #         x = config.nx + x
+    #     if y < 0:
+    #         y = config.ny + y
+    #     return x, y
+
     def forward(self, dist, nx, ny):
         pos = self.get_position() + self.get_vector() * dist
-        x = pos[0] % nx
-        y = pos[1] % ny
-        if x < 0:
-            x = nx + x
-        if y < 0:
-            y = ny + y
+        x, y = wrap_position(*pos)
         self.x = x
         self.y = y
         self.avatar.x = self.x
