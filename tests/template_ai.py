@@ -14,7 +14,7 @@ class PlayerAi(Ai):
         self.ntanks = {}
         # self.previous_health = 0
 
-    def run(self, t: float, dt: float, info: dict, batch):
+    def run(self, t: float, dt: float, info: dict, game_map):
 
         myinfo = info[self.creator]
         for base in myinfo['bases']:
@@ -25,17 +25,39 @@ class PlayerAi(Ai):
                 if base['crystal'] > config.cost['mine']:
                     base.build_mine()
             elif base['crystal'] > config.cost['tank'] and self.ntanks[base['uid']] < 5:
-                base.build_tank(heading=360 * np.random.random(), batch=batch)
+                base.build_tank(heading=360 * np.random.random())
                 self.ntanks[base['uid']] += 1
             elif base['crystal'] > config.cost['ship']:
-                base.build_ship(heading=360 * np.random.random(), batch=batch)
+                base.build_ship(heading=360 * np.random.random())
                 self.ntanks[base['uid']] = 0
+
+        target = None
+        if len(info) > 1:
+            for name in info:
+                if name != self.creator:
+                    if 'bases' in info[name]:
+                        t = info[name]['bases'][0]
+                        target = [t['x'], t['y']]
+
+        # if target is not None:
+        #     print(self.creator, target)
+        #     # import matplotlib.pyplot as plt
+        #     # fig, ax = plt.subplots()
+        #     # ax.imshow(game_map.filled(fill_value=-1), origin='lower')
+        #     # fig.savefig(f'map_{self.creator}.png', bbox_inches='tight')
+        #     # plt.close(fig)
+        #     # print(info)
+        #     # # input()
 
         if 'tanks' in myinfo:
             for tank in myinfo['tanks']:
                 if tank['uid'] in self.previous_positions:
                     if all(tank.get_position() == self.previous_positions[tank['uid']]):
                         tank.set_heading(np.random.random() * 360.0)
+                    elif target is not None:
+                        # print('tank', tank['position'], 'going to', target)
+                        tank.goto(*target)
+
                 self.previous_positions[tank['uid']] = tank.get_position()
 
         if 'ships' in myinfo:

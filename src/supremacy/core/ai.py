@@ -20,7 +20,7 @@ class Ai:
     def run(self, *args, **kwargs):
         return
 
-    def exec(self, t: float, dt: float, info: dict, batch):
+    def exec(self, t: float, dt: float, info: dict, game_map):
         # self.heading = None
         # self.goto = None
         # self.left = None
@@ -28,4 +28,4 @@ class Ai:
         # self._params = info['me']
         # for base in info['bases']:
         #     base.init_dt()
-        self.run(t=t, dt=dt, info=info, batch=batch)
+        self.run(t=t, dt=dt, info=info, game_map=game_map)

@@ -23,10 +23,12 @@ class Mine:
 
 class Base:
 
-    def __init__(self, x, y, team, number, batch, owner):
+    def __init__(self, x, y, team, number, batch, owner, uid):
         self.x = x
         self.y = y
         self.kind = 'base'
+        self.health = config.health['base']
+        self.attack = config.attack['base']
         self.team = team
         self.number = number
         self.owner = owner
@@ -34,9 +36,18 @@ class Base:
         self.tanks = {}
         self.ships = {}
         self.jets = {}
-        self.uid = uuid.uuid4().hex
+        self.uid = uid
         self.transformed_ships = []
-        self.mines = {}
+        muid = uuid.uuid4().hex
+        self.mines = {
+            muid:
+            Mine(x=self.x,
+                 y=self.y,
+                 team=self.team,
+                 number=self.number,
+                 owner=self,
+                 uid=muid)
+        }
         self.crystal = 0
         # self.graphics = graphics
         # self.draw_base()
@@ -151,13 +162,17 @@ class Base:
         if self.not_enough_crystal('mine'):
             return
         uid = uuid.uuid4().hex
-        self.mines[uid] = Mine(x=self.x, y=self.y, team=self.team, number=self.number, owner=self, uid=uid))
+        self.mines[uid] = Mine(x=self.x,
+                               y=self.y,
+                               team=self.team,
+                               number=self.number,
+                               owner=self,
+                               uid=uid)
         self.make_label()
         self.crystal -= config.cost['mine']
         print('Building mine', self.mines)
 
-
-    def build_tank(self, heading, batch):
+    def build_tank(self, heading):
         if self.not_enough_crystal('tank'):
             return
         print('Building tank')
@@ -167,13 +182,13 @@ class Base:
                                team=self.team,
                                number=self.number,
                                heading=heading,
-                               batch=batch,
+                               batch=self.batch,
                                owner=self,
                                uid=uid)
         self.crystal -= config.cost['tank']
         # self.graphics.add(self.tanks[vid].avatar)
 
-    def build_ship(self, heading, batch):
+    def build_ship(self, heading):
         if self.not_enough_crystal('ship'):
             return
         print('Building ship')
@@ -183,13 +198,13 @@ class Base:
                                team=self.team,
                                number=self.number,
                                heading=heading,
-                               batch=batch,
+                               batch=self.batch,
                                owner=self,
                                uid=uid)
         self.crystal -= config.cost['ship']
         # self.graphics.add(self.tanks[vid].avatar)
 
-    def build_jet(self, heading, batch):
+    def build_jet(self, heading):
         if self.not_enough_crystal('jet'):
             return
         print('Building jet')
@@ -199,14 +214,27 @@ class Base:
                              team=self.team,
                              number=self.number,
                              heading=heading,
-                             batch=batch,
+                             batch=self.batch,
                              owner=self,
                              uid=uid)
         self.crystal -= config.cost['jet']
         # self.graphics.add(self.tanks[vid].avatar)
 
-    def remove(self, child):
-        return 
+    def remove(self, uid):
+        if uid in self.tanks:
+            self.tanks[uid].avatar.delete()
+            del self.tanks[uid]
+        elif uid in self.ships:
+            self.ships[uid].avatar.delete()
+            del self.ships[uid]
+        elif uid in self.jets:
+            self.jets[uid].avatar.delete()
+            del self.jets[uid]
+        elif uid in self.mines:
+            del self.mines[uid]
+            self.make_label()
+        elif uid == self.uid:
+            del self.owner.bases[uid]
 
 
 class BaseProxy:

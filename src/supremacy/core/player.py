@@ -1,6 +1,7 @@
 from PIL import Image
 from matplotlib import colors
 import numpy as np
+import uuid
 
 from .. import config
 from .base import Base
@@ -19,7 +20,7 @@ class Player:
         self.batch = batch
         # self.graphics = graphics
         self.game_map = game_map
-        self.bases = []
+        self.bases = {}
         self.build_base(x=location[0], y=location[1])
         # self.tanks = {}
         # self.ships = {}
@@ -83,22 +84,23 @@ class Player:
         # input()
 
     def build_base(self, x, y):
-        self.bases.append(
-            Base(x=x,
-                 y=y,
-                 team=self.team,
-                 number=self.number,
-                 batch=self.batch,
-                 owner=self))
+        uid = uuid.uuid4().hex
+        self.bases[uid] = Base(x=x,
+                               y=y,
+                               team=self.team,
+                               number=self.number,
+                               batch=self.batch,
+                               owner=self,
+                               uid=uid)
 
-    def execute_ai(self, t: float, dt: float, info: dict, batch, safe: bool = False):
+    def execute_ai(self, t: float, dt: float, info: dict, safe: bool = False):
         if safe:
             try:
-                self.ai.exec(t=t, dt=dt, info=info, batch=batch)
+                self.ai.exec(t=t, dt=dt, info=info, game_map=self.game_map)
             except:
                 pass
         else:
-            self.ai.exec(t=t, dt=dt, info=info, batch=batch)
+            self.ai.exec(t=t, dt=dt, info=info, game_map=self.game_map)
         # if not safe:
         #     nprops = 0
         #     if self.ai.heading is not None:
@@ -126,6 +128,6 @@ class Player:
         # #     pass
 
     def collect_transformed_ships(self):
-        for base in self.bases:
+        for base in self.bases.values():
             for uid in base.transformed_ships:
                 del base.ships[uid]

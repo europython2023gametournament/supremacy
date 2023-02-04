@@ -71,7 +71,7 @@ class Engine:
         # st = time.time()
         info = {name: {} for name in self.players}
         for name, player in self.players.items():
-            for base in player.bases:
+            for base in player.bases.values():
                 for n, p in self.players.items():
                     if not p.game_map[int(base.y):int(base.y) + 1,
                                       int(base.x):int(base.x) + 1].mask[0]:
@@ -79,7 +79,8 @@ class Engine:
                             info[n][name] = {}
                         if 'bases' not in info[n][name]:
                             info[n][name]['bases'] = []
-                        info[n][name]['bases'].append(BaseProxy(base))
+                        info[n][name]['bases'].append(
+                            BaseProxy(base) if name == n else base.as_info())
                     for group in ('tanks', 'ships', 'jets'):
                         for v in getattr(base, group).values():
                             if not p.game_map[int(v.y):int(v.y) + 1,
@@ -88,7 +89,8 @@ class Engine:
                                     info[n][name] = {}
                                 if group not in info[n][name]:
                                     info[n][name][group] = []
-                                info[n][name][group].append(VehicleProxy(v))
+                                info[n][name][group].append(
+                                    VehicleProxy(v) if name == n else v.as_info())
         # print("time to generate info", time.time() - st)
         # print(info)
         # assert False
@@ -96,20 +98,20 @@ class Engine:
 
     def init_dt(self, dt):
         for player in self.players.values():
-            for base in player.bases:
+            for base in player.bases.values():
                 base.init_dt()
-                base.crystal += dt * base.mines * 50
+                base.crystal += dt * len(base.mines) * 50
 
     def fight(self):
         # cooldown = 3  # 3 seconds
         combats = {}
         dead = {}
         for name, player in self.players.items():
-            for base in player.bases:
+            for base in player.bases.values():
                 igrid = base.x // self.game_map.ng
                 jgrid = base.y // self.game_map.ng
                 key = f'{igrid},{jgrid}'
-                li = [base] + base.mines
+                li = [base] + list(base.mines.values())
                 if key not in combats:
                     combats[key] = {name: li}
                 elif name not in combats[key]:
@@ -141,14 +143,15 @@ class Engine:
                                     owner = (defender if defender.kind == 'base' else
                                              defender.owner)
                                     if owner.uid not in dead[team]:
-                                        dead[team][owner.uid] = {}
-                                    if defender.kind not in dead[team][owner.uid]:
-                                        dead[team][owner.uid][defender.kind] = [
-                                            defender.uid
-                                        ]
-                                    else:
-                                        dead[team][owner.uid][defender.kind].append(
-                                            defender.uid)
+                                        dead[team][owner.uid] = []
+                                    dead[team][owner.uid].append(defender.uid)
+                                    # if defender.kind not in dead[team][owner.uid]:
+                                    #     dead[team][owner.uid][defender.kind] = [
+                                    #         defender.uid
+                                    #     ]
+                                    # else:
+                                    #     dead[team][owner.uid][defender.kind].append(
+                                    #         defender.uid)
 
             # if set(combats[key]) == {'blue', 'red'}:
             #     blue_attack = sum(
@@ -184,19 +187,16 @@ class Engine:
             # for base in player.bases:
             #     base.crystal += dt * base.mines * 50
             # print(name, t, int(base.crystal), base.mines)
-            player.execute_ai(t=t,
-                              dt=dt,
-                              info=info[name],
-                              safe=False,
-                              batch=self.graphics.main_batch)
+            player.execute_ai(t=t, dt=dt, info=info[name], safe=False)
             player.collect_transformed_ships()
         for name, player in self.players.items():
-            for base in player.bases:
+            for base in player.bases.values():
                 for v in base.vehicles:
                     self.move(v, dt)
                     player.update_player_map(x=v.x, y=v.y)
 
         dead = self.fight()
         for name in dead:
-            for baseid, kinds in dead[name].items():
-                
+            for baseid, idlist in dead[name].items():
+                for uid in idlist:
+                    self.players[name].bases[baseid].remove(uid)

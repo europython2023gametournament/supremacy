@@ -74,7 +74,7 @@ class Vehicle:
         return {
             'team': self.team,
             'number': self.number,
-            'owner': self.owner.as_info(),
+            # 'owner': self.owner.as_info(),
             'uid': self.uid,
             'speed': self.speed,
             'health': self.health,
@@ -82,7 +82,8 @@ class Vehicle:
             'x': self.x,
             'y': self.y,
             'heading': self.get_heading(),
-            'vector': self.get_vector()
+            'vector': self.get_vector(),
+            'position': self.get_position()
         }
 
     # @property
@@ -115,9 +116,15 @@ class Vehicle:
         h = self.get_heading() * np.pi / 180.0
         return np.array([np.cos(h), np.sin(h)])
 
-    # def set_vector(self, vec) -> np.ndarray:
-    #     h = self.heading * np.pi / 180.0
-    #     return np.array([np.cos(h), np.sin(h)])
+    def set_vector(self, vec) -> np.ndarray:
+        vec = vec / np.linalg.norm(vec)
+        h = np.arccos(np.dot(vec, [1, 0])) * 180 / np.pi
+        if vec[1] < 0:
+            h = 360 - h
+        self.set_heading(h)
+
+    def goto(self, x, y):
+        self.set_vector([x - self.x, y - self.y])
 
     def ray_trace(self, dt: float) -> np.ndarray:
         vt = self.speed * dt
@@ -132,10 +139,13 @@ class VehicleProxy:
 
     def __init__(self, vehicle):
         self._data = vehicle.as_info()
+        self._data['owner'] = vehicle.owner.as_info()
         self.get_position = vehicle.get_position
         self.get_heading = vehicle.get_heading
         self.set_heading = vehicle.set_heading
         self.get_vector = vehicle.get_vector
+        self.set_vector = vehicle.set_vector
+        self.goto = vehicle.goto
         self.get_distance = vehicle.get_distance
         if vehicle.kind == 'ship':
             self.convert_to_base = vehicle.convert_to_base
