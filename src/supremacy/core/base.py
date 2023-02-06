@@ -20,6 +20,9 @@ class Mine:
         self.kind = 'mine'
         self.uid = uid
 
+    def make_label(self):
+        return
+
 
 class Base:
 
@@ -125,16 +128,14 @@ class Base:
         if self.label is not None:
             self.label.delete()
         color = colors.to_rgba(f'C{self.number}')
-        self.label = pyglet.text.Label(
-            str(len(self.mines)),
-            #   font_name='Times New Roman',
-            color=tuple(int(c * 255) for c in color),
-            font_size=10,
-            x=self.x,
-            y=self.y + 18,
-            anchor_x='center',
-            anchor_y='center',
-            batch=self.batch)
+        self.label = pyglet.text.Label(f'{self.health} [{len(self.mines)}]',
+                                       color=tuple(int(c * 255) for c in color),
+                                       font_size=10,
+                                       x=self.x,
+                                       y=self.y + 18,
+                                       anchor_x='center',
+                                       anchor_y='center',
+                                       batch=self.batch)
 
     @property
     def vehicles(self):
@@ -152,8 +153,10 @@ class Base:
             'uid': self.uid
         }
 
-    def init_dt(self):
+    def init_dt(self, dt):
         self.transformed_ships.clear()
+        # for v in self.vehicles:
+        #     v.cooldown = max(v.cooldown - dt, 0)
 
     def not_enough_crystal(self, kind):
         return self.crystal < config.cost[kind]

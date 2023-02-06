@@ -99,17 +99,17 @@ class Engine:
     def init_dt(self, dt):
         for player in self.players.values():
             for base in player.bases.values():
-                base.init_dt()
+                base.init_dt(dt)
                 base.crystal += dt * len(base.mines) * 50
 
-    def fight(self):
-        # cooldown = 3  # 3 seconds
+    def fight(self, t):
+        cooldown = 1
         combats = {}
         dead = {}
         for name, player in self.players.items():
             for base in player.bases.values():
-                igrid = base.x // self.game_map.ng
-                jgrid = base.y // self.game_map.ng
+                igrid = int(base.x) // self.game_map.ng
+                jgrid = int(base.y) // self.game_map.ng
                 key = f'{igrid},{jgrid}'
                 li = [base] + list(base.mines.values())
                 if key not in combats:
@@ -120,8 +120,8 @@ class Engine:
                     combats[key][name] += li
 
                 for v in base.vehicles:
-                    igrid = v.x // self.game_map.ng
-                    jgrid = v.y // self.game_map.ng
+                    igrid = int(v.x) // self.game_map.ng
+                    jgrid = int(v.y) // self.game_map.ng
                     key = f'{igrid},{jgrid}'
                     if key not in combats:
                         combats[key] = {name: [v]}
@@ -135,8 +135,13 @@ class Engine:
                 for name in keys:
                     for team in set(keys) - {name}:
                         for attacker in c[name]:
+                            # if attacker.cooldown == 0:
+                            #     attacker.cooldown = cooldown
                             for defender in c[team]:
                                 defender.health -= attacker.attack
+                                # if defender.kind in ('mine', 'base'):
+                                # print(c[team], defender.health)
+                                defender.make_label()
                                 if defender.health <= 0:
                                     if team not in dead:
                                         dead[team] = {}
@@ -195,8 +200,11 @@ class Engine:
                     self.move(v, dt)
                     player.update_player_map(x=v.x, y=v.y)
 
-        dead = self.fight()
+        dead = self.fight(t)
         for name in dead:
             for baseid, idlist in dead[name].items():
                 for uid in idlist:
                     self.players[name].bases[baseid].remove(uid)
+            if len(self.players[name].bases) == 0:
+                print(f'Player {name} died!')
+                del self.players[name]

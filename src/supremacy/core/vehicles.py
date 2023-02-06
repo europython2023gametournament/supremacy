@@ -19,6 +19,8 @@ class Vehicle:
         self.health = config.health[kind]
         self.attack = config.attack[kind]
         self.kind = kind
+        self.batch = batch
+        # self.cooldown = 0
 
         # print(config.images.keys())
         # x = x % config.nx
@@ -37,6 +39,8 @@ class Vehicle:
                                            y=self.y,
                                            batch=batch)
         self.avatar.rotation = -heading
+        self.label = None
+        self.make_label()
         # image.anchor_x = image.width // 2
 
         # geometry = p3.BoxGeometry(width=10, height=10, depth=10)
@@ -62,6 +66,18 @@ class Vehicle:
     #         y = config.ny + y
     #     return x, y
 
+    def make_label(self):
+        if self.label is not None:
+            self.label.delete()
+        self.label = pyglet.text.Label(str(self.health),
+                                       color=(0, 0, 0, 255),
+                                       font_size=8,
+                                       x=self.x,
+                                       y=self.y,
+                                       anchor_x='center',
+                                       anchor_y='center',
+                                       batch=self.batch)
+
     def forward(self, dist, nx, ny):
         pos = self.get_position() + self.get_vector() * dist
         x, y = wrap_position(*pos)
@@ -69,6 +85,8 @@ class Vehicle:
         self.y = y
         self.avatar.x = self.x
         self.avatar.y = self.y
+        self.label.x = self.x
+        self.label.y = self.y
 
     def as_info(self):
         return {
