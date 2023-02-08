@@ -207,7 +207,7 @@ class Engine:
             for k, v in sorted(self.scores.items(), key=lambda x: x[1], reverse=True)
         ]
         for i, (name, score) in enumerate(sorted_scores):
-            print(f'{i}. {name}: {score}')
+            print(f'{i + 1}. {name}: {score}')
 
         input()
 

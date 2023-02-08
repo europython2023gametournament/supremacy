@@ -18,5 +18,3 @@ players = [neil, drew, simon, jankas]
 
 eng = Engine(players=players)
 eng.run()
-
-input()
