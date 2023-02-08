@@ -184,8 +184,11 @@ class Engine:
         return dead
 
     def exit(self):
-        event_loop = pyglet.app.EventLoop()
-        event_loop.exit()
+        print("Time limit reached!")
+        pyglet.clock.unschedule(self.update)
+        # event_loop = pyglet.app.EventLoop()
+        # event_loop.exit()
+        pyglet.app.exit()
         score_left = len(self.scores)
         for name, p in self.players.items():
             self.scores[name] = p.score + score_left
@@ -199,6 +202,14 @@ class Engine:
         with open(fname, 'w') as f:
             for name, score in self.scores.items():
                 f.write(f'{name}: {score}\n')
+        sorted_scores = [
+            (k, v)
+            for k, v in sorted(self.scores.items(), key=lambda x: x[1], reverse=True)
+        ]
+        for i, (name, score) in enumerate(sorted_scores):
+            print(f'{i}. {name}: {score}')
+
+        input()
 
     def update(self, dt):
         t = time.time() - self.start_time
