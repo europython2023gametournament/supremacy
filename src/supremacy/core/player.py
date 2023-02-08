@@ -22,6 +22,7 @@ class Player:
         self.game_map = game_map
         self.bases = {}
         self.build_base(x=location[0], y=location[1])
+        self.score = 0
         # self.tanks = {}
         # self.ships = {}
         # self.jets = {}

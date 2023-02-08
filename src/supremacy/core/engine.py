@@ -1,6 +1,7 @@
 import numpy as np
 import pyglet
 import time
+import os
 
 from .. import config
 from .base import BaseProxy
@@ -35,6 +36,7 @@ class Engine:
                               game_map=np.ma.masked_where(True, self.game_map.array))
             for i, p in enumerate(players)
         }
+        self.scores = {}
         # self.graphics = Graphics(game_map=self.game_map, players=self.players)
 
     def move(self, vehicle, dt):
@@ -150,6 +152,8 @@ class Engine:
                                     if owner.uid not in dead[team]:
                                         dead[team][owner.uid] = []
                                     dead[team][owner.uid].append(defender.uid)
+                                    if defender.kind == 'base':
+                                        attacker.owner.owner.score += 2
                                     # if defender.kind not in dead[team][owner.uid]:
                                     #     dead[team][owner.uid][defender.kind] = [
                                     #         defender.uid
@@ -179,10 +183,28 @@ class Engine:
             #             k.cooldown = cooldown
         return dead
 
+    def exit(self):
+        event_loop = pyglet.app.EventLoop()
+        event_loop.exit()
+        score_left = len(self.scores)
+        for name, p in self.players.items():
+            self.scores[name] = p.score + score_left
+        fname = 'scores.txt'
+        if os.path.exists(fname):
+            with open(fname, 'r') as f:
+                contents = f.readlines()
+            for line in contents:
+                name, score = line.split(':')
+                self.scores[name] += int(score.strip())
+        with open(fname, 'w') as f:
+            for name, score in self.scores.items():
+                f.write(f'{name}: {score}\n')
+
     def update(self, dt):
         t = time.time() - self.start_time
         if t > self.time_limit:
-            pyglet.clock.unschedule(self.update)
+            self.exit()
+            # pyglet.clock.unschedule(self.update)
             # raise RuntimeError('Time limit reached!')
         self.init_dt(dt)
 
@@ -207,4 +229,5 @@ class Engine:
                     self.players[name].bases[baseid].remove(uid)
             if len(self.players[name].bases) == 0:
                 print(f'Player {name} died!')
+                self.scores[name] = self.players[name].score + len(self.scores)
                 del self.players[name]
