@@ -12,6 +12,7 @@ class PlayerAi(Ai):
         super().__init__(*args, creator=CREATOR, **kwargs)
         self.previous_positions = {}
         self.ntanks = {}
+        self.nships = {}
         # self.previous_health = 0
 
     def run(self, t: float, dt: float, info: dict, game_map):
@@ -21,15 +22,22 @@ class PlayerAi(Ai):
             # print(base._data)
             if base['uid'] not in self.ntanks:
                 self.ntanks[base['uid']] = 0
+            if base['uid'] not in self.nships:
+                self.nships[base['uid']] = 0
             if base['mines'] < 3:
                 if base['crystal'] > config.cost['mine']:
                     base.build_mine()
             elif base['crystal'] > config.cost['tank'] and self.ntanks[base['uid']] < 5:
                 base.build_tank(heading=360 * np.random.random())
                 self.ntanks[base['uid']] += 1
-            elif base['crystal'] > config.cost['ship']:
-                base.build_ship(heading=360 * np.random.random())
-                self.ntanks[base['uid']] = 0
+            elif base['crystal'] > config.cost['jet']:
+                base.build_jet(heading=360 * np.random.random())
+                # self.ntanks[base['uid']] = 0
+                # self.nships[base['uid']] += 1
+            # elif base['crystal'] > config.cost['ship']:
+            #     base.build_ship(heading=360 * np.random.random())
+            #     self.ntanks[base['uid']] = 0
+            #     self.nships[base['uid']] += 1
 
         target = None
         if len(info) > 1:
@@ -71,8 +79,7 @@ class PlayerAi(Ai):
                             ship.set_heading(np.random.random() * 360.0)
                 self.previous_positions[ship['uid']] = ship.get_position()
 
-            # for v in base.vehicles:
-            #     if hasattr(v, 'previous_position'):
-            #         if all(v.position == v.previous_position):
-            #             v.heading = np.random.random() * 360.0
-            #     v.previous_position = v.position
+        if 'jets' in myinfo:
+            for jet in myinfo['jets']:
+                if target is not None:
+                    jet.goto(*target)

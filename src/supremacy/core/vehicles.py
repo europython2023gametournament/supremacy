@@ -213,5 +213,5 @@ class Jet(Vehicle):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, kind='jet', **kwargs)
 
-    def move(self, dt):
-        self.forward(self.speed * dt)
+    def move(self, dt, path, nx, ny):
+        self.forward(self.speed * dt, nx, ny)

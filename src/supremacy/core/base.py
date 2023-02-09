@@ -158,8 +158,16 @@ class Base:
         # for v in self.vehicles:
         #     v.cooldown = max(v.cooldown - dt, 0)
 
+    def mine_cost(self):
+        return config.cost['mine'] * (2**(len(self.mines) - 1))
+
     def not_enough_crystal(self, kind):
-        return self.crystal < config.cost[kind]
+        if kind == 'mine':
+            cost = self.mine_cost()
+        else:
+            cost = config.cost[kind]
+
+        return self.crystal < cost
 
     def build_mine(self):
         if self.not_enough_crystal('mine'):
@@ -172,7 +180,7 @@ class Base:
                                owner=self,
                                uid=uid)
         self.make_label()
-        self.crystal -= config.cost['mine']
+        self.crystal -= self.mine_cost()
         print('Building mine', self.mines)
 
     def build_tank(self, heading):
@@ -237,6 +245,7 @@ class Base:
             del self.mines[uid]
             self.make_label()
         elif uid == self.uid:
+            self.avatar.delete()
             del self.owner.bases[uid]
 
 
