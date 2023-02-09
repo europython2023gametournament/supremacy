@@ -1,6 +1,4 @@
 import numpy as np
-import pythreejs as p3
-import turtle
 import pyglet
 
 from .. import config
@@ -22,13 +20,6 @@ class Vehicle:
         self.batch = batch
         # self.cooldown = 0
 
-        # print(config.images.keys())
-        # x = x % config.nx
-        # y = y % config.ny
-        # if x < 0:
-        #     x = config.nx + x
-        # if y < 0:
-        #     y = config.ny + y
         x, y = wrap_position(x, y)
         self.x = x
         self.y = y
@@ -41,30 +32,6 @@ class Vehicle:
         self.avatar.rotation = -heading
         self.label = None
         self.make_label()
-        # image.anchor_x = image.width // 2
-
-        # geometry = p3.BoxGeometry(width=10, height=10, depth=10)
-        # self.avatar = p3.Mesh(geometry=geometry,
-        #                       material=p3.MeshBasicMaterial(color=color),
-        #                       position=[self.x, self.y, 0])
-
-        # self.avatar = turtle.Turtle()
-        # self.avatar.speed(0)
-        # self.avatar.penup()
-        # self.avatar.setx(x)
-        # self.avatar.sety(y)
-        # self.avatar.color(color)
-        # self.avatar.shape(kind)
-        # self.avatar.setheading(heading)
-
-    # def wrap_position(self, x, y):
-    #     x = x % config.nx
-    #     y = y % config.ny
-    #     if x < 0:
-    #         x = config.nx + x
-    #     if y < 0:
-    #         y = config.ny + y
-    #     return x, y
 
     def make_label(self):
         if self.label is not None:
@@ -104,32 +71,16 @@ class Vehicle:
             'position': self.get_position()
         }
 
-    # @property
-    # def x(self) -> int:
-    #     return self._x
-
-    # @x.setter
-    # def x(self, value):
-    #     self._x = value
-
-    # @property
-    # def y(self) -> int:
-    #     return self._y
-
-    # @property
     def get_position(self):
         return np.array([self.x, self.y])
 
-    # @property
     def get_heading(self) -> float:
         return self._heading
 
-    # @heading.setter
     def set_heading(self, angle: float):
         self._heading = angle
         self.avatar.rotation = -angle
 
-    # @property
     def get_vector(self) -> np.ndarray:
         h = self.get_heading() * np.pi / 180.0
         return np.array([np.cos(h), np.sin(h)])

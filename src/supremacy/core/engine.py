@@ -15,7 +15,7 @@ from .. import config
 
 class Engine:
 
-    def __init__(self, players: list, speedup: int = 1):
+    def __init__(self, players: list, speedup: int = 1, safe=False):
 
         config.generate_images(nplayers=len(players))
 
@@ -25,6 +25,7 @@ class Engine:
         self.speedup = speedup
         self.game_map = GameMap(nx=self.nx, ny=self.ny, ng=self.ng)
         self.graphics = Graphics(game_map=self.game_map)
+        self.safe = safe
 
         player_locations = self.game_map.add_players(players=players)
         self.players = {
@@ -37,37 +38,19 @@ class Engine:
             for i, p in enumerate(players)
         }
         self.scores = {}
-        # self.graphics = Graphics(game_map=self.game_map, players=self.players)
 
     def move(self, vehicle, dt):
         pos = vehicle.ray_trace(dt=dt)
-        # above_xmin = np.amin(pos[0]) >= 0
-        # below_xmax = np.amax(pos[0]) < self.map.nx
-        # above_ymin = np.amin(pos[1]) >= 0
-        # below_ymax = np.amax(pos[1]) < self.map.ny
         xpos = np.mod(pos[0], self.nx - 1)
         ypos = np.mod(pos[1], self.ny - 1)
-        # no_obstacles = (np.sum(self.map.array[(xpos, ypos)] == 1)) == 0
         path = self.game_map.array[(ypos, xpos)]
         vehicle.move(dt=dt, path=path, nx=self.nx, ny=self.ny)
 
-    def run(self, safe: bool = False, fps=30):
-
-        t = 0
+    def run(self, fps=30):
         self.time_limit = 4 * 60  # 5 * 60
         self.start_time = time.time()
         pyglet.clock.schedule_interval(self.update, 1 / fps)
-
         pyglet.app.run()
-
-        # dt = 1. / fps
-        # start_time = time.time()
-        # frame_times = np.linspace(dt, self.time_limit, int(self.time_limit / dt))
-        # dt *= self.speedup
-        # frame = 0
-        # while t < self.time_limit:
-        #     t = (time.time() - start_time) * self.speedup
-        #     if (frame < len(frame_times)) and (t >= frame_times[frame]):
 
     def generate_info(self):
         # st = time.time()
@@ -93,9 +76,6 @@ class Engine:
                                     info[n][name][group] = []
                                 info[n][name][group].append(
                                     VehicleProxy(v) if name == n else v.as_info())
-        # print("time to generate info", time.time() - st)
-        # print(info)
-        # assert False
         return info
 
     def init_dt(self, dt):
@@ -137,12 +117,8 @@ class Engine:
                 for name in keys:
                     for team in set(keys) - {name}:
                         for attacker in c[name]:
-                            # if attacker.cooldown == 0:
-                            #     attacker.cooldown = cooldown
                             for defender in c[team]:
                                 defender.health -= attacker.attack
-                                # if defender.kind in ('mine', 'base'):
-                                # print(c[team], defender.health)
                                 defender.make_label()
                                 if defender.health <= 0:
                                     if team not in dead:
@@ -154,40 +130,11 @@ class Engine:
                                     dead[team][owner.uid].append(defender.uid)
                                     if defender.kind == 'base':
                                         attacker.owner.owner.score += 2
-                                    # if defender.kind not in dead[team][owner.uid]:
-                                    #     dead[team][owner.uid][defender.kind] = [
-                                    #         defender.uid
-                                    #     ]
-                                    # else:
-                                    #     dead[team][owner.uid][defender.kind].append(
-                                    #         defender.uid)
-
-            # if set(combats[key]) == {'blue', 'red'}:
-            #     blue_attack = sum(
-            #         [k.attack if k.cooldown == 0 else 0 for k in combats[key]['blue']])
-            #     red_attack = sum(
-            #         [k.attack if k.cooldown == 0 else 0 for k in combats[key]['red']])
-            #     for k in combats[key]['blue']:
-            #         k.health = max(
-            #             0, k.health - int(red_attack / len(combats[key]['blue'])))
-            #         if k.health <= 0:
-            #             dead.append(k)
-            #         if k.cooldown == 0:
-            #             k.cooldown = cooldown
-            #     for k in combats[key]['red']:
-            #         k.health = max(
-            #             0, k.health - int(blue_attack / len(combats[key]['red'])))
-            #         if k.health <= 0:
-            #             dead.append(k)
-            #         if k.cooldown == 0:
-            #             k.cooldown = cooldown
         return dead
 
     def exit(self):
         print("Time limit reached!")
         pyglet.clock.unschedule(self.update)
-        # event_loop = pyglet.app.EventLoop()
-        # event_loop.exit()
         pyglet.app.exit()
         score_left = len(self.scores)
         for name, p in self.players.items():
@@ -215,17 +162,12 @@ class Engine:
         t = time.time() - self.start_time
         if t > self.time_limit:
             self.exit()
-            # pyglet.clock.unschedule(self.update)
-            # raise RuntimeError('Time limit reached!')
         self.init_dt(dt)
 
         info = self.generate_info()
 
         for name, player in self.players.items():
-            # for base in player.bases:
-            #     base.crystal += dt * base.mines * 50
-            # print(name, t, int(base.crystal), base.mines)
-            player.execute_ai(t=t, dt=dt, info=info[name], safe=False)
+            player.execute_ai(t=t, dt=dt, info=info[name], safe=self.safe)
             player.collect_transformed_ships()
         for name, player in self.players.items():
             for base in player.bases.values():

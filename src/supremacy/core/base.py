@@ -52,8 +52,6 @@ class Base:
                  uid=muid)
         }
         self.crystal = 0
-        # self.graphics = graphics
-        # self.draw_base()
         self.owner.update_player_map(x=self.x, y=self.y)
         self.avatar = pyglet.sprite.Sprite(img=config.images[f'base_{self.number}'],
                                            x=self.x,
@@ -61,15 +59,6 @@ class Base:
                                            batch=batch)
         self.label = None
         self.make_label()
-        # self.label = pyglet.text.Label(
-        #     str(self.mines),
-        #     #   font_name='Times New Roman',
-        #     font_size=12,
-        #     x=self.x,
-        #     y=self.y + 10,
-        #     anchor_x='center',
-        #     anchor_y='center',
-        #     batch=batch)
 
         ix = int(x)
         iy = int(y)
@@ -116,13 +105,6 @@ class Base:
                 break
             dx += 1
         self.ship_offset = offset
-
-    # def draw_base(self):
-    #     size = 15
-    #     geom = p3.SphereGeometry(radius=size, widthSegments=8, heightSegments=6)
-    #     mat = p3.MeshBasicMaterial(color=self.color)
-    #     self.graphics.add(
-    #         p3.Mesh(geometry=geom, material=mat, position=[self.x, self.y, 0]))
 
     def make_label(self):
         if self.label is not None:
@@ -197,7 +179,6 @@ class Base:
                                owner=self,
                                uid=uid)
         self.crystal -= config.cost['tank']
-        # self.graphics.add(self.tanks[vid].avatar)
 
     def build_ship(self, heading):
         if self.not_enough_crystal('ship'):
@@ -213,7 +194,6 @@ class Base:
                                owner=self,
                                uid=uid)
         self.crystal -= config.cost['ship']
-        # self.graphics.add(self.tanks[vid].avatar)
 
     def build_jet(self, heading):
         if self.not_enough_crystal('jet'):
@@ -229,7 +209,6 @@ class Base:
                              owner=self,
                              uid=uid)
         self.crystal -= config.cost['jet']
-        # self.graphics.add(self.tanks[vid].avatar)
 
     def remove(self, uid):
         if uid in self.tanks:
