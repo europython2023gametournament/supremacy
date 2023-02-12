@@ -53,7 +53,6 @@ class Engine:
         pyglet.app.run()
 
     def generate_info(self):
-        # st = time.time()
         info = {name: {} for name in self.players}
         for name, player in self.players.items():
             for base in player.bases.values():
@@ -179,6 +178,7 @@ class Engine:
         for name in dead:
             for baseid, idlist in dead[name].items():
                 for uid in idlist:
+                    print(name, baseid, uid)
                     self.players[name].bases[baseid].remove(uid)
             if len(self.players[name].bases) == 0:
                 print(f'Player {name} died!')

@@ -17,6 +17,9 @@ class Player:
         self.batch = batch
         self.game_map = game_map
         self.bases = {}
+        self.tanks = {}
+        self.ships = {}
+        self.jets = {}
         self.build_base(x=location[0], y=location[1])
         self.score = 0
 
@@ -79,3 +82,30 @@ class Player:
         for base in self.bases.values():
             for uid in base.transformed_ships:
                 del base.ships[uid]
+
+    @property
+    def vehicles(self):
+        return list(self.tanks.values()) + list(self.ships.values()) + list(
+            self.jets.values())
+
+    def remove(self, uid):
+        if uid in self.tanks:
+            self.tanks[uid].avatar.delete()
+            del self.tanks[uid]
+        elif uid in self.ships:
+            self.ships[uid].avatar.delete()
+            del self.ships[uid]
+        elif uid in self.jets:
+            self.jets[uid].avatar.delete()
+            del self.jets[uid]
+        elif uid in self.bases:
+            self.bases[uid].avatar.delete()
+            del self.bases[uid]
+        else:
+            for base in self.bases.values():
+                if uid in base.mines:
+                    del base.mines[uid]
+                    base.make_label()
+        # elif uid in self.uid:
+        #     self.avatar.delete()
+        #     del self.owner.bases[uid]

@@ -36,9 +36,9 @@ class Base:
         self.number = number
         self.owner = owner
         self.batch = batch
-        self.tanks = {}
-        self.ships = {}
-        self.jets = {}
+        # self.tanks = {}
+        # self.ships = {}
+        # self.jets = {}
         self.uid = uid
         self.transformed_ships = []
         muid = uuid.uuid4().hex
@@ -119,10 +119,10 @@ class Base:
                                        anchor_y='center',
                                        batch=self.batch)
 
-    @property
-    def vehicles(self):
-        return list(self.tanks.values()) + list(self.ships.values()) + list(
-            self.jets.values())
+    # @property
+    # def vehicles(self):
+    #     return list(self.tanks.values()) + list(self.ships.values()) + list(
+    #         self.jets.values())
 
     def as_info(self):
         return {
@@ -170,14 +170,14 @@ class Base:
             return
         print('Building tank')
         uid = uuid.uuid4().hex
-        self.tanks[uid] = Tank(x=self.x + self.tank_offset[0],
-                               y=self.y + self.tank_offset[1],
-                               team=self.team,
-                               number=self.number,
-                               heading=heading,
-                               batch=self.batch,
-                               owner=self,
-                               uid=uid)
+        self.owner.tanks[uid] = Tank(x=self.x + self.tank_offset[0],
+                                     y=self.y + self.tank_offset[1],
+                                     team=self.team,
+                                     number=self.number,
+                                     heading=heading,
+                                     batch=self.batch,
+                                     owner=self,
+                                     uid=uid)
         self.crystal -= config.cost['tank']
 
     def build_ship(self, heading):
@@ -185,14 +185,14 @@ class Base:
             return
         print('Building ship')
         uid = uuid.uuid4().hex
-        self.ships[uid] = Ship(x=self.x + self.ship_offset[0],
-                               y=self.y + self.ship_offset[1],
-                               team=self.team,
-                               number=self.number,
-                               heading=heading,
-                               batch=self.batch,
-                               owner=self,
-                               uid=uid)
+        self.owner.ships[uid] = Ship(x=self.x + self.ship_offset[0],
+                                     y=self.y + self.ship_offset[1],
+                                     team=self.team,
+                                     number=self.number,
+                                     heading=heading,
+                                     batch=self.batch,
+                                     owner=self,
+                                     uid=uid)
         self.crystal -= config.cost['ship']
 
     def build_jet(self, heading):
@@ -200,32 +200,32 @@ class Base:
             return
         print('Building jet')
         uid = uuid.uuid4().hex
-        self.jets[uid] = Jet(x=self.x,
-                             y=self.y,
-                             team=self.team,
-                             number=self.number,
-                             heading=heading,
-                             batch=self.batch,
-                             owner=self,
-                             uid=uid)
+        self.owner.jets[uid] = Jet(x=self.x,
+                                   y=self.y,
+                                   team=self.team,
+                                   number=self.number,
+                                   heading=heading,
+                                   batch=self.batch,
+                                   owner=self,
+                                   uid=uid)
         self.crystal -= config.cost['jet']
 
-    def remove(self, uid):
-        if uid in self.tanks:
-            self.tanks[uid].avatar.delete()
-            del self.tanks[uid]
-        elif uid in self.ships:
-            self.ships[uid].avatar.delete()
-            del self.ships[uid]
-        elif uid in self.jets:
-            self.jets[uid].avatar.delete()
-            del self.jets[uid]
-        elif uid in self.mines:
-            del self.mines[uid]
-            self.make_label()
-        elif uid == self.uid:
-            self.avatar.delete()
-            del self.owner.bases[uid]
+    # def remove(self, uid):
+    #     if uid in self.tanks:
+    #         self.tanks[uid].avatar.delete()
+    #         del self.tanks[uid]
+    #     elif uid in self.ships:
+    #         self.ships[uid].avatar.delete()
+    #         del self.ships[uid]
+    #     elif uid in self.jets:
+    #         self.jets[uid].avatar.delete()
+    #         del self.jets[uid]
+    #     elif uid in self.mines:
+    #         del self.mines[uid]
+    #         self.make_label()
+    #     elif uid == self.uid:
+    #         self.avatar.delete()
+    #         del self.owner.bases[uid]
 
 
 class BaseProxy:

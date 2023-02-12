@@ -154,7 +154,13 @@ class Ship(Vehicle):
             self.forward(self.speed * dt, nx, ny)
 
     def convert_to_base(self):
-        self.owner.owner.build_base(x=self.x, y=self.y)
+        player = self.owner.owner
+        x = int(self.x)
+        y = int(self.y)
+        if np.sum(player.game_map[y - 1:y + 2, x - 1:x + 2]) < 1:
+            print("No land found around ship, cannot build base on water!")
+            return
+        player.build_base(x=self.x, y=self.y)
         self.owner.transformed_ships.append(self.uid)
         self.avatar.delete()
 
