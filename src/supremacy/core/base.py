@@ -40,7 +40,7 @@ class Base:
         # self.ships = {}
         # self.jets = {}
         self.uid = uid
-        self.transformed_ships = []
+        # self.transformed_ships = []
         muid = uuid.uuid4().hex
         self.mines = {
             muid:
@@ -109,7 +109,8 @@ class Base:
     def make_label(self):
         if self.label is not None:
             self.label.delete()
-        color = colors.to_rgba(f'C{self.number}')
+        # color = colors.to_rgba(f'C{self.number}')
+        color = (0, 0, 0, 1)
         self.label = pyglet.text.Label(f'{self.health} [{len(self.mines)}]',
                                        color=tuple(int(c * 255) for c in color),
                                        font_size=10,
@@ -118,6 +119,10 @@ class Base:
                                        anchor_x='center',
                                        anchor_y='center',
                                        batch=self.batch)
+
+    def delete(self):
+        self.avatar.delete()
+        self.label.delete()
 
     # @property
     # def vehicles(self):
@@ -135,11 +140,6 @@ class Base:
             'uid': self.uid
         }
 
-    def init_dt(self, dt):
-        self.transformed_ships.clear()
-        # for v in self.vehicles:
-        #     v.cooldown = max(v.cooldown - dt, 0)
-
     def mine_cost(self):
         return config.cost['mine'] * (2**(len(self.mines) - 1))
 
@@ -149,7 +149,10 @@ class Base:
         else:
             cost = config.cost[kind]
 
-        return self.crystal < cost
+        not_ok = self.crystal < cost
+        if not_ok:
+            print(f'Not enough crystal to build {kind}')
+        return not_ok
 
     def build_mine(self):
         if self.not_enough_crystal('mine'):
@@ -236,6 +239,7 @@ class BaseProxy:
         self.build_tank = base.build_tank
         self.build_ship = base.build_ship
         self.build_jet = base.build_jet
+        self.mine_cost = base.mine_cost
 
     def __getitem__(self, key):
         return self._data[key]
@@ -248,3 +252,9 @@ class BaseProxy:
 
     def items(self):
         return self._data.items()
+
+    def cost(self, kind):
+        if kind == 'mine':
+            return self.mine_cost()
+        else:
+            return config.cost[kind]

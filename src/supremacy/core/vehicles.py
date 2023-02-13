@@ -103,6 +103,10 @@ class Vehicle:
     def get_distance(self, pos: tuple) -> float:
         return np.sqrt((pos[0] - self.x)**2 + (pos[1] - self.y)**2)
 
+    def delete(self):
+        self.avatar.delete()
+        self.label.delete()
+
 
 class VehicleProxy:
 
@@ -161,7 +165,7 @@ class Ship(Vehicle):
             print("No land found around ship, cannot build base on water!")
             return
         player.build_base(x=self.x, y=self.y)
-        self.owner.transformed_ships.append(self.uid)
+        player.transformed_ships.append(self.uid)
         self.avatar.delete()
 
 

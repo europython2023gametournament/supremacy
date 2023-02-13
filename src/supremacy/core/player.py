@@ -22,6 +22,7 @@ class Player:
         self.jets = {}
         self.build_base(x=location[0], y=location[1])
         self.score = 0
+        self.transformed_ships = []
 
     def update_player_map(self, x, y):
         r = config.view_radius
@@ -69,6 +70,11 @@ class Player:
                                owner=self,
                                uid=uid)
 
+    def init_dt(self, dt):
+        self.transformed_ships.clear()
+        # for v in self.vehicles:
+        #     v.cooldown = max(v.cooldown - dt, 0)
+
     def execute_ai(self, t: float, dt: float, info: dict, safe: bool = False):
         if safe:
             try:
@@ -79,9 +85,12 @@ class Player:
             self.ai.exec(t=t, dt=dt, info=info, game_map=self.game_map)
 
     def collect_transformed_ships(self):
-        for base in self.bases.values():
-            for uid in base.transformed_ships:
-                del base.ships[uid]
+        for uid in self.transformed_ships:
+            del self.ships[uid]
+
+    @property
+    def children(self):
+        return list(self.bases.values()) + self.vehicles
 
     @property
     def vehicles(self):
@@ -90,17 +99,17 @@ class Player:
 
     def remove(self, uid):
         if uid in self.tanks:
-            self.tanks[uid].avatar.delete()
+            self.tanks[uid].delete()
             del self.tanks[uid]
         elif uid in self.ships:
-            self.ships[uid].avatar.delete()
+            self.ships[uid].delete()
             del self.ships[uid]
         elif uid in self.jets:
-            self.jets[uid].avatar.delete()
+            self.jets[uid].delete()
             del self.jets[uid]
-        elif uid in self.bases:
-            self.bases[uid].avatar.delete()
-            del self.bases[uid]
+        # elif uid in self.bases:
+        #     self.bases[uid].avatar.delete()
+        #     del self.bases[uid]
         else:
             for base in self.bases.values():
                 if uid in base.mines:
@@ -109,3 +118,7 @@ class Player:
         # elif uid in self.uid:
         #     self.avatar.delete()
         #     del self.owner.bases[uid]
+
+    def remove_base(self, uid):
+        self.bases[uid].delete()
+        del self.bases[uid]

@@ -25,15 +25,15 @@ class PlayerAi(Ai):
             if base['uid'] not in self.nships:
                 self.nships[base['uid']] = 0
             if base['mines'] < 3:
-                if base['crystal'] > config.cost['mine']:
+                if base['crystal'] > base.cost('mine'):
                     base.build_mine()
-            elif base['crystal'] > config.cost['tank'] and self.ntanks[base['uid']] < 5:
+            elif base['crystal'] > base.cost('tank') and self.ntanks[base['uid']] < 5:
                 base.build_tank(heading=360 * np.random.random())
                 self.ntanks[base['uid']] += 1
-            elif base['crystal'] > config.cost['ship'] and self.nships[base['uid']] < 3:
+            elif base['crystal'] > base.cost('ship') and self.nships[base['uid']] < 3:
                 base.build_ship(heading=360 * np.random.random())
                 self.nships[base['uid']] += 1
-            elif base['crystal'] > config.cost['jet']:
+            elif base['crystal'] > base.cost('jet'):
                 base.build_jet(heading=360 * np.random.random())
                 # self.ntanks[base['uid']] = 0
                 # self.nships[base['uid']] += 1
