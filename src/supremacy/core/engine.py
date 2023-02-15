@@ -13,7 +13,11 @@ from .vehicles import VehicleProxy
 
 class Engine:
 
-    def __init__(self, players: list, speedup: int = 1, safe=False):
+    def __init__(self,
+                 players: list,
+                 speedup: int = 1,
+                 safe=False,
+                 high_contrast=False):
 
         config.generate_images(nplayers=len(players))
 
@@ -21,7 +25,10 @@ class Engine:
         self.nx = config.nx
         self.ny = config.ny
         self.speedup = speedup
-        self.game_map = GameMap(nx=self.nx, ny=self.ny, ng=self.ng)
+        self.game_map = GameMap(nx=self.nx,
+                                ny=self.ny,
+                                ng=self.ng,
+                                high_contrast=high_contrast)
         self.graphics = Graphics(game_map=self.game_map)
         self.safe = safe
 

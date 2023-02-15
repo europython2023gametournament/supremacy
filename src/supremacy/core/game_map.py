@@ -7,7 +7,7 @@ from matplotlib.colors import Normalize
 
 class GameMap:
 
-    def __init__(self, nx, ny, ng):
+    def __init__(self, nx, ny, ng, high_contrast=False):
 
         self.nx = nx
         self.ny = ny
@@ -24,8 +24,11 @@ class GameMap:
         self.array = np.clip(smooth, 0, 1).astype(int)
         cmap = mpl.colormaps['terrain']
         norm = Normalize()
-        im = Image.fromarray((cmap(norm(np.flipud(smooth))) * 255).astype(np.uint8))
-        # im = Image.fromarray(np.flipud(self.array * 255).astype(np.uint8))
+        if high_contrast:
+            to_image = np.flipud(self.array * 255)
+        else:
+            to_image = cmap(norm(np.flipud(smooth))) * 255
+        im = Image.fromarray(to_image.astype(np.uint8))
         im.save('background.png')
 
     def add_players(self, players):
