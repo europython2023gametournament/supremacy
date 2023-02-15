@@ -16,7 +16,7 @@ class Config:
         self.vehicle_offset = 5
         self.ng = 8
         self.nx = self.ng * 240  # 475
-        self.ny = self.ng * 128  # 250
+        self.ny = self.ng * 124  # 250
         self.images = {}
 
     def generate_images(self, nplayers):

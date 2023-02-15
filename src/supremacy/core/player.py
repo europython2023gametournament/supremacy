@@ -1,3 +1,4 @@
+import pyglet
 import uuid
 
 from .. import config
@@ -6,7 +7,7 @@ from .base import Base
 
 class Player:
 
-    def __init__(self, ai, location, number, team, batch, game_map):
+    def __init__(self, ai, location, number, team, batch, game_map, score):
         self.ai = ai
         self.ai.team = team
         self.ai.number = number
@@ -21,8 +22,13 @@ class Player:
         self.ships = {}
         self.jets = {}
         self.build_base(x=location[0], y=location[1])
-        self.score = 0
+        self.score = score
         self.transformed_ships = []
+        self.label = None
+        self.avatar = pyglet.sprite.Sprite(img=config.images[f'base_{self.number}'],
+                                           x=(self.number * 230) + 200,
+                                           y=config.ny + 12,
+                                           batch=self.batch)
 
     def update_player_map(self, x, y):
         r = config.view_radius
@@ -71,6 +77,7 @@ class Player:
                                uid=uid)
 
     def init_dt(self, dt):
+        self.make_label()
         self.transformed_ships.clear()
         # for v in self.vehicles:
         #     v.cooldown = max(v.cooldown - dt, 0)
@@ -122,3 +129,23 @@ class Player:
     def remove_base(self, uid):
         self.bases[uid].delete()
         del self.bases[uid]
+
+    def make_label(self):
+        if self.label is not None:
+            self.label.delete()
+        economy = int(sum([base.crystal for base in self.bases.values()]))
+        self.label = pyglet.text.Label(f'{self.name}: {economy} [{self.score}]',
+                                       color=(255, 255, 255, 255),
+                                       font_size=14,
+                                       x=(self.number * 230) + 220,
+                                       y=config.ny + 5,
+                                       batch=self.batch)
+
+    def rip(self):
+        for v in self.vehicles:
+            v.delete()
+        self.tanks.clear()
+        self.ships.clear()
+        self.jets.clear()
+        self.avatar.delete()
+        self.label.delete()

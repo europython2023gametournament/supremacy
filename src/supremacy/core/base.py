@@ -157,6 +157,7 @@ class Base:
     def build_mine(self):
         if self.not_enough_crystal('mine'):
             return
+        self.crystal -= self.mine_cost()
         uid = uuid.uuid4().hex
         self.mines[uid] = Mine(x=self.x,
                                y=self.y,
@@ -165,7 +166,6 @@ class Base:
                                owner=self,
                                uid=uid)
         self.make_label()
-        self.crystal -= self.mine_cost()
         print('Building mine', self.mines)
 
     def build_tank(self, heading):

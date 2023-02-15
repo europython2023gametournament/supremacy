@@ -27,6 +27,8 @@ class Engine:
         self.graphics = Graphics(game_map=self.game_map)
         self.safe = safe
 
+        _scores = self.read_scores(players=players)
+
         player_locations = self.game_map.add_players(players=players)
         self.players = {
             p.creator: Player(ai=p,
@@ -34,10 +36,24 @@ class Engine:
                               number=i,
                               team=p.creator,
                               batch=self.graphics.main_batch,
-                              game_map=np.ma.masked_where(True, self.game_map.array))
+                              game_map=np.ma.masked_where(True, self.game_map.array),
+                              score=_scores[p.creator])
             for i, p in enumerate(players)
         }
         self.scores = {}
+
+    def read_scores(self, players):
+        scores = {}
+        fname = 'scores.txt'
+        if os.path.exists(fname):
+            with open(fname, 'r') as f:
+                contents = f.readlines()
+            for line in contents:
+                name, score = line.split(':')
+                scores[name] = int(score.strip())
+        else:
+            scores = {p.creator: 0 for p in players}
+        return scores
 
     def move(self, vehicle, dt):
         pos = vehicle.ray_trace(dt=dt)
@@ -169,12 +185,12 @@ class Engine:
         for name, p in self.players.items():
             self.scores[name] = p.score + score_left
         fname = 'scores.txt'
-        if os.path.exists(fname):
-            with open(fname, 'r') as f:
-                contents = f.readlines()
-            for line in contents:
-                name, score = line.split(':')
-                self.scores[name] += int(score.strip())
+        # if os.path.exists(fname):
+        #     with open(fname, 'r') as f:
+        #         contents = f.readlines()
+        #     for line in contents:
+        #         name, score = line.split(':')
+        #         self.scores[name] += int(score.strip())
         with open(fname, 'w') as f:
             for name, score in self.scores.items():
                 f.write(f'{name}: {score}\n')
@@ -184,13 +200,13 @@ class Engine:
         ]
         for i, (name, score) in enumerate(sorted_scores):
             print(f'{i + 1}. {name}: {score}')
-
         input()
 
     def update(self, dt):
         t = time.time() - self.start_time
         if t > self.time_limit:
             self.exit()
+        self.graphics.update_time(self.time_limit - t)
         self.init_dt(dt)
 
         info = self.generate_info()
@@ -213,4 +229,5 @@ class Engine:
             if len(self.players[name].bases) == 0:
                 print(f'Player {name} died!')
                 self.scores[name] = self.players[name].score + len(self.scores)
+                self.players[name].rip()
                 del self.players[name]
