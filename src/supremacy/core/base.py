@@ -1,4 +1,3 @@
-from matplotlib import colors
 import pyglet
 import uuid
 
@@ -36,11 +35,7 @@ class Base:
         self.number = number
         self.owner = owner
         self.batch = batch
-        # self.tanks = {}
-        # self.ships = {}
-        # self.jets = {}
         self.uid = uid
-        # self.transformed_ships = []
         muid = uuid.uuid4().hex
         self.mines = {
             muid:
@@ -109,7 +104,6 @@ class Base:
     def make_label(self):
         if self.label is not None:
             self.label.delete()
-        # color = colors.to_rgba(f'C{self.number}')
         color = (0, 0, 0, 1)
         self.label = pyglet.text.Label(f'{self.health} [{len(self.mines)}]',
                                        color=tuple(int(c * 255) for c in color),
@@ -123,11 +117,6 @@ class Base:
     def delete(self):
         self.avatar.delete()
         self.label.delete()
-
-    # @property
-    # def vehicles(self):
-    #     return list(self.tanks.values()) + list(self.ships.values()) + list(
-    #         self.jets.values())
 
     def as_info(self):
         return {
@@ -212,23 +201,6 @@ class Base:
                                    owner=self,
                                    uid=uid)
         self.crystal -= config.cost['jet']
-
-    # def remove(self, uid):
-    #     if uid in self.tanks:
-    #         self.tanks[uid].avatar.delete()
-    #         del self.tanks[uid]
-    #     elif uid in self.ships:
-    #         self.ships[uid].avatar.delete()
-    #         del self.ships[uid]
-    #     elif uid in self.jets:
-    #         self.jets[uid].avatar.delete()
-    #         del self.jets[uid]
-    #     elif uid in self.mines:
-    #         del self.mines[uid]
-    #         self.make_label()
-    #     elif uid == self.uid:
-    #         self.avatar.delete()
-    #         del self.owner.bases[uid]
 
 
 class BaseProxy:

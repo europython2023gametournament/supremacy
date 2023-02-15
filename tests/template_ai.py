@@ -1,7 +1,6 @@
 import numpy as np
 
 from supremacy.core.ai import Ai
-from supremacy import config
 
 CREATOR = 'JohnDoe'
 
@@ -13,7 +12,6 @@ class PlayerAi(Ai):
         self.previous_positions = {}
         self.ntanks = {}
         self.nships = {}
-        # self.previous_health = 0
 
     def run(self, t: float, dt: float, info: dict, game_map):
 

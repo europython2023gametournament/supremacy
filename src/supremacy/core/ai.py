@@ -1,7 +1,5 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
-import numpy as np
-
 
 class Ai:
 

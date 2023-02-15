@@ -114,17 +114,11 @@ class Player:
         elif uid in self.jets:
             self.jets[uid].delete()
             del self.jets[uid]
-        # elif uid in self.bases:
-        #     self.bases[uid].avatar.delete()
-        #     del self.bases[uid]
         else:
             for base in self.bases.values():
                 if uid in base.mines:
                     del base.mines[uid]
                     base.make_label()
-        # elif uid in self.uid:
-        #     self.avatar.delete()
-        #     del self.owner.bases[uid]
 
     def remove_base(self, uid):
         self.bases[uid].delete()

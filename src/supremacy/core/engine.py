@@ -10,8 +10,6 @@ from .graphics import Graphics
 from .player import Player
 from .vehicles import VehicleProxy
 
-from .. import config
-
 
 class Engine:
 
@@ -68,44 +66,10 @@ class Engine:
         pyglet.clock.schedule_interval(self.update, 1 / fps)
         pyglet.app.run()
 
-    # def generate_info(self):
-    #     info = {name: {} for name in self.players}
-    #     for name, player in self.players.items():
-    #         for base in player.bases.values():
-    #             for n, p in self.players.items():
-    #                 if not p.game_map[int(base.y):int(base.y) + 1,
-    #                                   int(base.x):int(base.x) + 1].mask[0]:
-    #                     if name not in info[n]:
-    #                         info[n][name] = {}
-    #                     if 'bases' not in info[n][name]:
-    #                         info[n][name]['bases'] = []
-    #                     info[n][name]['bases'].append(
-    #                         BaseProxy(base) if name == n else base.as_info())
-    #                 for group in ('tanks', 'ships', 'jets'):
-    #                     for v in getattr(base, group).values():
-    #                         if not p.game_map[int(v.y):int(v.y) + 1,
-    #                                           int(v.x):int(v.x) + 1].mask[0]:
-    #                             if name not in info[n]:
-    #                                 info[n][name] = {}
-    #                             if group not in info[n][name]:
-    #                                 info[n][name][group] = []
-    #                             info[n][name][group].append(
-    #                                 VehicleProxy(v) if name == n else v.as_info())
-    #     return info
-
     def generate_info(self):
         info = {name: {} for name in self.players}
         for name, player in self.players.items():
             for n, p in self.players.items():
-                # for group in ('bases', 'tanks', 'ships', 'jets'):
-                #     if not p.game_map[int(base.y):int(base.y) + 1,
-                #                         int(base.x):int(base.x) + 1].mask[0]:
-                #         if name not in info[n]:
-                #             info[n][name] = {}
-                #         if 'bases' not in info[n][name]:
-                #             info[n][name]['bases'] = []
-                #         info[n][name]['bases'].append(
-                #             BaseProxy(base) if name == n else base.as_info())
                 for group in ('bases', 'tanks', 'ships', 'jets'):
                     for v in getattr(player, group).values():
                         if not p.game_map[int(v.y):int(v.y) + 1,
@@ -131,18 +95,6 @@ class Engine:
         dead_vehicles = {}
         dead_bases = {}
         for name, player in self.players.items():
-            # for base in player.bases.values():
-            #     igrid = int(base.x) // self.game_map.ng
-            #     jgrid = int(base.y) // self.game_map.ng
-            #     key = f'{igrid},{jgrid}'
-            #     li = [base] + list(base.mines.values())
-            #     if key not in combats:
-            #         combats[key] = {name: li}
-            #     elif name not in combats[key]:
-            #         combats[key][name] = li
-            #     else:
-            #         combats[key][name] += li
-
             for child in player.children:
                 igrid = int(child.x) // self.game_map.ng
                 jgrid = int(child.y) // self.game_map.ng
@@ -185,12 +137,6 @@ class Engine:
         for name, p in self.players.items():
             self.scores[name] = p.score + score_left
         fname = 'scores.txt'
-        # if os.path.exists(fname):
-        #     with open(fname, 'r') as f:
-        #         contents = f.readlines()
-        #     for line in contents:
-        #         name, score = line.split(':')
-        #         self.scores[name] += int(score.strip())
         with open(fname, 'w') as f:
             for name, score in self.scores.items():
                 f.write(f'{name}: {score}\n')
