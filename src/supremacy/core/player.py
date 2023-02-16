@@ -143,3 +143,9 @@ class Player:
         self.jets.clear()
         self.avatar.delete()
         self.label.delete()
+
+    def dump_map(self):
+        import matplotlib.pyplot as plt
+        fig, ax = plt.subplots()
+        ax.imshow(self.game_map, origin='lower')
+        fig.savefig(f'{self.name}_map.png', bbox_inches='tight')

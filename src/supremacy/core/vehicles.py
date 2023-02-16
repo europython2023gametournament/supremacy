@@ -100,8 +100,8 @@ class Vehicle:
         ray = self.get_vector().reshape((2, 1)) * np.linspace(1, vt, int(vt) + 1)
         return (self.get_position().reshape((2, 1)) + ray).astype(int)
 
-    def get_distance(self, pos: tuple) -> float:
-        return np.sqrt((pos[0] - self.x)**2 + (pos[1] - self.y)**2)
+    def get_distance(self, x: float, y: float) -> float:
+        return np.sqrt((x - self.x)**2 + (y - self.y)**2)
 
     def delete(self):
         self.avatar.delete()

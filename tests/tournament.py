@@ -17,5 +17,5 @@ jankas.creator = 'Jankas'
 players = [neil, drew, simon, jankas]
 
 for i in range(10):
-    eng = Engine(players=players)
+    eng = Engine(players=players, test=False)
     eng.run()

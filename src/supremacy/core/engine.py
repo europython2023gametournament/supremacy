@@ -17,7 +17,8 @@ class Engine:
                  players: list,
                  speedup: int = 1,
                  safe=False,
-                 high_contrast=False):
+                 high_contrast=False,
+                 test=False):
 
         config.generate_images(nplayers=len(players))
 
@@ -32,7 +33,7 @@ class Engine:
         self.graphics = Graphics(game_map=self.game_map)
         self.safe = safe
 
-        _scores = self.read_scores(players=players)
+        _scores = self.read_scores(players=players, test=test)
 
         player_locations = self.game_map.add_players(players=players)
         self.players = {
@@ -47,10 +48,10 @@ class Engine:
         }
         self.scores = {}
 
-    def read_scores(self, players):
+    def read_scores(self, players, test):
         scores = {}
         fname = 'scores.txt'
-        if os.path.exists(fname):
+        if os.path.exists(fname) and (not test):
             with open(fname, 'r') as f:
                 contents = f.readlines()
             for line in contents:
@@ -94,7 +95,7 @@ class Engine:
         for player in self.players.values():
             player.init_dt(dt)
             for base in player.bases.values():
-                base.crystal += dt * len(base.mines) * 50
+                base.crystal += 2 * len(base.mines)
 
     def fight(self, t):
         cooldown = 1
@@ -143,6 +144,7 @@ class Engine:
         score_left = len(self.scores)
         for name, p in self.players.items():
             self.scores[name] = p.score + score_left
+            p.dump_map()
         fname = 'scores.txt'
         with open(fname, 'w') as f:
             for name, score in self.scores.items():
