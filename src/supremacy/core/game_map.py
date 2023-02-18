@@ -84,7 +84,7 @@ class MapView:
         view = [self.array[max(ymin, 0):min(ymax, ny), max(xmin, 0):min(xmax, nx)]]
         if (xmin < 0) and (ymin < 0):
             view += [
-                self.array[0:ymax, nx + xmin:nx], self.array[ny + ymin:ny, 0:xmax].mask,
+                self.array[0:ymax, nx + xmin:nx], self.array[ny + ymin:ny, 0:xmax],
                 self.array[ny + ymin:ny, nx + xmin:nx]
             ]
         elif (xmin < 0) and (ymax >= ny):

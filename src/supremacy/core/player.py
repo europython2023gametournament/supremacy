@@ -8,7 +8,15 @@ from .game_map import MapView
 
 class Player:
 
-    def __init__(self, ai, location, number, team, batch, game_map, score):
+    def __init__(self,
+                 ai,
+                 location,
+                 number,
+                 team,
+                 batch,
+                 game_map,
+                 score,
+                 high_contrast=False):
         self.ai = ai
         self.ai.team = team
         self.ai.number = number
@@ -22,8 +30,9 @@ class Player:
         self.tanks = {}
         self.ships = {}
         self.jets = {}
-        self.build_base(x=location[0], y=location[1])
         self.score = score
+        self.high_contrast = high_contrast
+        self.build_base(x=location[0], y=location[1])
         self.transformed_ships = []
         self.label = None
         self.avatar = pyglet.sprite.Sprite(img=config.images[f'base_{self.number}'],
@@ -79,7 +88,8 @@ class Player:
                                number=self.number,
                                batch=self.batch,
                                owner=self,
-                               uid=uid)
+                               uid=uid,
+                               high_contrast=self.high_contrast)
 
     def init_dt(self, dt):
         self.make_label()

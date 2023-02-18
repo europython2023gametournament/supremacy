@@ -14,6 +14,7 @@ class Config:
         self.cost = {'tank': 500, 'ship': 2000, 'jet': 4000, 'mine': 1000}
         self.view_radius = 20
         self.vehicle_offset = 5
+        self.competing_mine_radius = 40
         self.ng = 8
         self.nx = self.ng * 240  # 475
         self.ny = self.ng * 124  # 250

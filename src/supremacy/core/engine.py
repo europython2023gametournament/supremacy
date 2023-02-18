@@ -43,7 +43,8 @@ class Engine:
                               team=p.creator,
                               batch=self.graphics.main_batch,
                               game_map=np.ma.masked_where(True, self.game_map.array),
-                              score=_scores[p.creator])
+                              score=_scores[p.creator],
+                              high_contrast=high_contrast)
             for i, p in enumerate(players)
         }
         self.scores = {}
@@ -99,7 +100,7 @@ class Engine:
         return base_locations
 
     def init_dt(self, dt):
-        min_distance = 40
+        min_distance = config.competing_mine_radius
         base_locations = MapView(self.map_all_bases())
         for player in self.players.values():
             player.init_dt(dt)

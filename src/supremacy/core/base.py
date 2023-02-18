@@ -1,3 +1,4 @@
+from matplotlib import colors
 import pyglet
 import uuid
 
@@ -25,7 +26,7 @@ class Mine:
 
 class Base:
 
-    def __init__(self, x, y, team, number, batch, owner, uid):
+    def __init__(self, x, y, team, number, batch, owner, uid, high_contrast=False):
         self.x = x
         self.y = y
         self.kind = 'base'
@@ -53,6 +54,17 @@ class Base:
                                            x=self.x,
                                            y=self.y,
                                            batch=batch)
+        if high_contrast:
+            rgb = colors.to_rgb(f'C{self.number}')
+            self.shape = pyglet.shapes.Rectangle(
+                x=self.x - config.competing_mine_radius,
+                y=self.y - config.competing_mine_radius,
+                width=config.competing_mine_radius * 2,
+                height=config.competing_mine_radius * 2,
+                color=tuple(int(round(c * 255)) for c in rgb) + (50, ),
+                batch=batch)
+        else:
+            self.shape = None
         self.label = None
         self.clabel = None
         self.make_label()
@@ -134,6 +146,8 @@ class Base:
         self.label.delete()
         if self.clabel is not None:
             self.clabel.delete()
+        if self.shape is not None:
+            self.shape.delete()
 
     def as_info(self):
         return {
