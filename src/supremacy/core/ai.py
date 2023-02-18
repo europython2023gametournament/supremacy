@@ -11,4 +11,4 @@ class Ai:
         return
 
     def exec(self, t: float, dt: float, info: dict, game_map):
-        self.run(t=t, dt=dt, info=info, game_map=game_map.filled(-1))
+        self.run(t=t, dt=dt, info=info, game_map=game_map.array.filled(-1))

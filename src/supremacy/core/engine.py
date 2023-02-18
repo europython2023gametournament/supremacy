@@ -5,7 +5,7 @@ import os
 
 from .. import config
 from .base import BaseProxy
-from .game_map import GameMap
+from .game_map import GameMap, MapView
 from .graphics import Graphics
 from .player import Player
 from .vehicles import VehicleProxy
@@ -91,11 +91,28 @@ class Engine:
                             ) if name == n else v.as_info())
         return info
 
+    def map_all_bases(self):
+        base_locations = np.zeros_like(self.game_map.array)
+        for player in self.players.values():
+            for base in player.bases.values():
+                base_locations[int(base.y), int(base.x)] = 1
+        return base_locations
+
     def init_dt(self, dt):
+        min_distance = 40
+        base_locations = MapView(self.map_all_bases())
         for player in self.players.values():
             player.init_dt(dt)
             for base in player.bases.values():
-                base.crystal += 2 * len(base.mines)
+                nbases = sum([
+                    view.sum() for view in base_locations.view(
+                        x=base.x, y=base.y, dx=min_distance, dy=min_distance)
+                ])
+                base.crystal += 2 * len(base.mines) / nbases
+                before = base.competing
+                base.competing = nbases > 1
+                if before != base.competing:
+                    base.make_label()
 
     def fight(self, t):
         cooldown = 1

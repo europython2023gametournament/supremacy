@@ -36,6 +36,7 @@ class Base:
         self.owner = owner
         self.batch = batch
         self.uid = uid
+        self.competing = False
         muid = uuid.uuid4().hex
         self.mines = {
             muid:
@@ -53,6 +54,7 @@ class Base:
                                            y=self.y,
                                            batch=batch)
         self.label = None
+        self.clabel = None
         self.make_label()
 
         ix = int(x)
@@ -104,19 +106,34 @@ class Base:
     def make_label(self):
         if self.label is not None:
             self.label.delete()
-        color = (0, 0, 0, 1)
+        if self.clabel is not None:
+            self.clabel.delete()
+        color = (0, 0, 0, 255)
         self.label = pyglet.text.Label(f'{self.health} [{len(self.mines)}]',
-                                       color=tuple(int(c * 255) for c in color),
+                                       color=color,
                                        font_size=10,
                                        x=self.x,
                                        y=self.y + 18,
                                        anchor_x='center',
                                        anchor_y='center',
                                        batch=self.batch)
+        if self.competing:
+            self.clabel = pyglet.text.Label('C',
+                                            color=color,
+                                            font_size=10,
+                                            x=self.x,
+                                            y=self.y,
+                                            anchor_x='center',
+                                            anchor_y='center',
+                                            batch=self.batch)
+        else:
+            self.clabel = None
 
     def delete(self):
         self.avatar.delete()
         self.label.delete()
+        if self.clabel is not None:
+            self.clabel.delete()
 
     def as_info(self):
         return {
