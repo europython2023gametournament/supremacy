@@ -18,20 +18,20 @@ class PlayerAi(Ai):
         myinfo = info[self.creator]
         for base in myinfo['bases']:
             # print(base._data)
-            if base['uid'] not in self.ntanks:
-                self.ntanks[base['uid']] = 0
-            if base['uid'] not in self.nships:
-                self.nships[base['uid']] = 0
-            if base['mines'] < 3:
-                if base['crystal'] > base.cost('mine'):
+            if base.uid not in self.ntanks:
+                self.ntanks[base.uid] = 0
+            if base.uid not in self.nships:
+                self.nships[base.uid] = 0
+            if base.mines < 3:
+                if base.crystal > base.cost('mine'):
                     base.build_mine()
-            elif base['crystal'] > base.cost('tank') and self.ntanks[base['uid']] < 5:
+            elif base.crystal > base.cost('tank') and self.ntanks[base.uid] < 5:
                 base.build_tank(heading=360 * np.random.random())
-                self.ntanks[base['uid']] += 1
-            elif base['crystal'] > base.cost('ship') and self.nships[base['uid']] < 3:
+                self.ntanks[base.uid] += 1
+            elif base.crystal > base.cost('ship') and self.nships[base.uid] < 3:
                 base.build_ship(heading=360 * np.random.random())
-                self.nships[base['uid']] += 1
-            elif base['crystal'] > base.cost('jet'):
+                self.nships[base.uid] += 1
+            elif base.crystal > base.cost('jet'):
                 base.build_jet(heading=360 * np.random.random())
                 # self.ntanks[base['uid']] = 0
                 # self.nships[base['uid']] += 1
@@ -46,7 +46,7 @@ class PlayerAi(Ai):
                 if name != self.creator:
                     if 'bases' in info[name]:
                         t = info[name]['bases'][0]
-                        target = [t['x'], t['y']]
+                        target = [t.x, t.y]
 
         # if target is not None:
         #     print(self.creator, target)
@@ -60,25 +60,24 @@ class PlayerAi(Ai):
 
         if 'tanks' in myinfo:
             for tank in myinfo['tanks']:
-                if tank['uid'] in self.previous_positions:
-                    if all(tank.get_position() == self.previous_positions[tank['uid']]):
+                if tank.uid in self.previous_positions:
+                    if all(tank.position == self.previous_positions[tank.uid]):
                         tank.set_heading(np.random.random() * 360.0)
                     elif target is not None:
                         # print('tank', tank['position'], 'going to', target)
                         tank.goto(*target)
 
-                self.previous_positions[tank['uid']] = tank.get_position()
+                self.previous_positions[tank.uid] = tank.position
 
         if 'ships' in myinfo:
             for ship in myinfo['ships']:
-                if ship['uid'] in self.previous_positions:
-                    if all(ship.get_position() == self.previous_positions[ship['uid']]):
-                        if ship.get_distance(ship['owner']['x'],
-                                             ship['owner']['y']) > 20:
+                if ship.uid in self.previous_positions:
+                    if all(ship.position == self.previous_positions[ship.uid]):
+                        if ship.get_distance(ship.owner['x'], ship.owner['y']) > 20:
                             ship.convert_to_base()
                         else:
                             ship.set_heading(np.random.random() * 360.0)
-                self.previous_positions[ship['uid']] = ship.get_position()
+                self.previous_positions[ship.uid] = ship.position
 
         if 'jets' in myinfo:
             for jet in myinfo['jets']:

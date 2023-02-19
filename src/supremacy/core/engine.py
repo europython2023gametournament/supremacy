@@ -8,6 +8,7 @@ from .base import BaseProxy
 from .game_map import GameMap, MapView
 from .graphics import Graphics
 from .player import Player
+from .tools import ReadOnly
 from .vehicles import VehicleProxy
 
 
@@ -44,6 +45,7 @@ class Engine:
                               batch=self.graphics.main_batch,
                               game_map=np.ma.masked_where(True, self.game_map.array),
                               score=_scores[p.creator],
+                              nplayers=len(players),
                               high_contrast=high_contrast)
             for i, p in enumerate(players)
         }
@@ -89,7 +91,7 @@ class Engine:
                                 info[n][name][group] = []
                             info[n][name][group].append((
                                 BaseProxy(v) if group == 'bases' else VehicleProxy(v)
-                            ) if name == n else v.as_info())
+                            ) if name == n else ReadOnly(v.as_info()))
         return info
 
     def map_all_bases(self):

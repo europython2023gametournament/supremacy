@@ -237,24 +237,25 @@ class Base:
 class BaseProxy:
 
     def __init__(self, base):
-        self._data = base.as_info()
+        for key, item in base.as_info().items():
+            setattr(self, key, item)
         self.build_mine = base.build_mine
         self.build_tank = base.build_tank
         self.build_ship = base.build_ship
         self.build_jet = base.build_jet
         self.mine_cost = base.mine_cost
 
-    def __getitem__(self, key):
-        return self._data[key]
+    # def __getitem__(self, key):
+    #     return self._data[key]
 
-    def keys(self):
-        return self._data.keys()
+    # def keys(self):
+    #     return self._data.keys()
 
-    def values(self):
-        return self._data.values()
+    # def values(self):
+    #     return self._data.values()
 
-    def items(self):
-        return self._data.items()
+    # def items(self):
+    #     return self._data.items()
 
     def cost(self, kind):
         if kind == 'mine':

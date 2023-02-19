@@ -111,29 +111,30 @@ class Vehicle:
 class VehicleProxy:
 
     def __init__(self, vehicle):
-        self._data = vehicle.as_info()
-        self._data['owner'] = vehicle.owner.as_info()
-        self.get_position = vehicle.get_position
-        self.get_heading = vehicle.get_heading
+        for key, item in vehicle.as_info().items():
+            setattr(self, key, item)
+        self.owner = vehicle.owner.as_info()
+        # self.get_position = vehicle.get_position
+        # self.get_heading = vehicle.get_heading
         self.set_heading = vehicle.set_heading
-        self.get_vector = vehicle.get_vector
+        # self.get_vector = vehicle.get_vector
         self.set_vector = vehicle.set_vector
         self.goto = vehicle.goto
         self.get_distance = vehicle.get_distance
         if vehicle.kind == 'ship':
             self.convert_to_base = vehicle.convert_to_base
 
-    def __getitem__(self, key):
-        return self._data[key]
+    # def __getitem__(self, key):
+    #     return self._data[key]
 
-    def keys(self):
-        return self._data.keys()
+    # def keys(self):
+    #     return self._data.keys()
 
-    def values(self):
-        return self._data.values()
+    # def values(self):
+    #     return self._data.values()
 
-    def items(self):
-        return self._data.items()
+    # def items(self):
+    #     return self._data.items()
 
 
 class Tank(Vehicle):

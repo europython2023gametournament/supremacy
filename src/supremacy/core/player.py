@@ -16,6 +16,7 @@ class Player:
                  batch,
                  game_map,
                  score,
+                 nplayers,
                  high_contrast=False):
         self.ai = ai
         self.ai.team = team
@@ -35,8 +36,10 @@ class Player:
         self.build_base(x=location[0], y=location[1])
         self.transformed_ships = []
         self.label = None
+        self.nplayers = nplayers
+        dx = 1500 // nplayers
         self.avatar = pyglet.sprite.Sprite(img=config.images[f'base_{self.number}'],
-                                           x=(self.number * 230) + 200,
+                                           x=(self.number * dx) + 180,
                                            y=config.ny + 12,
                                            batch=self.batch)
 
@@ -145,9 +148,9 @@ class Player:
         economy = int(sum([base.crystal for base in self.bases.values()]))
         self.label = pyglet.text.Label(f'{self.name}: {economy} [{self.score}]',
                                        color=(255, 255, 255, 255),
-                                       font_size=14,
-                                       x=(self.number * 230) + 220,
-                                       y=config.ny + 5,
+                                       font_size=min(14, 100 / self.nplayers),
+                                       x=self.avatar.x + 15,
+                                       y=self.avatar.y - 7,
                                        batch=self.batch)
 
     def rip(self):

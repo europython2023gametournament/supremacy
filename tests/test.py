@@ -2,19 +2,17 @@ from supremacy.core.engine import Engine
 
 from template_ai import PlayerAi
 
-neil = PlayerAi()
-neil.creator = 'Neil'
+# names = [
+#     'Neil', 'Drew', 'Simon', 'Jankas', 'Greg', 'Mads', 'Afonso', 'Sun', 'Troels',
+#     'Piotr'
+# ]
+names = ['Neil', 'Drew', 'Simon', 'Jankas']
 
-drew = PlayerAi()
-drew.creator = 'Drew'
-
-simon = PlayerAi()
-simon.creator = 'Simon'
-
-jankas = PlayerAi()
-jankas.creator = 'Jankas'
-
-players = [neil, drew, simon, jankas]
+players = []
+for name in names:
+    player = PlayerAi()
+    player.creator = name
+    players.append(player)
 
 eng = Engine(players=players, high_contrast=True)
 eng.run()
