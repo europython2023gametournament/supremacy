@@ -17,6 +17,7 @@ class Player:
                  game_map,
                  score,
                  nplayers,
+                 base_locations,
                  high_contrast=False):
         self.ai = ai
         self.ai.team = team
@@ -26,6 +27,7 @@ class Player:
         self.number = number
         self.team = team
         self.batch = batch
+        self.base_locations = base_locations
         self.game_map = MapView(game_map)
         self.bases = {}
         self.tanks = {}
@@ -93,6 +95,7 @@ class Player:
                                owner=self,
                                uid=uid,
                                high_contrast=self.high_contrast)
+        self.base_locations[int(y), int(x)] = 1
 
     def init_dt(self, dt):
         self.make_label()

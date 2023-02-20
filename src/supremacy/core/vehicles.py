@@ -2,7 +2,7 @@ import numpy as np
 import pyglet
 
 from .. import config
-from .tools import wrap_position
+from .tools import ReadOnly, wrap_position
 
 
 class Vehicle:
@@ -113,7 +113,7 @@ class VehicleProxy:
     def __init__(self, vehicle):
         for key, item in vehicle.as_info().items():
             setattr(self, key, item)
-        self.owner = vehicle.owner.as_info()
+        self.owner = ReadOnly(vehicle.owner.as_info())
         # self.get_position = vehicle.get_position
         # self.get_heading = vehicle.get_heading
         self.set_heading = vehicle.set_heading

@@ -73,7 +73,7 @@ class PlayerAi(Ai):
             for ship in myinfo['ships']:
                 if ship.uid in self.previous_positions:
                     if all(ship.position == self.previous_positions[ship.uid]):
-                        if ship.get_distance(ship.owner['x'], ship.owner['y']) > 20:
+                        if ship.get_distance(ship.owner.x, ship.owner.y) > 20:
                             ship.convert_to_base()
                         else:
                             ship.set_heading(np.random.random() * 360.0)

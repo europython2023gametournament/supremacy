@@ -33,6 +33,7 @@ class Engine:
                                 high_contrast=high_contrast)
         self.graphics = Graphics(game_map=self.game_map)
         self.safe = safe
+        self.base_locations = np.zeros_like(self.game_map.array)
 
         _scores = self.read_scores(players=players, test=test)
 
@@ -46,7 +47,8 @@ class Engine:
                               game_map=np.ma.masked_where(True, self.game_map.array),
                               score=_scores[p.creator],
                               nplayers=len(players),
-                              high_contrast=high_contrast)
+                              high_contrast=high_contrast,
+                              base_locations=self.base_locations)
             for i, p in enumerate(players)
         }
         self.scores = {}
@@ -77,38 +79,55 @@ class Engine:
         pyglet.clock.schedule_interval(self.update, 1 / fps)
         pyglet.app.run()
 
-    def generate_info(self):
-        info = {name: {} for name in self.players}
-        for name, player in self.players.items():
-            for n, p in self.players.items():
-                for group in ('bases', 'tanks', 'ships', 'jets'):
-                    for v in getattr(player, group).values():
-                        if not p.game_map[int(v.y):int(v.y) + 1,
-                                          int(v.x):int(v.x) + 1].mask[0]:
-                            if name not in info[n]:
-                                info[n][name] = {}
-                            if group not in info[n][name]:
-                                info[n][name][group] = []
-                            info[n][name][group].append((
-                                BaseProxy(v) if group == 'bases' else VehicleProxy(v)
-                            ) if name == n else ReadOnly(v.as_info()))
+    # def generate_info(self):
+    #     info = {name: {} for name in self.players}
+    #     for name, player in self.players.items():
+    #         for n, p in self.players.items():
+    #             for group in ('bases', 'tanks', 'ships', 'jets'):
+    #                 for v in getattr(player, group).values():
+    #                     if not p.game_map[int(v.y):int(v.y) + 1,
+    #                                       int(v.x):int(v.x) + 1].mask[0]:
+    #                         if name not in info[n]:
+    #                             info[n][name] = {}
+    #                         if group not in info[n][name]:
+    #                             info[n][name][group] = []
+    #                         info[n][name][group].append((
+    #                             BaseProxy(v) if group == 'bases' else VehicleProxy(v)
+    #                         ) if name == n else ReadOnly(v.as_info()))
+    #     return info
+
+    def generate_info(self, player):
+        info = {}
+        for n, p in self.players.items():
+            for group in ('bases', 'tanks', 'ships', 'jets'):
+                for v in getattr(p, group).values():
+                    if not player.game_map[int(v.y):int(v.y) + 1,
+                                           int(v.x):int(v.x) + 1].mask[0]:
+                        if n not in info:
+                            info[n] = {}
+                        if group not in info[n]:
+                            info[n][group] = []
+                        info[n][group].append((
+                            BaseProxy(v) if group == 'bases' else VehicleProxy(v)
+                        ) if player.name == n else ReadOnly(v.as_info()))
         return info
 
-    def map_all_bases(self):
-        base_locations = np.zeros_like(self.game_map.array)
-        for player in self.players.values():
-            for base in player.bases.values():
-                base_locations[int(base.y), int(base.x)] = 1
-        return base_locations
+    # def map_all_bases(self):
+    #     self.base_locations_buffer[...] = 0.0
+    #     for player in self.players.values():
+    #         for base in player.bases.values():
+    #             self.base_locations_buffer[int(base.y), int(base.x)] = 1
+    #     # return base_locations
 
     def init_dt(self, dt):
         min_distance = config.competing_mine_radius
-        base_locations = MapView(self.map_all_bases())
+        # self.map_all_bases()
+        base_locs = MapView(self.base_locations)
         for player in self.players.values():
             player.init_dt(dt)
             for base in player.bases.values():
                 nbases = sum([
-                    view.sum() for view in base_locations.view(
+                    view.sum() for view in base_locs.view(
                         x=base.x, y=base.y, dx=min_distance, dy=min_distance)
                 ])
                 base.crystal += 2 * len(base.mines) / nbases
@@ -184,10 +203,11 @@ class Engine:
         self.graphics.update_time(self.time_limit - t)
         self.init_dt(dt)
 
-        info = self.generate_info()
+        # info = self.generate_info()
 
         for name, player in self.players.items():
-            player.execute_ai(t=t, dt=dt, info=info[name], safe=self.safe)
+            info = self.generate_info(player)
+            player.execute_ai(t=t, dt=dt, info=info, safe=self.safe)
             player.collect_transformed_ships()
         for name, player in self.players.items():
             for v in player.vehicles:
@@ -200,6 +220,8 @@ class Engine:
                 self.players[name].remove(uid)
         for name in dead_bases:
             for uid in dead_bases[name]:
+                b = self.players[name].bases[uid]
+                self.base_locations[int(b.y), int(b.x)] = 0
                 self.players[name].remove_base(uid)
             if len(self.players[name].bases) == 0:
                 print(f'Player {name} died!')

@@ -48,7 +48,7 @@ class Base:
                  owner=self,
                  uid=muid)
         }
-        self.crystal = 0
+        self.crystal = 10000
         self.owner.update_player_map(x=self.x, y=self.y)
         self.avatar = pyglet.sprite.Sprite(img=config.images[f'base_{self.number}'],
                                            x=self.x,
