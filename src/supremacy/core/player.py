@@ -39,7 +39,7 @@ class Player:
         self.transformed_ships = []
         self.label = None
         self.nplayers = nplayers
-        dx = 1500 // nplayers
+        dx = 1700 // nplayers
         self.avatar = pyglet.sprite.Sprite(img=config.images[f'base_{self.number}'],
                                            x=(self.number * dx) + 180,
                                            y=config.ny + 12,
@@ -160,7 +160,7 @@ class Player:
         #                                x=self.avatar.x + 15,
         #                                y=self.avatar.y - 7,
         #                                batch=self.batch)
-        return f'{self.economy()} [{self.score}]'.rjust(15)
+        return f'{self.economy()}[{self.score}]'
 
     def rip(self):
         for v in self.vehicles:
@@ -169,7 +169,7 @@ class Player:
         self.ships.clear()
         self.jets.clear()
         self.avatar.delete()
-        self.label.delete()
+        # self.label.delete()
 
     def dump_map(self):
         import matplotlib.pyplot as plt

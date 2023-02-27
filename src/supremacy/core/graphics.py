@@ -58,12 +58,12 @@ class Graphics:
             self.scoreboard_label.delete()
         t_str = str(datetime.timedelta(seconds=int(t)))[2:]
         font_size = min(14, 100 / len(players))
-        p_str = [f'{name.rjust(15)}: {value}' for name, value in players.items()]
-        text = (' ' * 30).join(p_str + ['Time ffffff left: ' + t_str])
+        p_str = [f'{name}: {value}'.ljust(20) for name, value in players.items()]
+        text = (' ' * max(0, 8 - len(players))).join(p_str + [' Time: ' + t_str])
         self.scoreboard_label = pyglet.text.Label(text,
                                                   color=(255, 255, 255, 255),
-                                                  font_name='Courrier New',
+                                                  font_name='monospace',
                                                   font_size=font_size,
-                                                  x=180,
+                                                  x=200,
                                                   y=config.ny + 5,
                                                   batch=self.main_batch)

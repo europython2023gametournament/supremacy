@@ -172,7 +172,7 @@ class Engine:
                                         if team not in dead_bases:
                                             dead_bases[team] = []
                                         dead_bases[team].append(defender.uid)
-                                        attacker.owner.owner.score += 2
+                                        attacker.owner.owner.score += 1
                                     else:
                                         if team not in dead_vehicles:
                                             dead_vehicles[team] = []
