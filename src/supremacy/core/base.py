@@ -38,6 +38,7 @@ class Base:
         self.batch = batch
         self.uid = uid
         self.competing = False
+        self.high_contrast = high_contrast
         muid = uuid.uuid4().hex
         self.mines = {
             muid:
@@ -48,13 +49,13 @@ class Base:
                  owner=self,
                  uid=muid)
         }
-        self.crystal = 10000
+        self.crystal = 0
         self.owner.update_player_map(x=self.x, y=self.y)
         self.avatar = pyglet.sprite.Sprite(img=config.images[f'base_{self.number}'],
                                            x=self.x,
                                            y=self.y,
                                            batch=batch)
-        if high_contrast:
+        if self.high_contrast:
             rgb = colors.to_rgb(f'C{self.number}')
             self.shape = pyglet.shapes.Rectangle(
                 x=self.x - config.competing_mine_radius,
@@ -120,7 +121,7 @@ class Base:
             self.label.delete()
         if self.clabel is not None:
             self.clabel.delete()
-        color = (0, 0, 0, 255)
+        color = (128, 128, 128, 255) if self.high_contrast else (0, 0, 0, 255)
         self.label = pyglet.text.Label(f'{self.health} [{len(self.mines)}]',
                                        color=color,
                                        font_size=10,

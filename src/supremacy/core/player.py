@@ -98,7 +98,7 @@ class Player:
         self.base_locations[int(y), int(x)] = 1
 
     def init_dt(self, dt):
-        self.make_label()
+        # self.make_label()
         self.transformed_ships.clear()
         # for v in self.vehicles:
         #     v.cooldown = max(v.cooldown - dt, 0)
@@ -106,11 +106,13 @@ class Player:
     def execute_ai(self, t: float, dt: float, info: dict, safe: bool = False):
         if safe:
             try:
-                self.ai.exec(t=t, dt=dt, info=info, game_map=self.game_map)
+                self.ai.run(t=t, dt=dt, info=info,
+                            game_map=self.game_map)  # game_map.array.filled(-1)
             except:
                 pass
         else:
-            self.ai.exec(t=t, dt=dt, info=info, game_map=self.game_map)
+            self.ai.run(t=t, dt=dt, info=info,
+                        game_map=self.game_map)  # game_map.array.filled(-1)
 
     def collect_transformed_ships(self):
         for uid in self.transformed_ships:
@@ -145,16 +147,20 @@ class Player:
         self.bases[uid].delete()
         del self.bases[uid]
 
+    def economy(self):
+        return int(sum([base.crystal for base in self.bases.values()]))
+
     def make_label(self):
-        if self.label is not None:
-            self.label.delete()
-        economy = int(sum([base.crystal for base in self.bases.values()]))
-        self.label = pyglet.text.Label(f'{self.name}: {economy} [{self.score}]',
-                                       color=(255, 255, 255, 255),
-                                       font_size=min(14, 100 / self.nplayers),
-                                       x=self.avatar.x + 15,
-                                       y=self.avatar.y - 7,
-                                       batch=self.batch)
+        # if self.label is not None:
+        #     self.label.delete()
+        # economy = int(sum([base.crystal for base in self.bases.values()]))
+        # self.label = pyglet.text.Label(f'{self.name}: {economy} [{self.score}]',
+        #                                color=(255, 255, 255, 255),
+        #                                font_size=min(14, 100 / self.nplayers),
+        #                                x=self.avatar.x + 15,
+        #                                y=self.avatar.y - 7,
+        #                                batch=self.batch)
+        return f'{self.economy()} [{self.score}]'.rjust(15)
 
     def rip(self):
         for v in self.vehicles:

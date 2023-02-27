@@ -25,7 +25,15 @@ class Graphics:
                                                x=10,
                                                y=config.ny + 5,
                                                batch=self.main_batch)
-        self.time_label = None
+
+        # self.time_label = pyglet.text.Label(f'Time left:',
+        #                                     color=(255, 255, 255, 255),
+        #                                     font_size=14,
+        #                                     x=config.nx - 150,
+        #                                     y=config.ny + 5,
+        #                                     batch=self.main_batch)
+
+        self.scoreboard_label = None
 
         @self.window.event
         def on_draw():
@@ -33,13 +41,29 @@ class Graphics:
             self.background.blit(0, 0)
             self.main_batch.draw()
 
-    def update_time(self, time):
-        if self.time_label is not None:
-            self.time_label.delete()
-        t = str(datetime.timedelta(seconds=int(time)))[2:]
-        self.time_label = pyglet.text.Label(f'Time left: {t}',
-                                            color=(255, 255, 255, 255),
-                                            font_size=14,
-                                            x=config.nx - 150,
-                                            y=config.ny + 5,
-                                            batch=self.main_batch)
+
+#     def update_time(self, time):
+#         if self.time_label is not None:
+#             self.time_label.delete()
+#         t = str(datetime.timedelta(seconds=int(time)))[2:]
+#         self.time_label = pyglet.text.Label(f'Time left: {t}',
+#                                             color=(255, 255, 255, 255),
+#                                             font_size=14,
+#                                             x=config.nx - 150,
+#                                             y=config.ny + 5,
+#                                             batch=self.main_batch)
+
+    def update_scoreboard(self, t, players):
+        if self.scoreboard_label is not None:
+            self.scoreboard_label.delete()
+        t_str = str(datetime.timedelta(seconds=int(t)))[2:]
+        font_size = min(14, 100 / len(players))
+        p_str = [f'{name.rjust(15)}: {value}' for name, value in players.items()]
+        text = (' ' * 30).join(p_str + ['Time ffffff left: ' + t_str])
+        self.scoreboard_label = pyglet.text.Label(text,
+                                                  color=(255, 255, 255, 255),
+                                                  font_name='Courrier New',
+                                                  font_size=font_size,
+                                                  x=180,
+                                                  y=config.ny + 5,
+                                                  batch=self.main_batch)

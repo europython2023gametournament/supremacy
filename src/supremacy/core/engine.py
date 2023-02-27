@@ -119,11 +119,12 @@ class Engine:
     #             self.base_locations_buffer[int(base.y), int(base.x)] = 1
     #     # return base_locations
 
-    def init_dt(self, dt):
+    def init_dt(self, t, dt):
         min_distance = config.competing_mine_radius
         # self.map_all_bases()
         base_locs = MapView(self.base_locations)
-        for player in self.players.values():
+        scoreboard_labels = {}
+        for name, player in self.players.items():
             player.init_dt(dt)
             for base in player.bases.values():
                 nbases = sum([
@@ -135,8 +136,10 @@ class Engine:
                 base.competing = nbases > 1
                 if before != base.competing:
                     base.make_label()
+            scoreboard_labels[name] = player.make_label()
+        self.graphics.update_scoreboard(t=t, players=scoreboard_labels)
 
-    def fight(self, t):
+    def fight(self):
         cooldown = 1
         combats = {}
         dead_vehicles = {}
@@ -200,8 +203,9 @@ class Engine:
         t = time.time() - self.start_time
         if t > self.time_limit:
             self.exit()
-        self.graphics.update_time(self.time_limit - t)
-        self.init_dt(dt)
+        # self.graphics.update_time(self.time_limit - t)
+        # self.init_dt(dt)
+        self.init_dt(self.time_limit - t, dt)
 
         # info = self.generate_info()
 
@@ -214,7 +218,7 @@ class Engine:
                 self.move(v, dt)
                 player.update_player_map(x=v.x, y=v.y)
 
-        dead_vehicles, dead_bases = self.fight(t)
+        dead_vehicles, dead_bases = self.fight()
         for name in dead_vehicles:
             for uid in dead_vehicles[name]:
                 self.players[name].remove(uid)

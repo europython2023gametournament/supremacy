@@ -1,14 +1,17 @@
 import numpy as np
 
-from supremacy.core.ai import Ai
-
 CREATOR = 'JohnDoe'
 
 
-class PlayerAi(Ai):
+class PlayerAi:
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, creator=CREATOR, **kwargs)
+    def __init__(self, team: int = None):
+        # DO NOT EDIT ===============
+        self.team = team
+        self.number = 0
+        self.creator = CREATOR
+        # ===========================
+
         self.previous_positions = {}
         self.ntanks = {}
         self.nships = {}
