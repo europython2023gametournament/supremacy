@@ -71,7 +71,7 @@ class Engine:
         xpos = np.mod(pos[0], self.nx - 1)
         ypos = np.mod(pos[1], self.ny - 1)
         path = self.game_map.array[(ypos, xpos)]
-        vehicle.move(dt=dt, path=path, nx=self.nx, ny=self.ny)
+        vehicle.move(dt=dt, path=path)
 
     def run(self, fps=30):
         self.time_limit = 4 * 60  # 5 * 60

@@ -45,7 +45,7 @@ class Vehicle:
                                        anchor_y='center',
                                        batch=self.batch)
 
-    def forward(self, dist, nx, ny):
+    def forward(self, dist):
         pos = self.get_position() + self.get_vector() * dist
         x, y = wrap_position(*pos)
         self.x = x
@@ -100,8 +100,15 @@ class Vehicle:
         ray = self.get_vector().reshape((2, 1)) * np.linspace(1, vt, int(vt) + 1)
         return (self.get_position().reshape((2, 1)) + ray).astype(int)
 
-    def get_distance(self, x: float, y: float) -> float:
-        return np.sqrt((x - self.x)**2 + (y - self.y)**2)
+    def get_distance(self, x: float, y: float, shortest=True) -> float:
+        if not shortest:
+            return np.sqrt((x - self.x)**2 + (y - self.y)**2)
+        xc = self.x + config.nx
+        yc = self.y + config.ny
+        xl = np.array([x, x + config.nx, x + 2 * config.nx] * 3)
+        yl = np.array([y] * 3 + [y + config.ny] * 3 + [y + 2 * config.ny] * 3)
+        d = np.sqrt((xl - xc)**2 + (yl - yc)**2)
+        return d.min()
 
     def delete(self):
         self.avatar.delete()
@@ -142,10 +149,10 @@ class Tank(Vehicle):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, kind='tank', **kwargs)
 
-    def move(self, dt, path, nx, ny):
+    def move(self, dt, path):
         no_obstacles = (np.sum(path == 0)) == 0
         if no_obstacles:
-            self.forward(self.speed * dt, nx, ny)
+            self.forward(self.speed * dt)
 
 
 class Ship(Vehicle):
@@ -153,10 +160,10 @@ class Ship(Vehicle):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, kind='ship', **kwargs)
 
-    def move(self, dt, path, nx, ny):
+    def move(self, dt, path):
         no_obstacles = (np.sum(path == 1)) == 0
         if no_obstacles:
-            self.forward(self.speed * dt, nx, ny)
+            self.forward(self.speed * dt)
 
     def convert_to_base(self):
         player = self.owner.owner
@@ -175,5 +182,5 @@ class Jet(Vehicle):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, kind='jet', **kwargs)
 
-    def move(self, dt, path, nx, ny):
-        self.forward(self.speed * dt, nx, ny)
+    def move(self, dt, path):
+        self.forward(self.speed * dt)

@@ -5,7 +5,7 @@ CREATOR = 'JohnDoe'
 
 class PlayerAi:
 
-    def __init__(self, team: int = None):
+    def __init__(self, team: str = None):
         # DO NOT EDIT ===============
         self.team = team
         self.number = 0

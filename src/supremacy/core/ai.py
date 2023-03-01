@@ -3,7 +3,7 @@
 
 class Ai:
 
-    def __init__(self, creator: str, team: int = None):
+    def __init__(self, creator: str, team: str = None):
         self.team = team
         self.creator = creator
 
