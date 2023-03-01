@@ -1,4 +1,4 @@
-from supremacy.core.engine import Engine
+from supremacy import Engine
 
 from template_ai import PlayerAi
 

@@ -1,5 +1,7 @@
 import numpy as np
 
+from supremacy import Ai
+
 CREATOR = 'JohnDoe'
 
 

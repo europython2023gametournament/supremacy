@@ -1,18 +1,18 @@
-from supremacy.core.engine import Engine
+from supremacy import Engine
 
 from template_ai import PlayerAi
 
 neil = PlayerAi()
-neil.creator = 'Neil'
+neil.team = 'Neil'
 
 drew = PlayerAi()
-drew.creator = 'Drew'
+drew.team = 'Drew'
 
 simon = PlayerAi()
-simon.creator = 'Simon'
+simon.team = 'Simon'
 
 jankas = PlayerAi()
-jankas.creator = 'Jankas'
+jankas.team = 'Jankas'
 
 players = [neil, drew, simon, jankas]
 

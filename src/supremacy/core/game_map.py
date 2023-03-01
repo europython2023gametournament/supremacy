@@ -4,6 +4,9 @@ from scipy.ndimage import gaussian_filter
 from PIL import Image
 from matplotlib.colors import Normalize
 
+from .. import config
+from .tools import periodic_distances
+
 
 class GameMap:
 
@@ -37,27 +40,36 @@ class GameMap:
                                 replace=False)
         locations = {}
         for n, player in enumerate(players):
-            direction = np.random.randint(4)
-            i = self.xseed[inds[n]]
-            j = self.yseed[inds[n]]
-            while self.array[j, i] > 0:
-                if direction == 0:
-                    i += 1
-                    if i >= self.nx:
-                        i = 0
-                elif direction == 1:
-                    i -= 1
-                    if i < 0:
-                        i = self.nx - 1
-                elif direction == 2:
-                    j += 1
-                    if j >= self.ny:
-                        j = 0
-                elif direction == 3:
-                    j -= 1
-                    if j < 0:
-                        j = self.ny - 1
-            locations[player.creator] = (i, j)
+            not_set = True
+            while not_set:
+                direction = np.random.randint(4)
+                i = self.xseed[inds[n]]
+                j = self.yseed[inds[n]]
+                while self.array[j, i] > 0:
+                    if direction == 0:
+                        i += 1
+                        if i >= self.nx:
+                            i = 0
+                    elif direction == 1:
+                        i -= 1
+                        if i < 0:
+                            i = self.nx - 1
+                    elif direction == 2:
+                        j += 1
+                        if j >= self.ny:
+                            j = 0
+                    elif direction == 3:
+                        j -= 1
+                        if j < 0:
+                            j = self.ny - 1
+                if len(locations) == 0:
+                    not_set = False
+                else:
+                    for loc in locations.values():
+                        dist = periodic_distances(i, j, loc[0], loc[1])[0].min()
+                        if dist > 2 * config.competing_mine_radius:
+                            not_set = False
+            locations[player.team] = (i, j)
 
         return locations
 
