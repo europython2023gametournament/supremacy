@@ -2,7 +2,7 @@ import numpy as np
 import pyglet
 
 from .. import config
-from .tools import ReadOnly, wrap_position
+from .tools import ReadOnly, wrap_position, eucledian_distance, periodic_distances
 
 
 class Vehicle:
@@ -92,8 +92,15 @@ class Vehicle:
             h = 360 - h
         self.set_heading(h)
 
-    def goto(self, x, y):
-        self.set_vector([x - self.x, y - self.y])
+    def goto(self, x, y, shortest_path=True):
+        if not shortest_path:
+            self.set_vector([x - self.x, y - self.y])
+            return
+        d, xl, yl = periodic_distances(self.x, self.y, x, y)
+        ind = np.argmin(d)
+        self.set_vector(
+            [wrap_position(xl[ind]) - self.x,
+             wrap_position(yl[ind]) - self.y])
 
     def ray_trace(self, dt: float) -> np.ndarray:
         vt = self.speed * dt
@@ -102,13 +109,9 @@ class Vehicle:
 
     def get_distance(self, x: float, y: float, shortest=True) -> float:
         if not shortest:
-            return np.sqrt((x - self.x)**2 + (y - self.y)**2)
-        xc = self.x + config.nx
-        yc = self.y + config.ny
-        xl = np.array([x, x + config.nx, x + 2 * config.nx] * 3)
-        yl = np.array([y] * 3 + [y + config.ny] * 3 + [y + 2 * config.ny] * 3)
-        d = np.sqrt((xl - xc)**2 + (yl - yc)**2)
-        return d.min()
+            return eucledian_distance(self.x, self.y, x, y)
+        else:
+            return periodic_distances(self.x, self.y, x, y)[0].min()
 
     def delete(self):
         self.avatar.delete()

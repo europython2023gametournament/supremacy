@@ -3,14 +3,11 @@ import numpy as np
 CREATOR = 'JohnDoe'
 
 
-class PlayerAi:
+class PlayerAi(Ai):
 
-    def __init__(self, team: str = None):
-        # DO NOT EDIT ===============
-        self.team = team
-        self.number = 0
-        self.creator = CREATOR
-        # ===========================
+    def __init__(self):
+        super().__init__()
+        self.team = CREATOR
 
         self.previous_positions = {}
         self.ntanks = {}
@@ -18,7 +15,7 @@ class PlayerAi:
 
     def run(self, t: float, dt: float, info: dict, game_map):
 
-        myinfo = info[self.creator]
+        myinfo = info[self.team]
         for base in myinfo['bases']:
             # print(base._data)
             if base.uid not in self.ntanks:
@@ -46,17 +43,17 @@ class PlayerAi:
         target = None
         if len(info) > 1:
             for name in info:
-                if name != self.creator:
+                if name != self.team:
                     if 'bases' in info[name]:
                         t = info[name]['bases'][0]
                         target = [t.x, t.y]
 
         # if target is not None:
-        #     print(self.creator, target)
+        #     print(self.team, target)
         #     # import matplotlib.pyplot as plt
         #     # fig, ax = plt.subplots()
         #     # ax.imshow(game_map.filled(fill_value=-1), origin='lower')
-        #     # fig.savefig(f'map_{self.creator}.png', bbox_inches='tight')
+        #     # fig.savefig(f'map_{self.team}.png', bbox_inches='tight')
         #     # plt.close(fig)
         #     # print(info)
         #     # # input()

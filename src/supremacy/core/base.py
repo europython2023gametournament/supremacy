@@ -1,10 +1,13 @@
+# SPDX-License-Identifier: BSD-3-Clause
+
 from matplotlib import colors
+import numpy as np
 import pyglet
 import uuid
 
 from .. import config
 from .vehicles import Tank, Ship, Jet
-from .tools import wrap_position
+from .tools import wrap_position, periodic_distances
 
 
 class Mine:
@@ -234,6 +237,11 @@ class Base:
                                    uid=uid)
         self.crystal -= config.cost['jet']
 
+    def get_distance(self, x: float, y: float, shortest=True) -> float:
+        if not shortest:
+            return np.sqrt((x - self.x)**2 + (y - self.y)**2)
+        return periodic_distances(self.x, self.y, x, y)[0].min()
+
 
 class BaseProxy:
 
@@ -245,6 +253,7 @@ class BaseProxy:
         self.build_ship = base.build_ship
         self.build_jet = base.build_jet
         self.mine_cost = base.mine_cost
+        self.get_distance = base.get_distance
 
     # def __getitem__(self, key):
     #     return self._data[key]

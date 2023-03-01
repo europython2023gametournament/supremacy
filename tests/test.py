@@ -11,7 +11,7 @@ names = [
 players = []
 for name in names:
     player = PlayerAi()
-    player.creator = name
+    player.team = name
     players.append(player)
 
 eng = Engine(players=players, high_contrast=True)

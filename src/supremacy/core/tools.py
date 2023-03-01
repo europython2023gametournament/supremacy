@@ -1,3 +1,7 @@
+# SPDX-License-Identifier: BSD-3-Clause
+
+import numpy as np
+
 from .. import config
 
 
@@ -9,6 +13,19 @@ def wrap_position(x, y):
     if y < 0:
         y = config.ny + y
     return x, y
+
+
+def eucledian_distance(xa, ya, xb, yb):
+    return np.sqrt((xb - xa)**2 + (yb - ya)**2)
+
+
+def periodic_distances(xa, ya, xb, yb):
+    xc = xa + config.nx
+    yc = ya + config.ny
+    xl = np.array([xb, xb + config.nx, xb + 2 * config.nx] * 3)
+    yl = np.array([yb] * 3 + [yb + config.ny] * 3 + [yb + 2 * config.ny] * 3)
+    d = np.sqrt((xl - xc)**2 + (yl - yc)**2)
+    return d, xl, yl
 
 
 class ReadOnly:
