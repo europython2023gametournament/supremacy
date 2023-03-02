@@ -101,8 +101,7 @@ class Vehicle:
         d, xl, yl = periodic_distances(self.x, self.y, x, y)
         ind = np.argmin(d)
         self.set_vector(
-            [wrap_position(xl[ind]) - self.x,
-             wrap_position(yl[ind]) - self.y])
+            [xl[ind] - (self.x + config.nx), yl[ind] - (self.y + config.ny)])
 
     def ray_trace(self, dt: float) -> np.ndarray:
         vt = self.speed * dt

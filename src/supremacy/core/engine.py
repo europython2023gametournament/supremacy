@@ -41,16 +41,16 @@ class Engine:
 
         player_locations = self.game_map.add_players(players=players)
         self.players = {
-            p.creator: Player(ai=p,
-                              location=player_locations[p.creator],
-                              number=i,
-                              team=p.creator,
-                              batch=self.graphics.main_batch,
-                              game_map=np.ma.masked_where(True, self.game_map.array),
-                              score=_scores[p.creator],
-                              nplayers=len(players),
-                              high_contrast=high_contrast,
-                              base_locations=self.base_locations)
+            p.team: Player(ai=p,
+                           location=player_locations[p.team],
+                           number=i,
+                           team=p.team,
+                           batch=self.graphics.main_batch,
+                           game_map=np.ma.masked_where(True, self.game_map.array),
+                           score=_scores[p.team],
+                           nplayers=len(players),
+                           high_contrast=high_contrast,
+                           base_locations=self.base_locations)
             for i, p in enumerate(players)
         }
         self.scores = {}
@@ -65,7 +65,7 @@ class Engine:
                 name, score = line.split(':')
                 scores[name] = int(score.strip())
         else:
-            scores = {p.creator: 0 for p in players}
+            scores = {p.team: 0 for p in players}
         return scores
 
     def move(self, vehicle, dt):
@@ -111,7 +111,7 @@ class Engine:
                             info[n][group] = []
                         info[n][group].append((
                             BaseProxy(v) if group == 'bases' else VehicleProxy(v)
-                        ) if player.name == n else ReadOnly(v.as_info()))
+                        ) if player.team == n else ReadOnly(v.as_info()))
         return info
 
     # def map_all_bases(self):

@@ -23,8 +23,6 @@ class Player:
                  high_contrast=False):
         self.ai = ai
         self.ai.team = team
-        self.ai.number = number
-        self.name = ai.creator
         self.hq = location
         self.number = number
         self.team = team
@@ -177,4 +175,4 @@ class Player:
         import matplotlib.pyplot as plt
         fig, ax = plt.subplots()
         ax.imshow(self.game_map.array, origin='lower')
-        fig.savefig(f'{self.name}_map.png', bbox_inches='tight')
+        fig.savefig(f'{self.team}_map.png', bbox_inches='tight')

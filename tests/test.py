@@ -1,7 +1,6 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
-from supremacy.core.engine import Engine
-
+from supremacy import Engine
 from template_ai import PlayerAi
 
 names = [
