@@ -47,28 +47,18 @@ class GameMap:
                 j = self.yseed[inds[n]]
                 while self.array[j, i] > 0:
                     if direction == 0:
-                        i += 1
-                        if i >= self.nx:
-                            i = 0
+                        i = (i + 1) % self.nx
                     elif direction == 1:
-                        i -= 1
-                        if i < 0:
-                            i = self.nx - 1
+                        i = (i - 1) % self.nx
                     elif direction == 2:
-                        j += 1
-                        if j >= self.ny:
-                            j = 0
+                        j = (j + 1) % self.ny
                     elif direction == 3:
-                        j -= 1
-                        if j < 0:
-                            j = self.ny - 1
-                if len(locations) == 0:
-                    not_set = False
-                else:
-                    for loc in locations.values():
-                        dist = periodic_distances(i, j, loc[0], loc[1])[0].min()
-                        if dist > 2 * config.competing_mine_radius:
-                            not_set = False
+                        j = (j - 1) % self.ny
+                not_set = False
+                for loc in locations.values():
+                    dist = periodic_distances(i, j, loc[0], loc[1])[0].min()
+                    if dist < 2 * config.competing_mine_radius:
+                        not_set = True
             locations[player.team] = (i, j)
 
         return locations
