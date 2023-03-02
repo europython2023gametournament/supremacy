@@ -7,6 +7,7 @@ import os
 
 from .. import config
 from .base import BaseProxy
+from .fight import fight
 from .game_map import GameMap, MapView
 from .graphics import Graphics
 from .player import Player
@@ -141,45 +142,45 @@ class Engine:
             scoreboard_labels[name] = player.make_label()
         self.graphics.update_scoreboard(t=t, players=scoreboard_labels)
 
-    def fight(self):
-        cooldown = 1
-        combats = {}
-        dead_vehicles = {}
-        dead_bases = {}
-        for name, player in self.players.items():
-            for child in player.children:
-                igrid = int(child.x) // self.game_map.ng
-                jgrid = int(child.y) // self.game_map.ng
-                key = f'{igrid},{jgrid}'
-                li = [child]
-                if child.kind == 'base':
-                    li += list(child.mines.values())
-                if key not in combats:
-                    combats[key] = {name: li}
-                elif name not in combats[key]:
-                    combats[key][name] = li
-                else:
-                    combats[key][name] += li
-        for c in combats.values():
-            if len(c) > 1:
-                keys = list(c.keys())
-                for name in keys:
-                    for team in set(keys) - {name}:
-                        for attacker in c[name]:
-                            for defender in c[team]:
-                                defender.health -= attacker.attack
-                                defender.make_label()
-                                if defender.health <= 0:
-                                    if defender.kind == 'base':
-                                        if team not in dead_bases:
-                                            dead_bases[team] = []
-                                        dead_bases[team].append(defender.uid)
-                                        attacker.owner.owner.score += 1
-                                    else:
-                                        if team not in dead_vehicles:
-                                            dead_vehicles[team] = []
-                                        dead_vehicles[team].append(defender.uid)
-        return dead_vehicles, dead_bases
+    # def fight(self):
+    #     cooldown = 1
+    #     combats = {}
+    #     dead_vehicles = {}
+    #     dead_bases = {}
+    #     for name, player in self.players.items():
+    #         for child in player.children:
+    #             igrid = int(child.x) // self.game_map.ng
+    #             jgrid = int(child.y) // self.game_map.ng
+    #             key = f'{igrid},{jgrid}'
+    #             li = [child]
+    #             if child.kind == 'base':
+    #                 li += list(child.mines.values())
+    #             if key not in combats:
+    #                 combats[key] = {name: li}
+    #             elif name not in combats[key]:
+    #                 combats[key][name] = li
+    #             else:
+    #                 combats[key][name] += li
+    #     for c in combats.values():
+    #         if len(c) > 1:
+    #             keys = list(c.keys())
+    #             for name in keys:
+    #                 for team in set(keys) - {name}:
+    #                     for attacker in c[name]:
+    #                         for defender in c[team]:
+    #                             defender.health -= attacker.attack
+    #                             defender.make_label()
+    #                             if defender.health <= 0:
+    #                                 if defender.kind == 'base':
+    #                                     if team not in dead_bases:
+    #                                         dead_bases[team] = []
+    #                                     dead_bases[team].append(defender.uid)
+    #                                     attacker.owner.owner.score += 1
+    #                                 else:
+    #                                     if team not in dead_vehicles:
+    #                                         dead_vehicles[team] = []
+    #                                     dead_vehicles[team].append(defender.uid)
+    #     return dead_vehicles, dead_bases
 
     def exit(self):
         print("Time limit reached!")
@@ -220,7 +221,7 @@ class Engine:
                 self.move(v, dt)
                 player.update_player_map(x=v.x, y=v.y)
 
-        dead_vehicles, dead_bases = self.fight()
+        dead_vehicles, dead_bases = fight(players=self.players, ng=self.game_map.ng)
         for name in dead_vehicles:
             for uid in dead_vehicles[name]:
                 self.players[name].remove(uid)

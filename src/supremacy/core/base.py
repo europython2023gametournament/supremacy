@@ -181,6 +181,7 @@ class Base:
     def build_mine(self):
         if self.not_enough_crystal('mine'):
             return
+        print(f'Player {self.team} is building a MINE at {self.x}, {self.y}')
         self.crystal -= self.mine_cost()
         uid = uuid.uuid4().hex
         self.mines[uid] = Mine(x=self.x,
@@ -190,12 +191,11 @@ class Base:
                                owner=self,
                                uid=uid)
         self.make_label()
-        print('Building mine', self.mines)
 
     def build_tank(self, heading):
         if self.not_enough_crystal('tank'):
             return
-        print('Building tank')
+        print(f'Player {self.team} is building a TANK at {self.x}, {self.y}')
         uid = uuid.uuid4().hex
         self.owner.tanks[uid] = Tank(x=self.x + self.tank_offset[0],
                                      y=self.y + self.tank_offset[1],
@@ -210,7 +210,7 @@ class Base:
     def build_ship(self, heading):
         if self.not_enough_crystal('ship'):
             return
-        print('Building ship')
+        print(f'Player {self.team} is building a SHIP at {self.x}, {self.y}')
         uid = uuid.uuid4().hex
         self.owner.ships[uid] = Ship(x=self.x + self.ship_offset[0],
                                      y=self.y + self.ship_offset[1],
@@ -225,7 +225,7 @@ class Base:
     def build_jet(self, heading):
         if self.not_enough_crystal('jet'):
             return
-        print('Building jet')
+        print(f'Player {self.team} is building a JET at {self.x}, {self.y}')
         uid = uuid.uuid4().hex
         self.owner.jets[uid] = Jet(x=self.x,
                                    y=self.y,
@@ -254,18 +254,6 @@ class BaseProxy:
         self.build_jet = base.build_jet
         self.mine_cost = base.mine_cost
         self.get_distance = base.get_distance
-
-    # def __getitem__(self, key):
-    #     return self._data[key]
-
-    # def keys(self):
-    #     return self._data.keys()
-
-    # def values(self):
-    #     return self._data.values()
-
-    # def items(self):
-    #     return self._data.items()
 
     def cost(self, kind):
         if kind == 'mine':
