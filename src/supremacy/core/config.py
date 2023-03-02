@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: BSD-3-Clause
+
 from matplotlib import colors
 import numpy as np
 from PIL import Image

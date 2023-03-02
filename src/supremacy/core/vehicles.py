@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: BSD-3-Clause
+
 import numpy as np
 import pyglet
 
@@ -172,7 +174,7 @@ class Ship(Vehicle):
         player = self.owner.owner
         x = int(self.x)
         y = int(self.y)
-        if np.sum(player.game_map[y - 1:y + 2, x - 1:x + 2]) < 1:
+        if sum([view.sum() for view in player.game_map.view(x=x, y=y, dx=1, dy=1)]) < 1:
             print("No land found around ship, cannot build base on water!")
             return
         player.build_base(x=self.x, y=self.y)

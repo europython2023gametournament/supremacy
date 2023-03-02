@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: BSD-3-Clause
+
 import matplotlib as mpl
 import numpy as np
 from scipy.ndimage import gaussian_filter
@@ -81,33 +83,33 @@ class MapView:
         xmax = ix + dx + 1
         ymin = iy - dy
         ymax = iy + dy + 1
-        view = [self.array[max(ymin, 0):min(ymax, ny), max(xmin, 0):min(xmax, nx)]]
+        views = [self.array[max(ymin, 0):min(ymax, ny), max(xmin, 0):min(xmax, nx)]]
         if (xmin < 0) and (ymin < 0):
-            view += [
+            views += [
                 self.array[0:ymax, nx + xmin:nx], self.array[ny + ymin:ny, 0:xmax],
                 self.array[ny + ymin:ny, nx + xmin:nx]
             ]
         elif (xmin < 0) and (ymax >= ny):
-            view += [
+            views += [
                 self.array[ymin:ny, nx + xmin:nx], self.array[0:ymax - ny, 0:xmax],
                 self.array[0:ymax - ny, nx + xmin:nx]
             ]
         elif (xmax >= nx) and (ymin < 0):
-            view += [
+            views += [
                 self.array[0:ymax, 0:xmax - nx], self.array[ny + ymin:ny, xmin:nx],
                 self.array[ny + ymin:ny, 0:xmax - nx]
             ]
         elif (xmax >= nx) and (ymax >= ny):
-            view += [
+            views += [
                 self.array[0:ymax - ny, xmin:nx], self.array[ymin:ny, 0:xmax - nx],
                 self.array[0:ymax - ny, 0:xmax - nx]
             ]
         elif xmin < 0:
-            view.append(self.array[ymin:ymax, nx + xmin:nx])
+            views.append(self.array[ymin:ymax, nx + xmin:nx])
         elif xmax >= nx:
-            view.append(self.array[ymin:ymax, 0:xmax - nx])
+            views.append(self.array[ymin:ymax, 0:xmax - nx])
         elif ymin < 0:
-            view.append(self.array[ny + ymin:ny, xmin:xmax])
+            views.append(self.array[ny + ymin:ny, xmin:xmax])
         elif ymax >= ny:
-            view.append(self.array[0:ymax - ny, xmin:xmax])
-        return view
+            views.append(self.array[0:ymax - ny, xmin:xmax])
+        return views
