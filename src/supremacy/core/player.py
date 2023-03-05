@@ -135,9 +135,15 @@ class Player:
         self.tanks.clear()
         self.ships.clear()
         self.jets.clear()
-        self.avatar.img = config.images[f'skull_{self.number}']
-        # self.avatar.delete()
-        # self.label.delete()
+        avx = self.avatar.x
+        avy = self.avatar.y
+        self.avatar.delete()
+        self.avatar = pyglet.sprite.Sprite(img=config.images[f'skull_{self.number}'],
+                                           x=avx,
+                                           y=avy,
+                                           batch=self.batch)
+
+        self.dead = True
 
     def dump_map(self):
         import matplotlib.pyplot as plt

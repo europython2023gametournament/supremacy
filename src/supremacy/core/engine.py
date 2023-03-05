@@ -225,7 +225,10 @@ class Engine:
                 self.move(v, dt)
                 player.update_player_map(x=v.x, y=v.y)
 
-        dead_vehicles, dead_bases = fight(players=self.players, ng=self.game_map.ng)
+        dead_vehicles, dead_bases = fight(
+            players={key: p
+                     for key, p in self.players.items() if not p.dead},
+            ng=self.game_map.ng)
         for name in dead_vehicles:
             for uid in dead_vehicles[name]:
                 self.players[name].remove(uid)
