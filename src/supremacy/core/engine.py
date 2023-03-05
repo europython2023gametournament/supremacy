@@ -34,7 +34,8 @@ class Engine:
                                 ny=self.ny,
                                 ng=self.ng,
                                 high_contrast=high_contrast)
-        self.graphics = Graphics(game_map=self.game_map)
+        self.graphics = Graphics(game_map=self.game_map,
+                                 players=[p.team for p in players])
         self.safe = safe
         self.base_locations = np.zeros_like(self.game_map.array)
 
@@ -102,12 +103,13 @@ class Engine:
     def generate_info(self, player):
         info = {}
         for n, p in self.players.items():
+            info[n] = {}
             for group in ('bases', 'tanks', 'ships', 'jets'):
                 for v in getattr(p, group).values():
                     if not player.game_map[int(v.y):int(v.y) + 1,
                                            int(v.x):int(v.x) + 1].mask[0]:
-                        if n not in info:
-                            info[n] = {}
+                        # if n not in info:
+                        #     info[n] = {}
                         if group not in info[n]:
                             info[n][group] = []
                         info[n][group].append((
@@ -213,6 +215,8 @@ class Engine:
         # info = self.generate_info()
 
         for name, player in self.players.items():
+            if player.dead:
+                continue
             info = self.generate_info(player)
             player.execute_ai(t=t, dt=dt, info=info, safe=self.safe)
             player.collect_transformed_ships()
@@ -234,4 +238,4 @@ class Engine:
                 print(f'Player {name} died!')
                 self.scores[name] = self.players[name].score + len(self.scores)
                 self.players[name].rip()
-                del self.players[name]
+                # del self.players[name]

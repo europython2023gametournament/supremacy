@@ -8,7 +8,7 @@ from .. import config
 
 class Graphics:
 
-    def __init__(self, game_map):
+    def __init__(self, game_map, players):
 
         # self.game_map = game_map
         # self.nx = self.game_map.nx

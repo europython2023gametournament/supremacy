@@ -29,6 +29,7 @@ class Player:
         self.batch = batch
         self.base_locations = base_locations
         self.game_map = MapView(game_map)
+        self.dead = False
         self.bases = {}
         self.tanks = {}
         self.ships = {}
@@ -50,40 +51,6 @@ class Player:
         views = self.game_map.view(x=x, y=y, dx=r, dy=r)
         for view in views:
             view.mask = False
-
-        # ix = int(x)
-        # iy = int(y)
-        # ny, nx = self.game_map.shape
-        # xmin = ix - r
-        # xmax = ix + r + 1
-        # ymin = iy - r
-        # ymax = iy + r + 1
-        # self.game_map[max(ymin, 0):min(ymax, ny),
-        #               max(xmin, 0):min(xmax, nx)].mask = False
-        # if (xmin < 0) and (ymin < 0):
-        #     self.game_map[0:ymax, nx + xmin:nx].mask = False
-        #     self.game_map[ny + ymin:ny, 0:xmax].mask = False
-        #     self.game_map[ny + ymin:ny, nx + xmin:nx].mask = False
-        # elif (xmin < 0) and (ymax >= ny):
-        #     self.game_map[ymin:ny, nx + xmin:nx].mask = False
-        #     self.game_map[0:ymax - ny, 0:xmax].mask = False
-        #     self.game_map[0:ymax - ny, nx + xmin:nx].mask = False
-        # elif (xmax >= nx) and (ymin < 0):
-        #     self.game_map[0:ymax, 0:xmax - nx].mask = False
-        #     self.game_map[ny + ymin:ny, xmin:nx].mask = False
-        #     self.game_map[ny + ymin:ny, 0:xmax - nx].mask = False
-        # elif (xmax >= nx) and (ymax >= ny):
-        #     self.game_map[0:ymax - ny, xmin:nx].mask = False
-        #     self.game_map[ymin:ny, 0:xmax - nx].mask = False
-        #     self.game_map[0:ymax - ny, 0:xmax - nx].mask = False
-        # elif xmin < 0:
-        #     self.game_map[ymin:ymax, nx + xmin:nx].mask = False
-        # elif xmax >= nx:
-        #     self.game_map[ymin:ymax, 0:xmax - nx].mask = False
-        # elif ymin < 0:
-        #     self.game_map[ny + ymin:ny, xmin:xmax].mask = False
-        # elif ymax >= ny:
-        #     self.game_map[0:ymax - ny, xmin:xmax].mask = False
 
     def build_base(self, x, y):
         uid = uuid.uuid4().hex
@@ -168,7 +135,8 @@ class Player:
         self.tanks.clear()
         self.ships.clear()
         self.jets.clear()
-        self.avatar.delete()
+        self.avatar.img = config.images[f'skull_{self.number}']
+        # self.avatar.delete()
         # self.label.delete()
 
     def dump_map(self):

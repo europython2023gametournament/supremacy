@@ -25,7 +25,7 @@ class Config:
     def generate_images(self, nplayers):
         for n in range(nplayers):
             rgb = colors.to_rgb(f'C{n}')
-            for name in ('jet', 'ship', 'tank', 'base'):
+            for name in ('jet', 'ship', 'tank', 'base', 'skull'):
                 # print(n, name)
                 img = Image.open(f'{name}.png')
                 img = img.convert('RGBA')
