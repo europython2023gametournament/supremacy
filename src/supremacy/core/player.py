@@ -40,7 +40,7 @@ class Player:
         self.transformed_ships = []
         self.label = None
         self.nplayers = nplayers
-        dx = 1700 // nplayers
+        dx = 1600 // nplayers
         self.avatar = pyglet.sprite.Sprite(img=config.images[f'base_{self.number}'],
                                            x=(self.number * dx) + 180,
                                            y=config.ny + 12,
