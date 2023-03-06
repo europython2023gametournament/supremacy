@@ -39,8 +39,13 @@ class Player:
         self.build_base(x=location[0], y=location[1])
         self.transformed_ships = []
         self.label = None
-        self.nplayers = nplayers
-        dx = 1600 // nplayers
+        # self.nplayers = nplayers
+        if nplayers <= 5:
+            dx = 250
+        elif nplayers <= 10:
+            dx = 160
+        else:
+            dx = 120
         self.avatar = pyglet.sprite.Sprite(img=config.images[f'base_{self.number}'],
                                            x=(self.number * dx) + 180,
                                            y=config.ny + 12,

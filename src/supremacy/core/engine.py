@@ -184,8 +184,8 @@ class Engine:
     #                                     dead_vehicles[team].append(defender.uid)
     #     return dead_vehicles, dead_bases
 
-    def exit(self):
-        print("Time limit reached!")
+    def exit(self, message):
+        print(message)
         pyglet.clock.unschedule(self.update)
         pyglet.app.exit()
         score_left = len(self.scores)
@@ -207,7 +207,7 @@ class Engine:
     def update(self, dt):
         t = time.time() - self.start_time
         if t > self.time_limit:
-            self.exit()
+            self.exit(message="Time limit reached!")
         # self.graphics.update_time(self.time_limit - t)
         # self.init_dt(dt)
         self.init_dt(self.time_limit - t, dt)
@@ -234,11 +234,17 @@ class Engine:
                 self.players[name].remove(uid)
         for name in dead_bases:
             for uid in dead_bases[name]:
-                b = self.players[name].bases[uid]
-                self.base_locations[int(b.y), int(b.x)] = 0
-                self.players[name].remove_base(uid)
+                if uid in self.players[name].bases:
+                    b = self.players[name].bases[uid]
+                    self.base_locations[int(b.y), int(b.x)] = 0
+                    self.players[name].remove_base(uid)
             if len(self.players[name].bases) == 0:
                 print(f'Player {name} died!')
                 self.scores[name] = self.players[name].score + len(self.scores)
                 self.players[name].rip()
                 # del self.players[name]
+        players_alive = [p.team for p in self.players.values() if not p.dead]
+        if len(players_alive) == 1:
+            self.exit(message=f'Player {players_alive[0]} won!')
+        if len(players_alive) == 0:
+            self.exit(message='Everyone died!')

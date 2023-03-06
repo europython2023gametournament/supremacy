@@ -59,9 +59,18 @@ class Graphics:
         if self.scoreboard_label is not None:
             self.scoreboard_label.delete()
         t_str = str(datetime.timedelta(seconds=int(t)))[2:]
-        font_size = min(14, 100 / len(players))
+        # font_size = min(14, 100 / len(players))
         p_str = [f'{name}: {value}'.ljust(20) for name, value in players.items()]
-        text = (' ' * max(0, 8 - len(players))).join(p_str + [' Time: ' + t_str])
+        if len(players) <= 5:
+            nspaces = 9
+            font_size = 14
+        elif len(players) <= 10:
+            nspaces = 0
+            font_size = 10
+        else:
+            nspaces = 0
+            font_size = 8
+        text = (' ' * nspaces).join(p_str + ['Time: ' + t_str])
         self.scoreboard_label = pyglet.text.Label(text,
                                                   color=(255, 255, 255, 255),
                                                   font_name='monospace',

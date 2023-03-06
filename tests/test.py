@@ -4,10 +4,23 @@ from supremacy import Engine
 from template_ai import PlayerAi
 
 names = [
-    'Neil', 'Drew', 'Simon', 'Jankas', 'Greg', 'Mads', 'Afonso', 'Sun', 'Troels',
-    'Piotr'
+    'Neil',
+    'Drew',
+    'Simon',
+    'Jankas',
+    'Greg',
+    'Mads',
+    'Afonso',
+    'Sun',
+    'Troels',
+    # 'Piotr'
 ]
-# names = ['Neil', 'Drew', 'Simon', 'Jankas']
+# names = [
+#     'Neil', 'Drew', 'Simon', 'Jankas', 'Greg', 'Mads', 'Afonso', 'Sun', 'Troels',
+#     'Piotr', 'Mikkel', 'Colin'
+# ]
+# names = ['Neil', 'Drew', 'Simon', 'Jankas', 'Greg']
+# names = ['Neil', 'Drew', 'Simon']
 
 players = []
 for name in names:
