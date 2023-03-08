@@ -105,7 +105,7 @@ class Vehicle:
 
     def ray_trace(self, dt: float) -> np.ndarray:
         vt = self.speed * dt
-        ray = self.get_vector().reshape((2, 1)) * np.linspace(1, vt, int(vt) + 1)
+        ray = self.get_vector().reshape((2, 1)) * np.linspace(0, vt, int(vt) + 2)
         return (self.get_position().reshape((2, 1)) + ray).astype(int)
 
     def get_distance(self, x: float, y: float, shortest=True) -> float:
@@ -154,9 +154,18 @@ class Tank(Vehicle):
         super().__init__(*args, kind='tank', **kwargs)
 
     def move(self, dt, path):
-        no_obstacles = (np.sum(path == 0)) == 0
-        if no_obstacles:
-            self.forward(self.speed * dt)
+        obstacle = np.searchsorted(-path, 0)
+        fact = 1
+        if obstacle == len(path):
+            fact = 1
+        else:
+            fact = (obstacle - 1) / len(path)
+        if fact < 0:
+            print('warning, negaitve factor')
+        self.forward(self.speed * dt * fact)
+        # no_obstacles = (np.sum(path == 0)) == 0
+        # if no_obstacles:
+        #     self.forward(self.speed * dt)
 
 
 class Ship(Vehicle):
@@ -165,17 +174,32 @@ class Ship(Vehicle):
         super().__init__(*args, kind='ship', **kwargs)
 
     def move(self, dt, path):
-        no_obstacles = (np.sum(path == 1)) == 0
-        if no_obstacles:
-            self.forward(self.speed * dt)
+        obstacle = np.searchsorted(path, 1)
+        fact = 1
+        if obstacle == len(path):
+            fact = 1
+        else:
+            fact = (obstacle - 1) / len(path)
+        if fact < 0:
+            print('warning, negaitve factor')
+        self.forward(self.speed * dt * fact)
+        # no_obstacles = (np.sum(path == 1)) == 0
+        # if no_obstacles:
+        #     self.forward(self.speed * dt)
 
     def convert_to_base(self):
         player = self.owner.owner
         x = int(self.x)
         y = int(self.y)
-        if sum([view.sum() for view in player.game_map.view(x=x, y=y, dx=1, dy=1)]) < 1:
+        local_views = player.game_map.view(x=x, y=y, dx=1, dy=1)
+        if sum([view.sum() for view in local_views]) < 1:
             print("No land found around ship, cannot build base on water!")
             return
+        land_found = False
+        xx = [-1, 0, 1] * 3
+        yy = ([-1] * 3) + ([0] * 3) + ([1] * 3)
+        # while not land_found:
+
         player.build_base(x=self.x, y=self.y)
         player.transformed_ships.append(self.uid)
         self.avatar.delete()
