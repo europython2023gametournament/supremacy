@@ -28,5 +28,5 @@ for name in names:
     player.team = name
     players.append(player)
 
-eng = Engine(players=players, high_contrast=True)
+eng = Engine(players=players, high_contrast=True, time_limit=10 * 60)
 eng.run()

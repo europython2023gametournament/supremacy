@@ -181,7 +181,7 @@ class Ship(Vehicle):
         else:
             fact = (obstacle - 1) / len(path)
         if fact < 0:
-            print('warning, negaitve factor')
+            print('warning, negative factor')
         self.forward(self.speed * dt * fact)
         # no_obstacles = (np.sum(path == 1)) == 0
         # if no_obstacles:
@@ -195,12 +195,8 @@ class Ship(Vehicle):
         if sum([view.sum() for view in local_views]) < 1:
             print("No land found around ship, cannot build base on water!")
             return
-        land_found = False
-        xx = [-1, 0, 1] * 3
-        yy = ([-1] * 3) + ([0] * 3) + ([1] * 3)
-        # while not land_found:
-
-        player.build_base(x=self.x, y=self.y)
+        xx, yy = np.where(local_views[0] == 1)
+        player.build_base(x=x + xx[0] - 1, y=y + yy[0] - 1)
         player.transformed_ships.append(self.uid)
         self.avatar.delete()
 

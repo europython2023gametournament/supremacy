@@ -19,17 +19,17 @@ class Engine:
 
     def __init__(self,
                  players: list,
-                 speedup: int = 1,
                  safe=False,
                  high_contrast=False,
-                 test=False):
+                 test=True,
+                 time_limit=300):
 
         config.generate_images(nplayers=len(players))
 
         self.ng = config.ng
         self.nx = config.nx
         self.ny = config.ny
-        self.speedup = speedup
+        self.time_limit = time_limit
         self.game_map = GameMap(nx=self.nx,
                                 ny=self.ny,
                                 ng=self.ng,
@@ -78,7 +78,6 @@ class Engine:
         vehicle.move(dt=dt, path=path)
 
     def run(self, fps=30):
-        self.time_limit = 4 * 60  # 5 * 60
         self.start_time = time.time()
         pyglet.clock.schedule_interval(self.update, 1 / fps)
         pyglet.app.run()
