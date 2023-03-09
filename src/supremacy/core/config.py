@@ -4,6 +4,7 @@ from matplotlib import colors
 import numpy as np
 from PIL import Image
 import pyglet
+import os
 
 
 class Config:
@@ -21,21 +22,24 @@ class Config:
         self.nx = self.ng * 240  # 475
         self.ny = self.ng * 124  # 250
         self.images = {}
+        self.resource_path = os.path.join('..', 'resources')
 
     def generate_images(self, nplayers):
         for n in range(nplayers):
             rgb = colors.to_rgb(f'C{n}')
             for name in ('jet', 'ship', 'tank', 'base', 'skull'):
                 # print(n, name)
-                img = Image.open(f'{name}.png')
+                fname = os.path.join(self.resource_path, f'{name}.png')
+                img = Image.open(fname)
                 img = img.convert('RGBA')
                 data = img.getdata()
                 new_data = np.array(data).reshape(img.height, img.width, 4)
                 for i in range(3):
                     new_data[..., i] = int(round(rgb[i] * 255))
                 out = Image.fromarray(new_data.astype(np.uint8))
-                out.save(f'{name}_{n}.png')
-                image = pyglet.image.load(f'{name}_{n}.png')
+                outfile = os.path.join(self.resource_path, f'{name}_{n}.png')
+                out.save(outfile)
+                image = pyglet.image.load(outfile)
                 image.anchor_x = image.width // 2
                 image.anchor_y = image.height // 2
                 self.images[f'{name}_{n}'] = image

@@ -195,7 +195,7 @@ class Ship(Vehicle):
         if sum([view.sum() for view in local_views]) < 1:
             print("No land found around ship, cannot build base on water!")
             return
-        xx, yy = np.where(local_views[0] == 1)
+        yy, xx = np.where(local_views[0] == 1)
         player.build_base(x=x + xx[0] - 1, y=y + yy[0] - 1)
         player.transformed_ships.append(self.uid)
         self.avatar.delete()
