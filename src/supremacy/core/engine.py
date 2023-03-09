@@ -71,11 +71,12 @@ class Engine:
         return scores
 
     def move(self, vehicle, dt):
-        pos = vehicle.ray_trace(dt=dt)
-        xpos = np.mod(pos[0], self.nx - 1)
-        ypos = np.mod(pos[1], self.ny - 1)
-        path = self.game_map.array[(ypos, xpos)]
-        vehicle.move(dt=dt, path=path)
+        # pos = vehicle.ray_trace(dt=dt)
+        x, y = vehicle.next_position(dt=dt)
+        # xpos = np.mod(pos[0], self.nx - 1)
+        # ypos = np.mod(pos[1], self.ny - 1)
+        map_value = self.game_map.array[int(y), int(x)]
+        vehicle.move(x, y, map_value=map_value)
 
     def run(self, fps=30):
         self.start_time = time.time()

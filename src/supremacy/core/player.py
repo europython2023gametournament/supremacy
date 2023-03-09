@@ -38,6 +38,8 @@ class Player:
         self.score = score
         self.high_contrast = high_contrast
         self.build_base(x=location[0], y=location[1])
+        for base in self.bases.values():
+            base.crystal = 10000
         self.transformed_ships = []
         self.label = None
         self.animate_skull = 0

@@ -19,6 +19,17 @@ def eucledian_distance(xa, ya, xb, yb):
     return np.sqrt((xb - xa)**2 + (yb - ya)**2)
 
 
+def distance_flat(xa, ya, xb, yb):
+    return np.sqrt((xb - xa)**2 + (yb - ya)**2)
+
+
+def distance_torus(xa, ya, xb, yb):
+    dx = np.abs(xb - xa)
+    dy = np.abs(yb - ya)
+    return np.sqrt(
+        np.minimum(dx, config.nx - dx)**2 + np.minimum(dy, config.ny - dy)**2)
+
+
 def periodic_distances(xa, ya, xb, yb):
     xc = xa + config.nx
     yc = ya + config.ny

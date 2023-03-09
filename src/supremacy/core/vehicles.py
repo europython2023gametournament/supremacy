@@ -47,9 +47,19 @@ class Vehicle:
                                        anchor_y='center',
                                        batch=self.batch)
 
-    def forward(self, dist):
-        pos = self.get_position() + self.get_vector() * dist
-        x, y = wrap_position(*pos)
+    # def forward(self, dist):
+    #     pos = self.get_position() + self.get_vector() * dist
+    #     x, y = wrap_position(*pos)
+    #     self.x = x
+    #     self.y = y
+    #     self.avatar.x = self.x
+    #     self.avatar.y = self.y
+    #     self.label.x = self.x
+    #     self.label.y = self.y
+
+    def set_position(self, x, y):
+        # pos = self.get_position() + self.get_vector() * dist
+        # x, y = wrap_position(*pos)
         self.x = x
         self.y = y
         self.avatar.x = self.x
@@ -109,7 +119,10 @@ class Vehicle:
         return (self.get_position().reshape((2, 1)) + ray).astype(int)
 
     def next_position(self, dt: float) -> np.ndarray:
-        return self.get_position() + self.get_vector() * self.speed * dt
+        # return self.get_position() + self.get_vector() * self.speed * dt
+        pos = self.get_position() + self.get_vector() * self.speed * dt
+        x, y = wrap_position(*pos)
+        return x, y
 
     def get_distance(self, x: float, y: float, shortest=True) -> float:
         if not shortest:
@@ -156,19 +169,22 @@ class Tank(Vehicle):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, kind='tank', **kwargs)
 
-    def move(self, dt, path):
-        obstacle = np.searchsorted(-path, 0)
-        # fact = 1
-        if obstacle == len(path):
-            fact = 1
-        else:
-            fact = (obstacle - 1) / len(path)
-        if fact < 0:
-            print(f'warning, negative TANK factor {fact}')
-        self.forward(self.speed * dt * fact)
-        # no_obstacles = (np.sum(path == 0)) == 0
-        # if no_obstacles:
-        #     self.forward(self.speed * dt)
+    # def move(self, dt, path):
+    #     obstacle = np.searchsorted(-path, 0)
+    #     # fact = 1
+    #     if obstacle == len(path):
+    #         fact = 1
+    #     else:
+    #         fact = (obstacle - 1) / len(path)
+    #     if fact < 0:
+    #         print(f'warning, negative TANK factor {fact}')
+    #     self.forward(self.speed * dt * fact)
+    #     # no_obstacles = (np.sum(path == 0)) == 0
+    #     # if no_obstacles:
+    #     #     self.forward(self.speed * dt)
+    def move(self, x, y, map_value):
+        if map_value == 1:
+            self.set_position(x, y)
 
 
 class Ship(Vehicle):
@@ -176,19 +192,22 @@ class Ship(Vehicle):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, kind='ship', **kwargs)
 
-    def move(self, dt, path):
-        obstacle = np.searchsorted(path, 1)
-        # fact = 1
-        if obstacle == len(path):
-            fact = 1
-        else:
-            fact = (obstacle - 1) / len(path)
-        if fact < 0:
-            print(f'warning, negative SHIP factor {fact}')
-        self.forward(self.speed * dt * fact)
-        # no_obstacles = (np.sum(path == 1)) == 0
-        # if no_obstacles:
-        #     self.forward(self.speed * dt)
+    # def move(self, dt, path):
+    #     obstacle = np.searchsorted(path, 1)
+    #     # fact = 1
+    #     if obstacle == len(path):
+    #         fact = 1
+    #     else:
+    #         fact = (obstacle - 1) / len(path)
+    #     if fact < 0:
+    #         print(f'warning, negative SHIP factor {fact}')
+    #     self.forward(self.speed * dt * fact)
+    #     # no_obstacles = (np.sum(path == 1)) == 0
+    #     # if no_obstacles:
+    #     #     self.forward(self.speed * dt)
+    def move(self, x, y, map_value):
+        if map_value == 0:
+            self.set_position(x, y)
 
     def convert_to_base(self):
         player = self.owner.owner
@@ -209,5 +228,6 @@ class Jet(Vehicle):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, kind='jet', **kwargs)
 
-    def move(self, dt, path):
-        self.forward(self.speed * dt)
+    def move(self, x, y, map_value):
+        # self.forward(self.speed * dt)
+        self.set_position(x, y)

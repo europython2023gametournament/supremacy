@@ -1,3 +1,19 @@
+# SPDX-License-Identifier: BSD-3-Clause
+
+import numpy as np
+
+
+def all_distances(players):
+    x = np.arange(10.)
+    y = np.linspace(33., 44., 10)
+
+    x1 = np.broadcast_to(x, (10, 10))
+    x2 = x1.T
+    y1 = np.broadcast_to(y, (10, 10))
+    y2 = y1.T
+    y2
+
+
 def fight(players, ng):
     # cooldown = 1
     combats = {}
