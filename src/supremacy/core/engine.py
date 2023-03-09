@@ -215,10 +215,12 @@ class Engine:
 
         for name, player in self.players.items():
             if player.dead:
-                continue
-            info = self.generate_info(player)
-            player.execute_ai(t=t, dt=dt, info=info, safe=self.safe)
-            player.collect_transformed_ships()
+                if player.animate_skull > 0:
+                    player.skull_animate()
+            else:
+                info = self.generate_info(player)
+                player.execute_ai(t=t, dt=dt, info=info, safe=self.safe)
+                player.collect_transformed_ships()
         for name, player in self.players.items():
             for v in player.vehicles:
                 self.move(v, dt)

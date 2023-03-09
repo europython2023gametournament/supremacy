@@ -108,6 +108,9 @@ class Vehicle:
         ray = self.get_vector().reshape((2, 1)) * np.linspace(0, vt, int(vt) + 2)
         return (self.get_position().reshape((2, 1)) + ray).astype(int)
 
+    def next_position(self, dt: float) -> np.ndarray:
+        return self.get_position() + self.get_vector() * self.speed * dt
+
     def get_distance(self, x: float, y: float, shortest=True) -> float:
         if not shortest:
             return eucledian_distance(self.x, self.y, x, y)
@@ -155,13 +158,13 @@ class Tank(Vehicle):
 
     def move(self, dt, path):
         obstacle = np.searchsorted(-path, 0)
-        fact = 1
+        # fact = 1
         if obstacle == len(path):
             fact = 1
         else:
             fact = (obstacle - 1) / len(path)
         if fact < 0:
-            print('warning, negaitve factor')
+            print(f'warning, negative TANK factor {fact}')
         self.forward(self.speed * dt * fact)
         # no_obstacles = (np.sum(path == 0)) == 0
         # if no_obstacles:
@@ -175,13 +178,13 @@ class Ship(Vehicle):
 
     def move(self, dt, path):
         obstacle = np.searchsorted(path, 1)
-        fact = 1
+        # fact = 1
         if obstacle == len(path):
             fact = 1
         else:
             fact = (obstacle - 1) / len(path)
         if fact < 0:
-            print('warning, negative factor')
+            print(f'warning, negative SHIP factor {fact}')
         self.forward(self.speed * dt * fact)
         # no_obstacles = (np.sum(path == 1)) == 0
         # if no_obstacles:

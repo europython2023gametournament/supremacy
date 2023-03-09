@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
+import numpy as np
 import pyglet
 import uuid
 
@@ -39,6 +40,7 @@ class Player:
         self.build_base(x=location[0], y=location[1])
         self.transformed_ships = []
         self.label = None
+        self.animate_skull = 0
         # self.nplayers = nplayers
         if nplayers <= 5:
             dx = 250
@@ -149,9 +151,29 @@ class Player:
                                            batch=self.batch)
 
         self.dead = True
+        self.init_skull_animation()
 
     def dump_map(self):
         import matplotlib.pyplot as plt
         fig, ax = plt.subplots(figsize=(10, 6))
         ax.imshow(self.game_map.array, origin='lower', aspect='equal')
         fig.savefig(f'{self.team}_map.png', bbox_inches='tight')
+
+    def init_skull_animation(self):
+        self.animate_skull = 15
+        self.skull_x = np.linspace(self.avatar.x, config.nx / 2, self.animate_skull)
+        self.skull_y = np.linspace(self.avatar.y, config.ny / 2, self.animate_skull)
+        self.skull_s = np.linspace(1, 30, self.animate_skull)
+        self.skull_o = [255] + ([128] * (self.animate_skull - 1))
+        ind = self.animate_skull - 1
+        self.avatar.x = self.skull_x[ind]
+        self.avatar.y = self.skull_y[ind]
+        self.avatar.opacity = self.skull_o[ind]
+        self.avatar.scale = self.skull_s[ind]
+
+    def skull_animate(self):
+        self.animate_skull -= 1
+        self.avatar.x = self.skull_x[self.animate_skull]
+        self.avatar.y = self.skull_y[self.animate_skull]
+        self.avatar.scale = self.skull_s[self.animate_skull]
+        self.avatar.opacity = self.skull_o[self.animate_skull]
