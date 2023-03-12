@@ -101,6 +101,7 @@ class Engine:
     #     return info
 
     def generate_info(self, player):
+        # TODO: optimize this
         info = {}
         for n, p in self.players.items():
             info[n] = {}

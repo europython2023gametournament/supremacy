@@ -39,7 +39,7 @@ class Player:
         self.high_contrast = high_contrast
         self.build_base(x=location[0], y=location[1])
         for base in self.bases.values():
-            base.crystal = 10000
+            base.crystal = 10000  # TODO: set to 0
         self.transformed_ships = []
         self.label = None
         self.animate_skull = 0
