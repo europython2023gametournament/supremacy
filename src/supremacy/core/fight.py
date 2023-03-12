@@ -12,10 +12,14 @@ def all_distances(players):
     y1 = np.broadcast_to(y, (10, 10))
     y2 = y1.T
     y2
+    troops = [child for player in players.values() for child in player.children]
+    print(len(troops))
+    print(troops)
 
 
 def fight(players, ng):
     # cooldown = 1
+    all_distances(players)
     combats = {}
     dead_vehicles = {}
     dead_bases = {}
