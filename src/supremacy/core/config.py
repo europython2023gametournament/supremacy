@@ -19,6 +19,7 @@ class Config:
         self.vehicle_offset = 5
         self.competing_mine_radius = 40
         self.ng = 8
+        self.fight_radius = 5
         self.nx = self.ng * 240  # 475
         self.ny = self.ng * 124  # 250
         self.images = {}

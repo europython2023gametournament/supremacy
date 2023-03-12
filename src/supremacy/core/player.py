@@ -96,7 +96,10 @@ class Player:
 
     @property
     def children(self):
-        return list(self.bases.values()) + self.vehicles
+        mines = [list(base.mines.values()) for base in self.bases.values()]
+        return list(self.bases.values()) + self.vehicles + [
+            item for sublist in mines for item in sublist
+        ]
 
     @property
     def vehicles(self):

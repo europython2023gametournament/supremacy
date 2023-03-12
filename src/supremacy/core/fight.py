@@ -2,24 +2,48 @@
 
 import numpy as np
 
-
-def all_distances(players):
-    x = np.arange(10.)
-    y = np.linspace(33., 44., 10)
-
-    x1 = np.broadcast_to(x, (10, 10))
-    x2 = x1.T
-    y1 = np.broadcast_to(y, (10, 10))
-    y2 = y1.T
-    y2
-    troops = [child for player in players.values() for child in player.children]
-    print(len(troops))
-    print(troops)
+from .. import config
+from .tools import distance_torus
 
 
 def fight(players, ng):
+    troops = [child for player in players.values() for child in player.children]
+    n = len(troops)
+    x = np.array([child.x for child in troops])
+    y = np.array([child.y for child in troops])
+    x1 = np.broadcast_to(x, (n, n))
+    x2 = x1.T
+    y1 = np.broadcast_to(y, (n, n))
+    y2 = y1.T
+    dist = distance_torus(x1, y1, x2, y2)
+    attackers, defenders = np.where(dist < config.fight_radius)
+    dead_vehicles = {}
+    dead_bases = {}
+    for a_ind, d_ind in zip(attackers, defenders):
+        attacker = troops[a_ind]
+        defender = troops[d_ind]
+        if attacker.team != defender.team:
+            defender.health -= attacker.attack
+            defender.make_label()
+            if defender.health <= 0:
+                if defender.kind == 'base':
+                    if defender.team not in dead_bases:
+                        dead_bases[defender.team] = []
+                    dead_bases[defender.team].append(defender.uid)
+                    attacker.owner.owner.score += 1
+                else:
+                    if defender.team not in dead_vehicles:
+                        dead_vehicles[defender.team] = []
+                    dead_vehicles[defender.team].append(defender.uid)
+                print(f"{defender.team}'s {defender.kind} was destroyed "
+                      f"by {attacker.team}'s {attacker.kind} at "
+                      f"{defender.x}, {defender.y}")
+    return dead_vehicles, dead_bases
+
+
+def fight_old(players, ng):
     # cooldown = 1
-    all_distances(players)
+    # dist = all_distances(players)
     combats = {}
     dead_vehicles = {}
     dead_bases = {}
