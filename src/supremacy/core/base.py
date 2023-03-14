@@ -32,6 +32,7 @@ class Base:
     def __init__(self, x, y, team, number, batch, owner, uid, high_contrast=False):
         self.x = x
         self.y = y
+        self._as_info = None
         self.kind = 'base'
         self.health = config.health['base']
         self.attack = config.attack['base']
@@ -153,16 +154,21 @@ class Base:
         if self.shape is not None:
             self.shape.delete()
 
+    def reset_info(self):
+        self._as_info = None
+
     def as_info(self):
-        return {
-            'x': self.x,
-            'y': self.y,
-            'team': self.team,
-            'number': self.number,
-            'mines': len(self.mines),
-            'crystal': self.crystal,
-            'uid': self.uid
-        }
+        if self._as_info is None:
+            self._as_info = {
+                'x': self.x,
+                'y': self.y,
+                'team': self.team,
+                'number': self.number,
+                'mines': len(self.mines),
+                'crystal': self.crystal,
+                'uid': self.uid
+            }
+        return self._as_info
 
     def mine_cost(self):
         return config.cost['mine'] * (2**(len(self.mines) - 1))

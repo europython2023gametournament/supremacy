@@ -101,6 +101,23 @@ class Engine:
     #     return info
 
     def generate_info(self, player):
+        info = {}
+        for n, p in self.players.items() if not p.dead :
+            info[n] = {'bases': [], 'tanks': [], 'ships': [], 'jets': []}
+            army = p.army
+            xy = np.array([(v.y, v.x) for v in army]).astype(int)
+            inds = np.where(~player.game_map.array.mask[(xy[:, 0], xy[:, 1])])[0]
+            for ind in inds:
+                v = army[ind]
+                info[n][f'{v.kind}s'].append((
+                    BaseProxy(v) if v.kind == 'base' else VehicleProxy(v)
+                ) if player.team == n else ReadOnly(v.as_info()))
+            for key in list(info[n].keys()):
+                if len(info[n][key]) == 0:
+                    del info[n][key]
+        return info
+
+    def generate_info_old(self, player):
         # TODO: optimize this
         info = {}
         for n, p in self.players.items():
@@ -133,6 +150,7 @@ class Engine:
         for name, player in self.players.items():
             player.init_dt(dt)
             for base in player.bases.values():
+                base.reset_info()
                 nbases = sum([
                     view.sum() for view in base_locs.view(
                         x=base.x, y=base.y, dx=min_distance, dy=min_distance)
@@ -225,6 +243,7 @@ class Engine:
                 player.collect_transformed_ships()
         for name, player in self.players.items():
             for v in player.vehicles:
+                v.reset_info()
                 self.move(v, dt)
                 player.update_player_map(x=v.x, y=v.y)
 

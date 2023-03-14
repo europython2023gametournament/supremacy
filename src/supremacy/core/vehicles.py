@@ -34,6 +34,8 @@ class Vehicle:
         self.avatar.rotation = -heading
         self.label = None
         self.make_label()
+        self._as_info = None
+        # self.update_info()
 
     def make_label(self):
         if self.label is not None:
@@ -66,22 +68,28 @@ class Vehicle:
         self.avatar.y = self.y
         self.label.x = self.x
         self.label.y = self.y
+        # self.as_info = None
+
+    def reset_info(self):
+        self._as_info = None
 
     def as_info(self):
-        return {
-            'team': self.team,
-            'number': self.number,
-            # 'owner': self.owner.as_info(),
-            'uid': self.uid,
-            'speed': self.speed,
-            'health': self.health,
-            'attack': self.attack,
-            'x': self.x,
-            'y': self.y,
-            'heading': self.get_heading(),
-            'vector': self.get_vector(),
-            'position': self.get_position()
-        }
+        if self._as_info is None:
+            self._as_info = {
+                'team': self.team,
+                'number': self.number,
+                # 'owner': self.owner.as_info(),
+                'uid': self.uid,
+                'speed': self.speed,
+                'health': self.health,
+                'attack': self.attack,
+                'x': self.x,
+                'y': self.y,
+                'heading': self.get_heading(),
+                'vector': self.get_vector(),
+                'position': self.get_position()
+            }
+        return self._as_info
 
     def get_position(self):
         return np.array([self.x, self.y])
@@ -133,6 +141,9 @@ class Vehicle:
     def delete(self):
         self.avatar.delete()
         self.label.delete()
+
+    # def update_info(self):
+    #     self.as_info = self.
 
 
 class VehicleProxy:

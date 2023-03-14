@@ -96,15 +96,27 @@ class Player:
 
     @property
     def children(self):
+        """
+        All the players's vehicles, bases and mines
+        """
         mines = [list(base.mines.values()) for base in self.bases.values()]
-        return list(self.bases.values()) + self.vehicles + [
-            item for sublist in mines for item in sublist
-        ]
+        return self.army + [item for sublist in mines for item in sublist]
 
     @property
     def vehicles(self):
+        """
+        All the players's vehicles
+        """
         return list(self.tanks.values()) + list(self.ships.values()) + list(
             self.jets.values())
+
+    @property
+    def army(self):
+        """
+        All the players's vehicles and bases
+        """
+        return list(self.bases.values()) + list(self.tanks.values()) + list(
+            self.ships.values()) + list(self.jets.values())
 
     def remove(self, uid):
         if uid in self.tanks:
