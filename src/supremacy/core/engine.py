@@ -102,7 +102,7 @@ class Engine:
 
     def generate_info(self, player):
         info = {}
-        for n, p in self.players.items() if not p.dead :
+        for n, p in [(n, p) for n, p in self.players.items() if not p.dead]:
             info[n] = {'bases': [], 'tanks': [], 'ships': [], 'jets': []}
             army = p.army
             xy = np.array([(v.y, v.x) for v in army]).astype(int)
