@@ -48,17 +48,11 @@ class Engine:
                                 high_contrast=self.high_contrast)
 
         self.graphics = Graphics(engine=self)
-        # input()
 
         pyglet.clock.schedule_interval(self.update, 1 / fps)
         pyglet.app.run()
 
     def setup(self):
-        # print('enter setup')
-        # print(self.map_review_stage, self.need_new_map)
-        # if not self.need_new_map:
-        #     return
-
         # Cleanup before adding players
         self.base_locations = np.zeros((self.ny, self.nx), dtype=int)
         for n, p in self.players.items():
@@ -67,18 +61,16 @@ class Engine:
 
         player_locations = self.game_map.add_players(players=self.player_ais)
         self.players = {
-            p.team: Player(
-                ai=p,
-                location=player_locations[p.team],
-                number=i,
-                team=p.team,
-                batch=self.graphics.main_batch,
-                #    game_map=np.ma.masked_where(True, self.game_map.array),
-                game_map=self.game_map.array,
-                score=self.current_scores[p.team],
-                nplayers=len(self.player_ais),
-                high_contrast=self.high_contrast,
-                base_locations=self.base_locations)
+            p.team: Player(ai=p,
+                           location=player_locations[p.team],
+                           number=i,
+                           team=p.team,
+                           batch=self.graphics.main_batch,
+                           game_map=self.game_map.array,
+                           score=self.current_scores[p.team],
+                           nplayers=len(self.player_ais),
+                           high_contrast=self.high_contrast,
+                           base_locations=self.base_locations)
             for i, p in enumerate(self.player_ais)
         }
 
@@ -96,34 +88,9 @@ class Engine:
         return scores
 
     def move(self, vehicle, dt):
-        # pos = vehicle.ray_trace(dt=dt)
         x, y = vehicle.next_position(dt=dt)
-        # xpos = np.mod(pos[0], self.nx - 1)
-        # ypos = np.mod(pos[1], self.ny - 1)
         map_value = self.game_map.array[int(y), int(x)]
         vehicle.move(x, y, map_value=map_value)
-
-    # def run(self, fps=30):
-    #     # self.start_time = time.time()
-    #     pyglet.clock.schedule_interval(self.update, 1 / fps)
-    #     pyglet.app.run()
-
-    # def generate_info(self):
-    #     info = {name: {} for name in self.players}
-    #     for name, player in self.players.items():
-    #         for n, p in self.players.items():
-    #             for group in ('bases', 'tanks', 'ships', 'jets'):
-    #                 for v in getattr(player, group).values():
-    #                     if not p.game_map[int(v.y):int(v.y) + 1,
-    #                                       int(v.x):int(v.x) + 1].mask[0]:
-    #                         if name not in info[n]:
-    #                             info[n][name] = {}
-    #                         if group not in info[n][name]:
-    #                             info[n][name][group] = []
-    #                         info[n][name][group].append((
-    #                             BaseProxy(v) if group == 'bases' else VehicleProxy(v)
-    #                         ) if name == n else ReadOnly(v.as_info()))
-    #     return info
 
     def generate_info(self, player):
         info = {}
@@ -143,34 +110,8 @@ class Engine:
                     del info[n][key]
         return info
 
-    # def generate_info_old(self, player):
-    #     # TODO: optimize this
-    #     info = {}
-    #     for n, p in self.players.items():
-    #         info[n] = {}
-    #         for group in ('bases', 'tanks', 'ships', 'jets'):
-    #             for v in getattr(p, group).values():
-    #                 if not player.game_map[int(v.y):int(v.y) + 1,
-    #                                        int(v.x):int(v.x) + 1].mask[0]:
-    #                     # if n not in info:
-    #                     #     info[n] = {}
-    #                     if group not in info[n]:
-    #                         info[n][group] = []
-    #                     info[n][group].append((
-    #                         BaseProxy(v) if group == 'bases' else VehicleProxy(v)
-    #                     ) if player.team == n else ReadOnly(v.as_info()))
-    #     return info
-
-    # def map_all_bases(self):
-    #     self.base_locations_buffer[...] = 0.0
-    #     for player in self.players.values():
-    #         for base in player.bases.values():
-    #             self.base_locations_buffer[int(base.y), int(base.x)] = 1
-    #     # return base_locations
-
     def init_dt(self, t, dt):
         min_distance = config.competing_mine_radius
-        # self.map_all_bases()
         base_locs = MapView(self.base_locations)
         scoreboard_labels = {}
         for name, player in self.players.items():
@@ -188,46 +129,6 @@ class Engine:
                     base.make_label()
             scoreboard_labels[name] = player.make_label()
         self.graphics.update_scoreboard(t=t, players=scoreboard_labels)
-
-    # def fight(self):
-    #     cooldown = 1
-    #     combats = {}
-    #     dead_vehicles = {}
-    #     dead_bases = {}
-    #     for name, player in self.players.items():
-    #         for child in player.children:
-    #             igrid = int(child.x) // self.game_map.ng
-    #             jgrid = int(child.y) // self.game_map.ng
-    #             key = f'{igrid},{jgrid}'
-    #             li = [child]
-    #             if child.kind == 'base':
-    #                 li += list(child.mines.values())
-    #             if key not in combats:
-    #                 combats[key] = {name: li}
-    #             elif name not in combats[key]:
-    #                 combats[key][name] = li
-    #             else:
-    #                 combats[key][name] += li
-    #     for c in combats.values():
-    #         if len(c) > 1:
-    #             keys = list(c.keys())
-    #             for name in keys:
-    #                 for team in set(keys) - {name}:
-    #                     for attacker in c[name]:
-    #                         for defender in c[team]:
-    #                             defender.health -= attacker.attack
-    #                             defender.make_label()
-    #                             if defender.health <= 0:
-    #                                 if defender.kind == 'base':
-    #                                     if team not in dead_bases:
-    #                                         dead_bases[team] = []
-    #                                     dead_bases[team].append(defender.uid)
-    #                                     attacker.owner.owner.score += 1
-    #                                 else:
-    #                                     if team not in dead_vehicles:
-    #                                         dead_vehicles[team] = []
-    #                                     dead_vehicles[team].append(defender.uid)
-    #     return dead_vehicles, dead_bases
 
     def exit(self, message):
         print(message)
@@ -247,7 +148,6 @@ class Engine:
         ]
         for i, (name, score) in enumerate(sorted_scores):
             print(f'{i + 1}. {name}: {score}')
-        # input()
 
     def update(self, dt):
         if self.map_review_stage:
@@ -262,11 +162,7 @@ class Engine:
         t = time.time() - self.start_time
         if t > self.time_limit:
             self.exit(message="Time limit reached!")
-        # self.graphics.update_time(self.time_limit - t)
-        # self.init_dt(dt)
         self.init_dt(self.time_limit - t, dt)
-
-        # info = self.generate_info()
 
         for name, player in self.players.items():
             if player.dead:
@@ -300,7 +196,6 @@ class Engine:
                 print(f'Player {name} died!')
                 self.scores[name] = self.players[name].score + len(self.scores)
                 self.players[name].rip()
-                # del self.players[name]
         players_alive = [p.team for p in self.players.values() if not p.dead]
         if len(players_alive) == 1:
             self.exit(message=f'Player {players_alive[0]} won!')

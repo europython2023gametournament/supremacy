@@ -39,12 +39,9 @@ class Player:
         self.score = score
         self.high_contrast = high_contrast
         self.build_base(x=location[0], y=location[1])
-        # for base in self.bases.values():
-        #     base.crystal = 10000
         self.transformed_ships = []
         self.label = None
         self.animate_skull = 0
-        # self.nplayers = nplayers
         if nplayers <= 5:
             dx = 250
         elif nplayers <= 10:
@@ -60,7 +57,6 @@ class Player:
         r = config.view_radius
         slices = self.game_map.view_slices(x=x, y=y, dx=r, dy=r)
         for s in slices:
-            # view.mask = False
             self.game_map.array[s[0], s[1]] = self.original_map_array[s[0], s[1]]
 
     def build_base(self, x, y):
@@ -76,13 +72,9 @@ class Player:
         self.base_locations[int(y), int(x)] = 1
 
     def init_dt(self, dt):
-        # self.make_label()
         self.transformed_ships.clear()
-        # for v in self.vehicles:
-        #     v.cooldown = max(v.cooldown - dt, 0)
 
     def execute_ai(self, t: float, dt: float, info: dict, safe: bool = False):
-        # game_map = self.game_map.array.filled(-1)
         if safe:
             try:
                 self.ai.run(t=t, dt=dt, info=info, game_map=self.game_map.array)
@@ -143,15 +135,6 @@ class Player:
         return int(sum([base.crystal for base in self.bases.values()]))
 
     def make_label(self):
-        # if self.label is not None:
-        #     self.label.delete()
-        # economy = int(sum([base.crystal for base in self.bases.values()]))
-        # self.label = pyglet.text.Label(f'{self.name}: {economy} [{self.score}]',
-        #                                color=(255, 255, 255, 255),
-        #                                font_size=min(14, 100 / self.nplayers),
-        #                                x=self.avatar.x + 15,
-        #                                y=self.avatar.y - 7,
-        #                                batch=self.batch)
         return f'{self.economy()}[{self.score}]'
 
     def rip(self):

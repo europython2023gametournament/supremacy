@@ -15,12 +15,6 @@ names = [
     'Troels',
     # 'Piotr'
 ]
-# names = [
-#     'Neil', 'Drew', 'Simon', 'Jankas', 'Greg', 'Mads', 'Afonso', 'Sun', 'Troels',
-#     'Piotr', 'Mikkel', 'Colin'
-# ]
-# names = ['Neil', 'Drew', 'Simon', 'Jankas', 'Greg']
-# names = ['Neil', 'Drew', 'Simon']
 
 players = []
 for name in names:
@@ -29,4 +23,3 @@ for name in names:
     players.append(player)
 
 supremacy.start(players=players, high_contrast=True, time_limit=8 * 60)
-# eng.run()

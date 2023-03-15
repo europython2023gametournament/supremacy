@@ -21,7 +21,6 @@ class PlayerAi(Ai):
 
         myinfo = info[self.team]
         for base in myinfo['bases']:
-            # print(base._data)
             if base.uid not in self.ntanks:
                 self.ntanks[base.uid] = 0
             if base.uid not in self.nships:
@@ -37,12 +36,6 @@ class PlayerAi(Ai):
                 self.nships[base.uid] += 1
             elif base.crystal > base.cost('jet'):
                 base.build_jet(heading=360 * np.random.random())
-                # self.ntanks[base['uid']] = 0
-                # self.nships[base['uid']] += 1
-            # elif base['crystal'] > config.cost['ship']:
-            #     base.build_ship(heading=360 * np.random.random())
-            #     self.ntanks[base['uid']] = 0
-            #     self.nships[base['uid']] += 1
 
         target = None
         if len(info) > 1:
@@ -52,25 +45,13 @@ class PlayerAi(Ai):
                         t = info[name]['bases'][0]
                         target = [t.x, t.y]
 
-        # if target is not None:
-        #     print(self.team, target)
-        #     # import matplotlib.pyplot as plt
-        #     # fig, ax = plt.subplots()
-        #     # ax.imshow(game_map.filled(fill_value=-1), origin='lower')
-        #     # fig.savefig(f'map_{self.team}.png', bbox_inches='tight')
-        #     # plt.close(fig)
-        #     # print(info)
-        #     # # input()
-
         if 'tanks' in myinfo:
             for tank in myinfo['tanks']:
                 if tank.uid in self.previous_positions:
                     if all(tank.position == self.previous_positions[tank.uid]):
                         tank.set_heading(np.random.random() * 360.0)
                     elif target is not None:
-                        # print('tank', tank['position'], 'going to', target)
                         tank.goto(*target)
-
                 self.previous_positions[tank.uid] = tank.position
 
         if 'ships' in myinfo:

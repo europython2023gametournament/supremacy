@@ -21,7 +21,6 @@ class Vehicle:
         self.kind = kind
         self.batch = batch
         self.stopped = False
-        # self.cooldown = 0
 
         x, y = wrap_position(x, y)
         self.x = x
@@ -36,7 +35,6 @@ class Vehicle:
         self.label = None
         self.make_label()
         self._as_info = None
-        # self.update_info()
 
     def make_label(self):
         if self.label is not None:
@@ -50,26 +48,13 @@ class Vehicle:
                                        anchor_y='center',
                                        batch=self.batch)
 
-    # def forward(self, dist):
-    #     pos = self.get_position() + self.get_vector() * dist
-    #     x, y = wrap_position(*pos)
-    #     self.x = x
-    #     self.y = y
-    #     self.avatar.x = self.x
-    #     self.avatar.y = self.y
-    #     self.label.x = self.x
-    #     self.label.y = self.y
-
     def set_position(self, x, y):
-        # pos = self.get_position() + self.get_vector() * dist
-        # x, y = wrap_position(*pos)
         self.x = x
         self.y = y
         self.avatar.x = self.x
         self.avatar.y = self.y
         self.label.x = self.x
         self.label.y = self.y
-        # self.as_info = None
 
     def reset_info(self):
         self._as_info = None
@@ -79,7 +64,6 @@ class Vehicle:
             self._as_info = {
                 'team': self.team,
                 'number': self.number,
-                # 'owner': self.owner.as_info(),
                 'uid': self.uid,
                 'speed': self.speed,
                 'health': self.health,
@@ -129,7 +113,6 @@ class Vehicle:
         return (self.get_position().reshape((2, 1)) + ray).astype(int)
 
     def next_position(self, dt: float) -> np.ndarray:
-        # return self.get_position() + self.get_vector() * self.speed * dt
         pos = self.get_position() + self.get_vector() * self.speed * dt
         x, y = wrap_position(*pos)
         return x, y
@@ -150,9 +133,6 @@ class Vehicle:
     def start(self):
         self.stopped = False
 
-    # def update_info(self):
-    #     self.as_info = self.
-
 
 class VehicleProxy:
 
@@ -160,10 +140,7 @@ class VehicleProxy:
         for key, item in vehicle.as_info().items():
             setattr(self, key, item)
         self.owner = ReadOnly(vehicle.owner.as_info())
-        # self.get_position = vehicle.get_position
-        # self.get_heading = vehicle.get_heading
         self.set_heading = vehicle.set_heading
-        # self.get_vector = vehicle.get_vector
         self.set_vector = vehicle.set_vector
         self.goto = vehicle.goto
         self.get_distance = vehicle.get_distance
@@ -172,37 +149,12 @@ class VehicleProxy:
         self.stop = vehicle.stop
         self.start = vehicle.start
 
-    # def __getitem__(self, key):
-    #     return self._data[key]
-
-    # def keys(self):
-    #     return self._data.keys()
-
-    # def values(self):
-    #     return self._data.values()
-
-    # def items(self):
-    #     return self._data.items()
-
 
 class Tank(Vehicle):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, kind='tank', **kwargs)
 
-    # def move(self, dt, path):
-    #     obstacle = np.searchsorted(-path, 0)
-    #     # fact = 1
-    #     if obstacle == len(path):
-    #         fact = 1
-    #     else:
-    #         fact = (obstacle - 1) / len(path)
-    #     if fact < 0:
-    #         print(f'warning, negative TANK factor {fact}')
-    #     self.forward(self.speed * dt * fact)
-    #     # no_obstacles = (np.sum(path == 0)) == 0
-    #     # if no_obstacles:
-    #     #     self.forward(self.speed * dt)
     def move(self, x, y, map_value):
         if map_value == 1:
             self.set_position(x, y)
@@ -213,19 +165,6 @@ class Ship(Vehicle):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, kind='ship', **kwargs)
 
-    # def move(self, dt, path):
-    #     obstacle = np.searchsorted(path, 1)
-    #     # fact = 1
-    #     if obstacle == len(path):
-    #         fact = 1
-    #     else:
-    #         fact = (obstacle - 1) / len(path)
-    #     if fact < 0:
-    #         print(f'warning, negative SHIP factor {fact}')
-    #     self.forward(self.speed * dt * fact)
-    #     # no_obstacles = (np.sum(path == 1)) == 0
-    #     # if no_obstacles:
-    #     #     self.forward(self.speed * dt)
     def move(self, x, y, map_value):
         if map_value == 0:
             self.set_position(x, y)
@@ -250,5 +189,4 @@ class Jet(Vehicle):
         super().__init__(*args, kind='jet', **kwargs)
 
     def move(self, x, y, map_value):
-        # self.forward(self.speed * dt)
         self.set_position(x, y)

@@ -10,11 +10,6 @@ class Graphics:
 
     def __init__(self, engine):
 
-        # self.game_map = game_map
-        # self.nx = self.game_map.nx
-        # self.ny = self.game_map.ny
-        # self.ng = self.game_map.ng
-
         self.window = pyglet.window.Window(config.nx,
                                            config.ny + 32,
                                            caption='Supremacy')
@@ -28,12 +23,6 @@ class Graphics:
                                                y=config.ny + 5,
                                                batch=self.main_batch)
 
-        # self.time_label = pyglet.text.Label(f'Time left:',
-        #                                     color=(255, 255, 255, 255),
-        #                                     font_size=14,
-        #                                     x=config.nx - 150,
-        #                                     y=config.ny + 5,
-        #                                     batch=self.main_batch)
         self.engine = engine
 
         self.scoreboard_label = None
@@ -47,31 +36,14 @@ class Graphics:
         @self.window.event
         def on_key_release(symbol, modifiers):
             if symbol == pyglet.window.key.Y:
-                # pyglet.app.exit()
                 self.engine.map_review_stage = False
             elif symbol == pyglet.window.key.N:
                 self.engine.need_new_map = True
-            # self.window.clear()
-            # self.background.blit(0, 0)
-            # self.main_batch.draw()
-
-
-#     def update_time(self, time):
-#         if self.time_label is not None:
-#             self.time_label.delete()
-#         t = str(datetime.timedelta(seconds=int(time)))[2:]
-#         self.time_label = pyglet.text.Label(f'Time left: {t}',
-#                                             color=(255, 255, 255, 255),
-#                                             font_size=14,
-#                                             x=config.nx - 150,
-#                                             y=config.ny + 5,
-#                                             batch=self.main_batch)
 
     def update_scoreboard(self, t, players):
         if self.scoreboard_label is not None:
             self.scoreboard_label.delete()
         t_str = str(datetime.timedelta(seconds=int(t)))[2:]
-        # font_size = min(14, 100 / len(players))
         p_str = [f'{name}: {value}'.ljust(20) for name, value in players.items()]
         if len(players) <= 5:
             nspaces = 9
