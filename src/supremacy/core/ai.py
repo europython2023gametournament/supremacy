@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
-from .tools import eucledian_distance, periodic_distances
+from .tools import eucledian_distance, distance_on_torus
 
 
 class Ai:
@@ -8,9 +8,9 @@ class Ai:
     def run(self, *args, **kwargs):
         return
 
-    def exec(self, t: float, dt: float, info: dict, game_map):
-        # self.run(t=t, dt=dt, info=info, game_map=game_map.array.filled(-1))  # TODO
-        self.run(t=t, dt=dt, info=info, game_map=game_map.array)
+    # def exec(self, t: float, dt: float, info: dict, game_map):
+    #     self.run(t=t, dt=dt, info=info, game_map=game_map.array.filled(-1))  # TODO
+    #     # self.run(t=t, dt=dt, info=info, game_map=game_map.array)
 
     def get_distance(self,
                      xa: float,
@@ -21,4 +21,4 @@ class Ai:
         if not shortest:
             return eucledian_distance(xa, ya, xb, yb)
         else:
-            return periodic_distances(xa, ya, xb, yb)[0].min()
+            return distance_on_torus(xa, ya, xb, yb)

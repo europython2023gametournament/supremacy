@@ -3,7 +3,7 @@
 import numpy as np
 
 from .. import config
-from .tools import distance_torus
+from .tools import distance_on_torus
 
 
 def fight(players, ng):
@@ -15,7 +15,7 @@ def fight(players, ng):
     x2 = x1.T
     y1 = np.broadcast_to(y, (n, n))
     y2 = y1.T
-    dist = distance_torus(x1, y1, x2, y2)
+    dist = distance_on_torus(x1, y1, x2, y2)
     attackers, defenders = np.where(dist < config.fight_radius)
     dead_vehicles = {}
     dead_bases = {}

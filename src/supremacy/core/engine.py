@@ -117,23 +117,23 @@ class Engine:
                     del info[n][key]
         return info
 
-    def generate_info_old(self, player):
-        # TODO: optimize this
-        info = {}
-        for n, p in self.players.items():
-            info[n] = {}
-            for group in ('bases', 'tanks', 'ships', 'jets'):
-                for v in getattr(p, group).values():
-                    if not player.game_map[int(v.y):int(v.y) + 1,
-                                           int(v.x):int(v.x) + 1].mask[0]:
-                        # if n not in info:
-                        #     info[n] = {}
-                        if group not in info[n]:
-                            info[n][group] = []
-                        info[n][group].append((
-                            BaseProxy(v) if group == 'bases' else VehicleProxy(v)
-                        ) if player.team == n else ReadOnly(v.as_info()))
-        return info
+    # def generate_info_old(self, player):
+    #     # TODO: optimize this
+    #     info = {}
+    #     for n, p in self.players.items():
+    #         info[n] = {}
+    #         for group in ('bases', 'tanks', 'ships', 'jets'):
+    #             for v in getattr(p, group).values():
+    #                 if not player.game_map[int(v.y):int(v.y) + 1,
+    #                                        int(v.x):int(v.x) + 1].mask[0]:
+    #                     # if n not in info:
+    #                     #     info[n] = {}
+    #                     if group not in info[n]:
+    #                         info[n][group] = []
+    #                     info[n][group].append((
+    #                         BaseProxy(v) if group == 'bases' else VehicleProxy(v)
+    #                     ) if player.team == n else ReadOnly(v.as_info()))
+    #     return info
 
     # def map_all_bases(self):
     #     self.base_locations_buffer[...] = 0.0

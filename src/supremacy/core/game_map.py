@@ -115,3 +115,42 @@ class MapView:
         elif ymax >= ny:
             views.append(self.array[0:ymax - ny, xmin:xmax])
         return views
+
+    def view_slices(self, x, y, dx, dy):
+        ix = int(x)
+        iy = int(y)
+        ny, nx = self.array.shape
+        xmin = ix - dx
+        xmax = ix + dx + 1
+        ymin = iy - dy
+        ymax = iy + dy + 1
+        slices = [(slice(max(ymin, 0), min(ymax, ny)), slice(max(xmin, 0),
+                                                             min(xmax, nx)))]
+        if (xmin < 0) and (ymin < 0):
+            slices += [(slice(0, ymax), slice(nx + xmin, nx)),
+                       (slice(ny + ymin, ny), slice(0, xmax)),
+                       (slice(ny + ymin, ny), slice(nx + xmin, nx))]
+        elif (xmin < 0) and (ymax >= ny):
+            views += [
+                self.array[ymin:ny, nx + xmin:nx], self.array[0:ymax - ny, 0:xmax],
+                self.array[0:ymax - ny, nx + xmin:nx]
+            ]
+        elif (xmax >= nx) and (ymin < 0):
+            views += [
+                self.array[0:ymax, 0:xmax - nx], self.array[ny + ymin:ny, xmin:nx],
+                self.array[ny + ymin:ny, 0:xmax - nx]
+            ]
+        elif (xmax >= nx) and (ymax >= ny):
+            views += [
+                self.array[0:ymax - ny, xmin:nx], self.array[ymin:ny, 0:xmax - nx],
+                self.array[0:ymax - ny, 0:xmax - nx]
+            ]
+        elif xmin < 0:
+            views.append(self.array[ymin:ymax, nx + xmin:nx])
+        elif xmax >= nx:
+            views.append(self.array[ymin:ymax, 0:xmax - nx])
+        elif ymin < 0:
+            views.append(self.array[ny + ymin:ny, xmin:xmax])
+        elif ymax >= ny:
+            views.append(self.array[0:ymax - ny, xmin:xmax])
+        return views

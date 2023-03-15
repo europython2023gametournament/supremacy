@@ -80,15 +80,14 @@ class Player:
         #     v.cooldown = max(v.cooldown - dt, 0)
 
     def execute_ai(self, t: float, dt: float, info: dict, safe: bool = False):
+        game_map = self.game_map.array.filled(-1)
         if safe:
             try:
-                self.ai.run(t=t, dt=dt, info=info,
-                            game_map=self.game_map)  # game_map.array.filled(-1)
+                self.ai.run(t=t, dt=dt, info=info, game_map=game_map)
             except:
                 pass
         else:
-            self.ai.run(t=t, dt=dt, info=info,
-                        game_map=self.game_map)  # game_map.array.filled(-1)
+            self.ai.run(t=t, dt=dt, info=info, game_map=game_map)
 
     def collect_transformed_ships(self):
         for uid in self.transformed_ships:

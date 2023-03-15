@@ -23,7 +23,7 @@ def distance_flat(xa, ya, xb, yb):
     return np.sqrt((xb - xa)**2 + (yb - ya)**2)
 
 
-def distance_torus(xa, ya, xb, yb):
+def distance_on_torus(xa, ya, xb, yb):
     dx = np.abs(xb - xa)
     dy = np.abs(yb - ya)
     return np.sqrt(
