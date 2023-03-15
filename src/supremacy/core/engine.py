@@ -43,16 +43,18 @@ class Engine:
 
         player_locations = self.game_map.add_players(players=players)
         self.players = {
-            p.team: Player(ai=p,
-                           location=player_locations[p.team],
-                           number=i,
-                           team=p.team,
-                           batch=self.graphics.main_batch,
-                           game_map=np.ma.masked_where(True, self.game_map.array),
-                           score=_scores[p.team],
-                           nplayers=len(players),
-                           high_contrast=high_contrast,
-                           base_locations=self.base_locations)
+            p.team: Player(
+                ai=p,
+                location=player_locations[p.team],
+                number=i,
+                team=p.team,
+                batch=self.graphics.main_batch,
+                #    game_map=np.ma.masked_where(True, self.game_map.array),
+                game_map=self.game_map.array,
+                score=_scores[p.team],
+                nplayers=len(players),
+                high_contrast=high_contrast,
+                base_locations=self.base_locations)
             for i, p in enumerate(players)
         }
         self.scores = {}
@@ -106,7 +108,8 @@ class Engine:
             info[n] = {'bases': [], 'tanks': [], 'ships': [], 'jets': []}
             army = p.army
             xy = np.array([(v.y, v.x) for v in army]).astype(int)
-            inds = np.where(~player.game_map.array.mask[(xy[:, 0], xy[:, 1])])[0]
+            # inds = np.where(~player.game_map.array.mask[(xy[:, 0], xy[:, 1])])[0]
+            inds = np.where(player.game_map.array[(xy[:, 0], xy[:, 1])] != -1)[0]
             for ind in inds:
                 v = army[ind]
                 info[n][f'{v.kind}s'].append((

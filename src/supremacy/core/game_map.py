@@ -36,6 +36,8 @@ class GameMap:
         im = Image.fromarray(to_image.astype(np.uint8))
         im.save('background.png')
 
+        # self.view = MapView(self.array)
+
     def add_players(self, players):
         inds = np.random.choice(np.arange(self.nseeds),
                                 size=len(players),
@@ -131,26 +133,23 @@ class MapView:
                        (slice(ny + ymin, ny), slice(0, xmax)),
                        (slice(ny + ymin, ny), slice(nx + xmin, nx))]
         elif (xmin < 0) and (ymax >= ny):
-            views += [
-                self.array[ymin:ny, nx + xmin:nx], self.array[0:ymax - ny, 0:xmax],
-                self.array[0:ymax - ny, nx + xmin:nx]
-            ]
+            slices += [(slice(ymin, ny), slice(nx + xmin, nx)),
+                       (slice(0, ymax - ny), slice(0, xmax)),
+                       (slice(0, ymax - ny), slice(nx + xmin, nx))]
         elif (xmax >= nx) and (ymin < 0):
-            views += [
-                self.array[0:ymax, 0:xmax - nx], self.array[ny + ymin:ny, xmin:nx],
-                self.array[ny + ymin:ny, 0:xmax - nx]
-            ]
+            slices += [(slice(0, ymax), slice(0, xmax - nx)),
+                       (slice(ny + ymin, ny), slice(xmin, nx)),
+                       (slice(ny + ymin, ny), slice(0, xmax - nx))]
         elif (xmax >= nx) and (ymax >= ny):
-            views += [
-                self.array[0:ymax - ny, xmin:nx], self.array[ymin:ny, 0:xmax - nx],
-                self.array[0:ymax - ny, 0:xmax - nx]
-            ]
+            slices += [(slice(0, ymax - ny), slice(xmin, nx)),
+                       (slice(ymin, ny), slice(0, xmax - nx)),
+                       (slice(0, ymax - ny), slice(0, xmax - nx))]
         elif xmin < 0:
-            views.append(self.array[ymin:ymax, nx + xmin:nx])
+            slices.append((slice(ymin, ymax), slice(nx + xmin, nx)))
         elif xmax >= nx:
-            views.append(self.array[ymin:ymax, 0:xmax - nx])
+            slices.append((slice(ymin, ymax), slice(0, xmax - nx)))
         elif ymin < 0:
-            views.append(self.array[ny + ymin:ny, xmin:xmax])
+            slices.append((slice(ny + ymin, ny), slice(xmin, xmax)))
         elif ymax >= ny:
-            views.append(self.array[0:ymax - ny, xmin:xmax])
-        return views
+            slices.append((slice(0, ymax - ny), slice(xmin, xmax)))
+        return slices

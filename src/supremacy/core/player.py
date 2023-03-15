@@ -29,7 +29,8 @@ class Player:
         self.team = team
         self.batch = batch
         self.base_locations = base_locations
-        self.game_map = MapView(game_map)
+        self.original_map_array = game_map
+        self.game_map = MapView(np.full_like(game_map, -1))
         self.dead = False
         self.bases = {}
         self.tanks = {}
@@ -57,9 +58,10 @@ class Player:
 
     def update_player_map(self, x, y):
         r = config.view_radius
-        views = self.game_map.view(x=x, y=y, dx=r, dy=r)
-        for view in views:
-            view.mask = False
+        slices = self.game_map.view_slices(x=x, y=y, dx=r, dy=r)
+        for s in slices:
+            # view.mask = False
+            self.game_map.array[s[0], s[1]] = self.original_map_array[s[0], s[1]]
 
     def build_base(self, x, y):
         uid = uuid.uuid4().hex
@@ -80,14 +82,14 @@ class Player:
         #     v.cooldown = max(v.cooldown - dt, 0)
 
     def execute_ai(self, t: float, dt: float, info: dict, safe: bool = False):
-        game_map = self.game_map.array.filled(-1)
+        # game_map = self.game_map.array.filled(-1)
         if safe:
             try:
-                self.ai.run(t=t, dt=dt, info=info, game_map=game_map)
+                self.ai.run(t=t, dt=dt, info=info, game_map=self.game_map.array)
             except:
                 pass
         else:
-            self.ai.run(t=t, dt=dt, info=info, game_map=game_map)
+            self.ai.run(t=t, dt=dt, info=info, game_map=self.game_map.array)
 
     def collect_transformed_ships(self):
         for uid in self.transformed_ships:
