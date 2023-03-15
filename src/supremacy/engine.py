@@ -22,6 +22,7 @@ class Engine:
                  safe=False,
                  high_contrast=False,
                  test=True,
+                 fps=30,
                  time_limit=300):
 
         config.generate_images(nplayers=len(players))
@@ -30,18 +31,41 @@ class Engine:
         self.nx = config.nx
         self.ny = config.ny
         self.time_limit = time_limit
+        self.start_time = None
+        self.test = test
+        self.map_review_stage = True
+        self.need_new_map = True
+        self.current_scores = self.read_scores(players=players, test=self.test)
+        self.scores = {}
+        self.high_contrast = high_contrast
+        self.safe = safe
+        self.player_ais = players
+        self.players = {}
+
         self.game_map = GameMap(nx=self.nx,
                                 ny=self.ny,
                                 ng=self.ng,
-                                high_contrast=high_contrast)
-        self.graphics = Graphics(game_map=self.game_map,
-                                 players=[p.team for p in players])
-        self.safe = safe
-        self.base_locations = np.zeros_like(self.game_map.array)
+                                high_contrast=self.high_contrast)
 
-        _scores = self.read_scores(players=players, test=test)
+        self.graphics = Graphics(engine=self)
+        # input()
 
-        player_locations = self.game_map.add_players(players=players)
+        pyglet.clock.schedule_interval(self.update, 1 / fps)
+        pyglet.app.run()
+
+    def setup(self):
+        # print('enter setup')
+        # print(self.map_review_stage, self.need_new_map)
+        # if not self.need_new_map:
+        #     return
+
+        # Cleanup before adding players
+        self.base_locations = np.zeros((self.ny, self.nx), dtype=int)
+        for n, p in self.players.items():
+            for base in p.bases.values():
+                base.delete()
+
+        player_locations = self.game_map.add_players(players=self.player_ais)
         self.players = {
             p.team: Player(
                 ai=p,
@@ -51,13 +75,12 @@ class Engine:
                 batch=self.graphics.main_batch,
                 #    game_map=np.ma.masked_where(True, self.game_map.array),
                 game_map=self.game_map.array,
-                score=_scores[p.team],
-                nplayers=len(players),
-                high_contrast=high_contrast,
+                score=self.current_scores[p.team],
+                nplayers=len(self.player_ais),
+                high_contrast=self.high_contrast,
                 base_locations=self.base_locations)
-            for i, p in enumerate(players)
+            for i, p in enumerate(self.player_ais)
         }
-        self.scores = {}
 
     def read_scores(self, players, test):
         scores = {}
@@ -80,10 +103,10 @@ class Engine:
         map_value = self.game_map.array[int(y), int(x)]
         vehicle.move(x, y, map_value=map_value)
 
-    def run(self, fps=30):
-        self.start_time = time.time()
-        pyglet.clock.schedule_interval(self.update, 1 / fps)
-        pyglet.app.run()
+    # def run(self, fps=30):
+    #     # self.start_time = time.time()
+    #     pyglet.clock.schedule_interval(self.update, 1 / fps)
+    #     pyglet.app.run()
 
     # def generate_info(self):
     #     info = {name: {} for name in self.players}
@@ -224,9 +247,18 @@ class Engine:
         ]
         for i, (name, score) in enumerate(sorted_scores):
             print(f'{i + 1}. {name}: {score}')
-        input()
+        # input()
 
     def update(self, dt):
+        if self.map_review_stage:
+            if self.need_new_map:
+                self.setup()
+            self.need_new_map = False
+            if self.test:
+                self.map_review_stage = False
+            return
+        if self.start_time is None:
+            self.start_time = time.time()
         t = time.time() - self.start_time
         if t > self.time_limit:
             self.exit(message="Time limit reached!")
@@ -247,8 +279,9 @@ class Engine:
         for name, player in self.players.items():
             for v in player.vehicles:
                 v.reset_info()
-                self.move(v, dt)
-                player.update_player_map(x=v.x, y=v.y)
+                if not v.stopped:
+                    self.move(v, dt)
+                    player.update_player_map(x=v.x, y=v.y)
 
         dead_vehicles, dead_bases = fight(
             players={key: p

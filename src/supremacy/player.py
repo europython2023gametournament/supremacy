@@ -173,7 +173,7 @@ class Player:
 
     def dump_map(self):
         import matplotlib.pyplot as plt
-        fig, ax = plt.subplots(figsize=(10, 6))
+        fig, ax = plt.subplots(figsize=(15, 9))
         ax.imshow(self.game_map.array, origin='lower', aspect='equal')
         fig.savefig(f'{self.team}_map.png', bbox_inches='tight')
 

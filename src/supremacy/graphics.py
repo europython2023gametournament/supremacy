@@ -8,15 +8,15 @@ from . import config
 
 class Graphics:
 
-    def __init__(self, game_map, players):
+    def __init__(self, engine):
 
         # self.game_map = game_map
         # self.nx = self.game_map.nx
         # self.ny = self.game_map.ny
         # self.ng = self.game_map.ng
 
-        self.window = pyglet.window.Window(game_map.nx,
-                                           game_map.ny + 32,
+        self.window = pyglet.window.Window(config.nx,
+                                           config.ny + 32,
                                            caption='Supremacy')
         self.background = pyglet.resource.image('background.png')
         self.main_batch = pyglet.graphics.Batch()
@@ -34,6 +34,7 @@ class Graphics:
         #                                     x=config.nx - 150,
         #                                     y=config.ny + 5,
         #                                     batch=self.main_batch)
+        self.engine = engine
 
         self.scoreboard_label = None
 
@@ -42,6 +43,17 @@ class Graphics:
             self.window.clear()
             self.background.blit(0, 0)
             self.main_batch.draw()
+
+        @self.window.event
+        def on_key_release(symbol, modifiers):
+            if symbol == pyglet.window.key.Y:
+                # pyglet.app.exit()
+                self.engine.map_review_stage = False
+            elif symbol == pyglet.window.key.N:
+                self.engine.need_new_map = True
+            # self.window.clear()
+            # self.background.blit(0, 0)
+            # self.main_batch.draw()
 
 
 #     def update_time(self, time):

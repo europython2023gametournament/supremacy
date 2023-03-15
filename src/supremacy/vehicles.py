@@ -20,6 +20,7 @@ class Vehicle:
         self.attack = config.attack[kind]
         self.kind = kind
         self.batch = batch
+        self.stopped = False
         # self.cooldown = 0
 
         x, y = wrap_position(x, y)
@@ -87,7 +88,8 @@ class Vehicle:
                 'y': self.y,
                 'heading': self.get_heading(),
                 'vector': self.get_vector(),
-                'position': self.get_position()
+                'position': self.get_position(),
+                'stopped': self.stopped
             }
         return self._as_info
 
@@ -142,6 +144,12 @@ class Vehicle:
         self.avatar.delete()
         self.label.delete()
 
+    def stop(self):
+        self.stopped = True
+
+    def start(self):
+        self.stopped = False
+
     # def update_info(self):
     #     self.as_info = self.
 
@@ -161,6 +169,8 @@ class VehicleProxy:
         self.get_distance = vehicle.get_distance
         if vehicle.kind == 'ship':
             self.convert_to_base = vehicle.convert_to_base
+        self.stop = vehicle.stop
+        self.start = vehicle.start
 
     # def __getitem__(self, key):
     #     return self._data[key]

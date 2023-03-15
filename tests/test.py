@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
-from supremacy import Engine
+import supremacy
 from template_ai import PlayerAi
 
 names = [
@@ -28,5 +28,5 @@ for name in names:
     player.team = name
     players.append(player)
 
-eng = Engine(players=players, high_contrast=True, time_limit=8 * 60)
-eng.run()
+supremacy.start(players=players, high_contrast=True, time_limit=8 * 60)
+# eng.run()
