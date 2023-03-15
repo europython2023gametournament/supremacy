@@ -2,7 +2,7 @@
 
 import numpy as np
 
-from .. import config
+from . import config
 
 
 def wrap_position(x, y):

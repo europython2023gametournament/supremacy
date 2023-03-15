@@ -6,7 +6,7 @@ from scipy.ndimage import gaussian_filter
 from PIL import Image
 from matplotlib.colors import Normalize
 
-from .. import config
+from . import config
 from .tools import periodic_distances
 
 

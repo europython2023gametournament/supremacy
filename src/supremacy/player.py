@@ -4,7 +4,7 @@ import numpy as np
 import pyglet
 import uuid
 
-from .. import config
+from . import config
 from .base import Base
 from .game_map import MapView
 

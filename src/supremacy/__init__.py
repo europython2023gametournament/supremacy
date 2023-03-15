@@ -1,6 +1,6 @@
-from .core.config import Config
+from .config import Config
 
 config = Config()
 
-from .core.engine import Engine
-from .core.ai import Ai
+from .engine import Engine
+from .ai import Ai

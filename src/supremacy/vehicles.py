@@ -3,7 +3,7 @@
 import numpy as np
 import pyglet
 
-from .. import config
+from . import config
 from .tools import ReadOnly, wrap_position, eucledian_distance, periodic_distances
 
 

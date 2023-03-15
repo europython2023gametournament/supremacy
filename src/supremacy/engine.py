@@ -5,7 +5,7 @@ import pyglet
 import time
 import os
 
-from .. import config
+from . import config
 from .base import BaseProxy
 from .fight import fight
 from .game_map import GameMap, MapView

@@ -5,7 +5,7 @@ import numpy as np
 import pyglet
 import uuid
 
-from .. import config
+from . import config
 from .vehicles import Tank, Ship, Jet
 from .tools import wrap_position, periodic_distances
 

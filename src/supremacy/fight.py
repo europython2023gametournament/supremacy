@@ -2,7 +2,7 @@
 
 import numpy as np
 
-from .. import config
+from . import config
 from .tools import distance_on_torus
 
 

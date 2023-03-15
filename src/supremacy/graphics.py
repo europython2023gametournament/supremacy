@@ -3,7 +3,7 @@
 import datetime
 import pyglet
 
-from .. import config
+from . import config
 
 
 class Graphics:
