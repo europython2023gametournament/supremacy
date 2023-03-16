@@ -41,6 +41,7 @@ class Engine:
         self.safe = safe
         self.player_ais = players
         self.players = {}
+        self.explosions = {}
 
         self.game_map = GameMap(nx=self.nx,
                                 ny=self.ny,
@@ -164,6 +165,15 @@ class Engine:
             self.exit(message="Time limit reached!")
         self.init_dt(self.time_limit - t, dt)
 
+        for key in list(self.explosions.keys()):
+            self.explosions[key].update()
+            if self.explosions[key].animate <= 0:
+                del self.explosions[key]
+            # if exp.animate > 0:
+            #     exp.update()
+            # else:
+            #     self.explosions.remove(exp)
+
         for name, player in self.players.items():
             if player.dead:
                 if player.animate_skull > 0:
@@ -179,10 +189,11 @@ class Engine:
                     self.move(v, dt)
                     player.update_player_map(x=v.x, y=v.y)
 
-        dead_vehicles, dead_bases = fight(
+        dead_vehicles, dead_bases, explosions = fight(
             players={key: p
                      for key, p in self.players.items() if not p.dead},
-            ng=self.game_map.ng)
+            batch=self.graphics.main_batch)
+        self.explosions.update(explosions)
         for name in dead_vehicles:
             for uid in dead_vehicles[name]:
                 self.players[name].remove(uid)
