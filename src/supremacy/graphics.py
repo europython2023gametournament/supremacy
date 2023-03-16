@@ -46,7 +46,7 @@ class Graphics:
         t_str = str(datetime.timedelta(seconds=int(t)))[2:]
         p_str = [f'{name}: {value}'.ljust(20) for name, value in players.items()]
         if len(players) <= 5:
-            nspaces = 9
+            nspaces = 3
             font_size = 14
         elif len(players) <= 10:
             nspaces = 0

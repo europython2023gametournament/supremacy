@@ -8,11 +8,11 @@ names = [
     'Drew',
     'Simon',
     'Jankas',
-    'Greg',
-    'Mads',
-    'Afonso',
-    'Sun',
-    'Troels',
+    # 'Greg',
+    # 'Mads',
+    # 'Afonso',
+    # 'Sun',
+    # 'Troels',
     # 'Piotr'
 ]
 
