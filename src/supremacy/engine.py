@@ -27,7 +27,6 @@ class Engine:
 
         config.generate_images(nplayers=len(players))
 
-        self.ng = config.ng
         self.nx = config.nx
         self.ny = config.ny
         self.time_limit = time_limit
@@ -45,7 +44,6 @@ class Engine:
 
         self.game_map = GameMap(nx=self.nx,
                                 ny=self.ny,
-                                ng=self.ng,
                                 high_contrast=self.high_contrast)
 
         self.graphics = Graphics(engine=self)

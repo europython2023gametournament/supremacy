@@ -12,11 +12,10 @@ from .tools import periodic_distances
 
 class GameMap:
 
-    def __init__(self, nx, ny, ng, high_contrast=False):
+    def __init__(self, nx, ny, high_contrast=False):
 
         self.nx = nx
         self.ny = ny
-        self.ng = ng
         image = np.zeros([self.ny, self.nx])
         self.nseeds = 200
         self.xseed = np.random.randint(self.nx, size=self.nseeds)

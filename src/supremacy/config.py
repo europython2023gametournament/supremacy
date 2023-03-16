@@ -7,6 +7,13 @@ import pyglet
 import os
 
 
+def _load_image(path):
+    img = pyglet.image.load(path)
+    img.anchor_x = img.width // 2
+    img.anchor_y = img.height // 2
+    return img
+
+
 class Config:
 
     def __init__(self):
@@ -18,18 +25,18 @@ class Config:
         self.view_radius = 20
         self.vehicle_offset = 5
         self.competing_mine_radius = 40
-        self.ng = 8
         self.fight_radius = 5
-        self.nx = self.ng * 240  # 475
-        self.ny = self.ng * 124  # 250
-        self.images = {}
+        self.nx = 1920
+        self.ny = 992
         self.resource_path = os.path.join('..', 'resources')
+        self.images = {
+            'explosion': _load_image(os.path.join(self.resource_path, 'explosion.png'))
+        }
 
     def generate_images(self, nplayers):
         for n in range(nplayers):
             rgb = colors.to_rgb(f'C{n}')
             for name in ('jet', 'ship', 'tank', 'base', 'skull'):
-                # print(n, name)
                 fname = os.path.join(self.resource_path, f'{name}.png')
                 img = Image.open(fname)
                 img = img.convert('RGBA')
@@ -40,8 +47,4 @@ class Config:
                 out = Image.fromarray(new_data.astype(np.uint8))
                 outfile = os.path.join(self.resource_path, f'{name}_{n}.png')
                 out.save(outfile)
-                image = pyglet.image.load(outfile)
-                image.anchor_x = image.width // 2
-                image.anchor_y = image.height // 2
-                self.images[f'{name}_{n}'] = image
-        # print(self.images)
+                self.images[f'{name}_{n}'] = _load_image(outfile)
