@@ -3,9 +3,9 @@ requires = ["setuptools", "setuptools-scm", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "quest"
+name = "supremacy"
 version = "0.1.0"
-description = "Build a team of knights to go and slay the king!"
+description = "Mine crystal to build an army and conquer the world!"
 license = {text = "BSD-3-Clause"}
 authors = [{name = "Neil Vaytet"}]
 readme = "README.md"
@@ -19,18 +19,16 @@ classifiers = [
 ]
 requires-python = ">=3.8"
 dependencies = [
-    "numpy >= 1.24",
-    "pyyaml >= 6.0"
-]
-
-[project.optional-dependencies]
-notebook = [
-    "jupyter >= 1.0.0", 
-    "ipyturtle3 >= 0.1.4"
+    "matplotlib",
+    "numpy",
+    "pyglet >= 2.0"
 ]
 
 [tool.setuptools.packages.find]
 where = ["./src"]
+
+[tool.setuptools.package-data]
+supremacy = ["resources/*.png"]
 
 [tool.yapf]
 based_on_style = "pep8"
