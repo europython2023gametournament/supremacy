@@ -39,6 +39,8 @@ class Graphics:
                 self.engine.map_review_stage = False
             elif symbol == pyglet.window.key.N:
                 self.engine.need_new_map = True
+            elif symbol == pyglet.window.key.P:
+                self.engine.paused = not self.engine.paused
 
     def update_scoreboard(self, t, players):
         if self.scoreboard_label is not None:

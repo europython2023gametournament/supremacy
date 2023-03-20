@@ -43,6 +43,7 @@ class Engine:
         self.players = {}
         self.explosions = {}
         self.crystal_boost = crystal_boost
+        self.paused = False
 
         self.game_map = GameMap(nx=self.nx,
                                 ny=self.ny,
@@ -150,6 +151,8 @@ class Engine:
             print(f'{i + 1}. {name}: {score}')
 
     def update(self, dt):
+        if self.paused:
+            return
         if self.map_review_stage:
             if self.need_new_map:
                 self.setup()
