@@ -4,7 +4,7 @@ import numpy as np
 import pyglet
 
 from . import config
-from .tools import ReadOnly, wrap_position, eucledian_distance, periodic_distances
+from . import tools as tls
 
 
 class Vehicle:
@@ -22,7 +22,7 @@ class Vehicle:
         self.batch = batch
         self.stopped = False
 
-        x, y = wrap_position(x, y)
+        x, y = tls.wrap_position(x, y)
         self.x = x
         self.y = y
         self._heading = heading
@@ -102,7 +102,7 @@ class Vehicle:
         if not shortest_path:
             self.set_vector([x - self.x, y - self.y])
             return
-        d, xl, yl = periodic_distances(self.x, self.y, x, y)
+        d, xl, yl = tls.periodic_distances(self.x, self.y, x, y)
         ind = np.argmin(d)
         self.set_vector(
             [xl[ind] - (self.x + config.nx), yl[ind] - (self.y + config.ny)])
@@ -114,14 +114,14 @@ class Vehicle:
 
     def next_position(self, dt: float) -> np.ndarray:
         pos = self.get_position() + self.get_vector() * self.speed * dt
-        x, y = wrap_position(*pos)
+        x, y = tls.wrap_position(*pos)
         return x, y
 
     def get_distance(self, x: float, y: float, shortest=True) -> float:
         if not shortest:
-            return eucledian_distance(self.x, self.y, x, y)
+            return tls.eucledian_distance(self.x, self.y, x, y)
         else:
-            return periodic_distances(self.x, self.y, x, y)[0].min()
+            return tls.distance_on_torus(self.x, self.y, x, y)
 
     def delete(self):
         self.avatar.delete()
@@ -139,7 +139,7 @@ class VehicleProxy:
     def __init__(self, vehicle):
         for key, item in vehicle.as_info().items():
             setattr(self, key, item)
-        self.owner = ReadOnly(vehicle.owner.as_info())
+        self.owner = tls.ReadOnly(vehicle.owner.as_info())
         self.set_heading = vehicle.set_heading
         self.set_vector = vehicle.set_vector
         self.goto = vehicle.goto

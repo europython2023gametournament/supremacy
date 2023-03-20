@@ -23,7 +23,8 @@ class Engine:
                  high_contrast=False,
                  test=True,
                  fps=30,
-                 time_limit=300):
+                 time_limit=300,
+                 crystal_boost=1):
 
         config.generate_images(nplayers=len(players))
 
@@ -41,6 +42,7 @@ class Engine:
         self.player_ais = players
         self.players = {}
         self.explosions = {}
+        self.crystal_boost = crystal_boost
 
         self.game_map = GameMap(nx=self.nx,
                                 ny=self.ny,
@@ -54,7 +56,7 @@ class Engine:
     def setup(self):
         # Cleanup before adding players
         self.base_locations = np.zeros((self.ny, self.nx), dtype=int)
-        for n, p in self.players.items():
+        for p in self.players.values():
             for base in p.bases.values():
                 base.delete()
 
@@ -97,7 +99,6 @@ class Engine:
             info[n] = {'bases': [], 'tanks': [], 'ships': [], 'jets': []}
             army = p.army
             xy = np.array([(v.y, v.x) for v in army]).astype(int)
-            # inds = np.where(~player.game_map.array.mask[(xy[:, 0], xy[:, 1])])[0]
             inds = np.where(player.game_map.array[(xy[:, 0], xy[:, 1])] != -1)[0]
             for ind in inds:
                 v = army[ind]
@@ -121,7 +122,7 @@ class Engine:
                     view.sum() for view in base_locs.view(
                         x=base.x, y=base.y, dx=min_distance, dy=min_distance)
                 ])
-                base.crystal += 2 * len(base.mines) / nbases
+                base.crystal += self.crystal_boost * 2 * len(base.mines) / nbases
                 before = base.competing
                 base.competing = nbases > 1
                 if before != base.competing:
@@ -167,10 +168,6 @@ class Engine:
             self.explosions[key].update()
             if self.explosions[key].animate <= 0:
                 del self.explosions[key]
-            # if exp.animate > 0:
-            #     exp.update()
-            # else:
-            #     self.explosions.remove(exp)
 
         for name, player in self.players.items():
             if player.dead:

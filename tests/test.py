@@ -8,8 +8,8 @@ names = [
     'Drew',
     'Simon',
     'Jankas',
-    # 'Greg',
-    # 'Mads',
+    'Greg',
+    'Mads',
     # 'Afonso',
     # 'Sun',
     # 'Troels',
@@ -22,4 +22,4 @@ for name in names:
     player.team = name
     players.append(player)
 
-supremacy.start(players=players, high_contrast=True, time_limit=8 * 60)
+supremacy.start(players=players, high_contrast=True, time_limit=8 * 60, crystal_boost=1)

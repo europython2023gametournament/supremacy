@@ -2,17 +2,13 @@
 
 import numpy as np
 
-from supremacy import Ai
-
 CREATOR = 'JohnDoe'
 
 
-class PlayerAi(Ai):
+class PlayerAi:
 
     def __init__(self):
-        super().__init__()
         self.team = CREATOR
-
         self.previous_positions = {}
         self.ntanks = {}
         self.nships = {}

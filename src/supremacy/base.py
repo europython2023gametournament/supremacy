@@ -7,7 +7,7 @@ import uuid
 
 from . import config
 from .vehicles import Tank, Ship, Jet
-from .tools import wrap_position, periodic_distances
+from .tools import wrap_position, eucledian_distance, distance_on_torus
 
 
 class Mine:
@@ -245,8 +245,9 @@ class Base:
 
     def get_distance(self, x: float, y: float, shortest=True) -> float:
         if not shortest:
-            return np.sqrt((x - self.x)**2 + (y - self.y)**2)
-        return periodic_distances(self.x, self.y, x, y)[0].min()
+            return eucledian_distance(self.x, self.y, x, y)
+        else:
+            return distance_on_torus(self.x, self.y, x, y)
 
 
 class BaseProxy:
