@@ -38,5 +38,18 @@ def periodic_distances(xa, ya, xb, yb):
 class ReadOnly:
 
     def __init__(self, props):
+        self._data = props
         for key, item in props.items():
             setattr(self, key, item)
+
+    def __getitem__(self, key):
+        return self._data[key]
+
+    def keys(self):
+        return self._data.keys()
+
+    def values(self):
+        return self._data.values()
+
+    def items(self):
+        return self._data.items()

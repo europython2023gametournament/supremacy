@@ -137,7 +137,8 @@ class Vehicle:
 class VehicleProxy:
 
     def __init__(self, vehicle):
-        for key, item in vehicle.as_info().items():
+        self._data = vehicle.as_info()
+        for key, item in self._data.items():
             setattr(self, key, item)
         self.owner = tls.ReadOnly(vehicle.owner.as_info())
         self.set_heading = vehicle.set_heading
@@ -148,6 +149,18 @@ class VehicleProxy:
             self.convert_to_base = vehicle.convert_to_base
         self.stop = vehicle.stop
         self.start = vehicle.start
+
+    def __getitem__(self, key):
+        return self._data[key]
+
+    def keys(self):
+        return self._data.keys()
+
+    def values(self):
+        return self._data.values()
+
+    def items(self):
+        return self._data.items()
 
 
 class Tank(Vehicle):
