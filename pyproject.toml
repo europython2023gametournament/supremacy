@@ -19,6 +19,7 @@ classifiers = [
 ]
 requires-python = ">=3.8"
 dependencies = [
+    "importlib-resources",
     "matplotlib",
     "numpy",
     "pyglet >= 2.0"
