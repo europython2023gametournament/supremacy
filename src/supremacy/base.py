@@ -7,7 +7,7 @@ import uuid
 
 from . import config
 from .vehicles import Tank, Ship, Jet
-from .tools import wrap_position, eucledian_distance, distance_on_torus
+from .tools import wrap_position, distance_on_plane, distance_on_torus
 
 
 class Mine:
@@ -245,7 +245,7 @@ class Base:
 
     def get_distance(self, x: float, y: float, shortest=True) -> float:
         if not shortest:
-            return eucledian_distance(self.x, self.y, x, y)
+            return distance_on_plane(self.x, self.y, x, y)
         else:
             return distance_on_torus(self.x, self.y, x, y)
 

@@ -119,7 +119,7 @@ class Vehicle:
 
     def get_distance(self, x: float, y: float, shortest=True) -> float:
         if not shortest:
-            return tls.eucledian_distance(self.x, self.y, x, y)
+            return tls.distance_on_plane(self.x, self.y, x, y)
         else:
             return tls.distance_on_torus(self.x, self.y, x, y)
 

@@ -15,11 +15,7 @@ def wrap_position(x, y):
     return x, y
 
 
-def eucledian_distance(xa, ya, xb, yb):
-    return np.sqrt((xb - xa)**2 + (yb - ya)**2)
-
-
-def distance_flat(xa, ya, xb, yb):
+def distance_on_plane(xa, ya, xb, yb):
     return np.sqrt((xb - xa)**2 + (yb - ya)**2)
 
 
