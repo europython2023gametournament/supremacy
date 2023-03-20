@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
+import importlib
 import numpy as np
 import pyglet
 import time
@@ -18,7 +19,7 @@ from .vehicles import VehicleProxy
 class Engine:
 
     def __init__(self,
-                 players: list,
+                 players: dict,
                  safe=False,
                  high_contrast=False,
                  test=True,
@@ -44,6 +45,8 @@ class Engine:
         self.explosions = {}
         self.crystal_boost = crystal_boost
         self.paused = False
+        self.previously_paused = False
+        self.round = 0
 
         self.game_map = GameMap(nx=self.nx,
                                 ny=self.ny,
@@ -62,19 +65,20 @@ class Engine:
                 base.delete()
 
         player_locations = self.game_map.add_players(players=self.player_ais)
-        self.players = {
-            p.team: Player(ai=p,
-                           location=player_locations[p.team],
-                           number=i,
-                           team=p.team,
-                           batch=self.graphics.main_batch,
-                           game_map=self.game_map.array,
-                           score=self.current_scores[p.team],
-                           nplayers=len(self.player_ais),
-                           high_contrast=self.high_contrast,
-                           base_locations=self.base_locations)
-            for i, p in enumerate(self.player_ais)
-        }
+        self.players = {}
+        for i, (name, ai) in enumerate(self.player_ais.items()):
+            p = ai.PlayerAi()
+            # p.team = name
+            self.players[p.team] = Player(ai=p,
+                                          location=player_locations[p.team],
+                                          number=i,
+                                          team=p.team,
+                                          batch=self.graphics.main_batch,
+                                          game_map=self.game_map.array,
+                                          score=self.current_scores[p.team],
+                                          nplayers=len(self.player_ais),
+                                          high_contrast=self.high_contrast,
+                                          base_locations=self.base_locations)
 
     def read_scores(self, players, test):
         scores = {}
@@ -82,11 +86,13 @@ class Engine:
         if os.path.exists(fname) and (not test):
             with open(fname, 'r') as f:
                 contents = f.readlines()
-            for line in contents:
+            self.round = int(contents[0].split('=')[1].strip())
+            for line in contents[1:]:
                 name, score = line.split(':')
                 scores[name] = int(score.strip())
         else:
-            scores = {p.team: 0 for p in players}
+            # scores = {p.team: 0 for p in players}
+            scores = {p: 0 for p in players}
         return scores
 
     def move(self, vehicle, dt):
@@ -141,6 +147,7 @@ class Engine:
             p.dump_map()
         fname = 'scores.txt'
         with open(fname, 'w') as f:
+            f.write(f'Round = {self.round + 1}\n')
             for name, score in self.scores.items():
                 f.write(f'{name}: {score}\n')
         sorted_scores = [
@@ -151,8 +158,20 @@ class Engine:
             print(f'{i + 1}. {name}: {score}')
 
     def update(self, dt):
+        # print(dt)
         if self.paused:
+            self.previously_paused = True
             return
+        else:
+            if self.previously_paused:
+                self.previously_paused = False
+                # self.start_time = time.time() - (self.time_limit - self.t)
+                for name, ai in self.player_ais.items():
+                    importlib.reload(ai)
+                    new_ai = ai.PlayerAi()
+                    # new_ai.team = name
+                    self.players[new_ai.team].ai = new_ai
+
         if self.map_review_stage:
             if self.need_new_map:
                 self.setup()

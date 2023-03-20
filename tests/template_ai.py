@@ -49,6 +49,7 @@ class PlayerAi:
                     elif target is not None:
                         tank.goto(*target)
                 self.previous_positions[tank.uid] = tank.position
+                # tank.stop()
 
         if 'ships' in myinfo:
             for ship in myinfo['ships']:

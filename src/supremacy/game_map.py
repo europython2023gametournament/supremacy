@@ -60,7 +60,8 @@ class GameMap:
                     dist = periodic_distances(i, j, loc[0], loc[1])[0].min()
                     if dist < 2 * config.competing_mine_radius:
                         not_set = True
-            locations[player.team] = (i, j)
+            # locations[player.team] = (i, j)
+            locations[player] = (i, j)
 
         return locations
 
