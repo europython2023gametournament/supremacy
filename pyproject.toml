@@ -22,7 +22,8 @@ dependencies = [
     "importlib-resources",
     "matplotlib",
     "numpy",
-    "pyglet >= 2.0"
+    "pyglet >= 2.0",
+    "scipy"
 ]
 
 [tool.setuptools.packages.find]
