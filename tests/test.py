@@ -18,4 +18,7 @@ names = [
 
 players = {name: template_ai for name in names}
 
-supremacy.start(players=players, high_contrast=True, time_limit=8 * 60, crystal_boost=1)
+supremacy.start(players=players,
+                high_contrast=False,
+                time_limit=8 * 60,
+                crystal_boost=1)

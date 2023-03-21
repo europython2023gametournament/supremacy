@@ -33,7 +33,11 @@ class GameMap:
         else:
             gy, gx = np.gradient(np.flipud(self.array))
             contour = np.abs(gy) + np.abs(gx)
-            to_image = cmap(norm(np.flipud(smooth))) * 255
+            inds = contour > 0
+            ii = np.broadcast_to(inds.reshape(inds.shape + (1, )), inds.shape + (3, ))
+            to_image = cmap(norm(np.flipud(smooth)))[..., :3] * 255
+            contour_color = np.full_like(to_image, (0, 140, 240))
+            to_image[ii] = contour_color[ii]
         im = Image.fromarray(to_image.astype(np.uint8))
         im.save('background.png')
 
