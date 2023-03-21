@@ -31,6 +31,8 @@ class GameMap:
         if high_contrast:
             to_image = np.flipud(self.array * 255)
         else:
+            gy, gx = np.gradient(np.flipud(self.array))
+            contour = np.abs(gy) + np.abs(gx)
             to_image = cmap(norm(np.flipud(smooth))) * 255
         im = Image.fromarray(to_image.astype(np.uint8))
         im.save('background.png')
@@ -60,7 +62,6 @@ class GameMap:
                     dist = periodic_distances(i, j, loc[0], loc[1])[0].min()
                     if dist < 2 * config.competing_mine_radius:
                         not_set = True
-            # locations[player.team] = (i, j)
             locations[player] = (i, j)
 
         return locations
