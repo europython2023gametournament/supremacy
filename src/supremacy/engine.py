@@ -47,6 +47,7 @@ class Engine:
         self.paused = False
         self.previously_paused = False
         self.round = 0
+        self.pause_time = 0
 
         self.game_map = GameMap(nx=self.nx,
                                 ny=self.ny,
@@ -68,7 +69,7 @@ class Engine:
         self.players = {}
         for i, (name, ai) in enumerate(self.player_ais.items()):
             p = ai.PlayerAi()
-            # p.team = name
+            p.team = name
             self.players[p.team] = Player(ai=p,
                                           location=player_locations[p.team],
                                           number=i,
@@ -91,8 +92,8 @@ class Engine:
                 name, score = line.split(':')
                 scores[name] = int(score.strip())
         else:
-            # scores = {p.team: 0 for p in players}
             scores = {p: 0 for p in players}
+        print('Scores:', scores)
         return scores
 
     def move(self, vehicle, dt):
@@ -158,18 +159,20 @@ class Engine:
             print(f'{i + 1}. {name}: {score}')
 
     def update(self, dt):
-        # print(dt)
+
         if self.paused:
-            self.previously_paused = True
+            if not self.previously_paused:
+                self.previously_paused = True
+                self.pause_time = time.time()
             return
         else:
             if self.previously_paused:
                 self.previously_paused = False
-                # self.start_time = time.time() - (self.time_limit - self.t)
+                self.time_limit += time.time() - self.pause_time
                 for name, ai in self.player_ais.items():
                     importlib.reload(ai)
                     new_ai = ai.PlayerAi()
-                    # new_ai.team = name
+                    new_ai.team = name
                     self.players[new_ai.team].ai = new_ai
 
         if self.map_review_stage:

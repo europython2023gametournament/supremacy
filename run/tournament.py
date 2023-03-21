@@ -1,33 +1,26 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
+import importlib
 import os
 import supremacy
-import template_ai
-
-# neil = PlayerAi()
-# neil.team = 'Neil'
-
-# drew = PlayerAi()
-# drew.team = 'Drew'
-
-# simon = PlayerAi()
-# simon.team = 'Simon'
-
-# jankas = PlayerAi()
-# jankas.team = 'Jankas'
-
-# players = [neil, drew, simon, jankas]
 
 names = [
-    'Neil',
-    'Drew',
-    'Simon',
-    'Jankas',
-    'Greg',
-    'Mads',
+    'afonso',
+    'drew',
+    # 'greg',
+    # 'jankas',
+    # 'mads',
+    # 'neil',
+    # 'piotr',
+    # 'simon',
+    # 'sun',
+    # 'troels',
 ]
 
-players = {name: template_ai for name in names}
+players = {}
+for name in names:
+    ai = importlib.import_module(f'{name}_ai')
+    players[ai.CREATOR] = ai
 
 current_round = 0
 fname = 'scores.txt'
@@ -37,5 +30,6 @@ if os.path.exists(fname):
     current_round = int(contents.split('=')[1].strip())
 
 for i in range(current_round, 10):
+    print(f'############# ROUND {i + 1} #############')
     supremacy.start(players=players, test=False, time_limit=8 * 60)
     input()

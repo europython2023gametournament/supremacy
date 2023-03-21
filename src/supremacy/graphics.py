@@ -10,6 +10,8 @@ class Graphics:
 
     def __init__(self, engine):
 
+        self.engine = engine
+
         self.window = pyglet.window.Window(config.nx,
                                            config.ny + 32,
                                            caption='Supremacy')
@@ -23,7 +25,14 @@ class Graphics:
                                                y=config.ny + 5,
                                                batch=self.main_batch)
 
-        self.engine = engine
+        self.map_review_label = None
+        if not self.engine.test:
+            self.map_review_label = pyglet.text.Label('Map review stage [Y/N]?',
+                                                      color=(255, 255, 255, 255),
+                                                      font_size=14,
+                                                      x=config.nx * 0.4,
+                                                      y=config.ny + 5,
+                                                      batch=self.main_batch)
 
         self.scoreboard_label = None
 
@@ -37,6 +46,8 @@ class Graphics:
         def on_key_release(symbol, modifiers):
             if symbol == pyglet.window.key.Y:
                 self.engine.map_review_stage = False
+                if self.map_review_label is not None:
+                    self.map_review_label.delete()
             elif symbol == pyglet.window.key.N:
                 self.engine.need_new_map = True
             elif symbol == pyglet.window.key.P:

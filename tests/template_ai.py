@@ -43,7 +43,7 @@ class PlayerAi:
 
         if 'tanks' in myinfo:
             for tank in myinfo['tanks']:
-                if tank.uid in self.previous_positions:
+                if (tank.uid in self.previous_positions) and (not tank.stopped):
                     if all(tank.position == self.previous_positions[tank.uid]):
                         tank.set_heading(np.random.random() * 360.0)
                     elif target is not None:
