@@ -105,7 +105,7 @@ class Engine:
         info = {}
         for n, p in [(n, p) for n, p in self.players.items() if not p.dead]:
             info[n] = {'bases': [], 'tanks': [], 'ships': [], 'jets': []}
-            army = p.army
+            army = list(p.army)
             xy = np.array([(v.y, v.x) for v in army]).astype(int)
             inds = np.where(player.game_map.array[(xy[:, 0], xy[:, 1])] != -1)[0]
             for ind in inds:

@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
+from itertools import chain
 import numpy as np
 import pyglet
 import uuid
@@ -92,24 +93,22 @@ class Player:
         """
         All the players's vehicles, bases and mines
         """
-        mines = [list(base.mines.values()) for base in self.bases.values()]
-        return self.army + [item for sublist in mines for item in sublist]
+        mines = [base.mines.values() for base in self.bases.values()]
+        return chain(self.army, *mines)
 
     @property
     def vehicles(self):
         """
         All the players's vehicles
         """
-        return list(self.tanks.values()) + list(self.ships.values()) + list(
-            self.jets.values())
+        return chain(self.tanks.values(), self.ships.values(), self.jets.values())
 
     @property
     def army(self):
         """
         All the players's vehicles and bases
         """
-        return list(self.bases.values()) + list(self.tanks.values()) + list(
-            self.ships.values()) + list(self.jets.values())
+        return chain(self.bases.values(), self.vehicles)
 
     def remove(self, uid):
         if uid in self.tanks:
