@@ -1,5 +1,7 @@
 # supremacy
 
+![supremacy](https://user-images.githubusercontent.com/39047984/227036299-973a0494-32ac-44ba-b113-607fb64745c0.jpeg)
+
 Get started:
 
 ```
