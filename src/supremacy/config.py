@@ -6,8 +6,10 @@ from PIL import Image
 import pyglet
 import importlib_resources as ir
 
+from typing import Any
 
-def _recenter_image(img):
+
+def _recenter_image(img: Any) -> Any:
     img.anchor_x = img.width // 2
     img.anchor_y = img.height // 2
     return img
@@ -31,7 +33,7 @@ class Config:
         img = _recenter_image(pyglet.image.load(self.resources / 'explosion.png'))
         self.images = {'explosion': img}
 
-    def generate_images(self, nplayers):
+    def generate_images(self, nplayers: int):
         for n in range(nplayers):
             rgb = colors.to_rgb(f'C{n}')
             for name in ('jet', 'ship', 'tank', 'base', 'skull'):

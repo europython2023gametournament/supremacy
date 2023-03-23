@@ -3,6 +3,7 @@
 from itertools import chain
 import numpy as np
 import pyglet
+from typing import Any, Iterator, Tuple
 import uuid
 
 from . import config
@@ -13,16 +14,16 @@ from .game_map import MapView
 class Player:
 
     def __init__(self,
-                 ai,
-                 location,
-                 number,
-                 team,
-                 batch,
-                 game_map,
-                 score,
-                 nplayers,
-                 base_locations,
-                 high_contrast=False):
+                 ai: Any,
+                 location: Tuple[int, int],
+                 number: int,
+                 team: str,
+                 batch: Any,
+                 game_map: np.ndarray,
+                 score: int,
+                 nplayers: int,
+                 base_locations: np.ndarray,
+                 high_contrast: bool = False):
         self.ai = ai
         self.ai.team = team
         self.hq = location
@@ -54,13 +55,13 @@ class Player:
                                            y=config.ny + 12,
                                            batch=self.batch)
 
-    def update_player_map(self, x, y):
+    def update_player_map(self, x: float, y: float):
         r = config.view_radius
         slices = self.game_map.view_slices(x=x, y=y, dx=r, dy=r)
         for s in slices:
             self.game_map.array[s[0], s[1]] = self.original_map_array[s[0], s[1]]
 
-    def build_base(self, x, y):
+    def build_base(self, x: float, y: float):
         uid = uuid.uuid4().hex
         self.bases[uid] = Base(x=x,
                                y=y,
@@ -72,7 +73,7 @@ class Player:
                                high_contrast=self.high_contrast)
         self.base_locations[int(y), int(x)] = 1
 
-    def init_dt(self, dt):
+    def init_dt(self):
         self.transformed_ships.clear()
 
     def execute_ai(self, t: float, dt: float, info: dict, safe: bool = False):
@@ -89,7 +90,7 @@ class Player:
             del self.ships[uid]
 
     @property
-    def children(self):
+    def children(self) -> Iterator:
         """
         All the players's vehicles, bases and mines
         """
@@ -97,20 +98,20 @@ class Player:
         return chain(self.army, *mines)
 
     @property
-    def vehicles(self):
+    def vehicles(self) -> Iterator:
         """
         All the players's vehicles
         """
         return chain(self.tanks.values(), self.ships.values(), self.jets.values())
 
     @property
-    def army(self):
+    def army(self) -> Iterator:
         """
         All the players's vehicles and bases
         """
         return chain(self.bases.values(), self.vehicles)
 
-    def remove(self, uid):
+    def remove(self, uid: str):
         if uid in self.tanks:
             self.tanks[uid].delete()
             del self.tanks[uid]
@@ -126,14 +127,14 @@ class Player:
                     del base.mines[uid]
                     base.make_label()
 
-    def remove_base(self, uid):
+    def remove_base(self, uid: str):
         self.bases[uid].delete()
         del self.bases[uid]
 
-    def economy(self):
+    def economy(self) -> int:
         return int(sum([base.crystal for base in self.bases.values()]))
 
-    def make_label(self):
+    def make_label(self) -> str:
         return f'{self.economy()}[{self.score}]'
 
     def rip(self):

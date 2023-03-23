@@ -3,12 +3,14 @@
 import datetime
 import pyglet
 
+from typing import Any
+
 from . import config
 
 
 class Graphics:
 
-    def __init__(self, engine):
+    def __init__(self, engine: Any):
 
         self.engine = engine
 
@@ -53,7 +55,7 @@ class Graphics:
             elif symbol == pyglet.window.key.P:
                 self.engine.paused = not self.engine.paused
 
-    def update_scoreboard(self, t, players):
+    def update_scoreboard(self, t: float, players: dict):
         if self.scoreboard_label is not None:
             self.scoreboard_label.delete()
         t_str = str(datetime.timedelta(seconds=int(t)))[2:]

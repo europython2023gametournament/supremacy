@@ -6,13 +6,15 @@ from scipy.ndimage import gaussian_filter
 from PIL import Image
 from matplotlib.colors import Normalize
 
+from typing import Any, List
+
 from . import config
 from .tools import periodic_distances
 
 
 class GameMap:
 
-    def __init__(self, nx, ny, high_contrast=False):
+    def __init__(self, nx: int, ny: int, high_contrast: bool = False):
 
         self.nx = nx
         self.ny = ny
@@ -41,7 +43,7 @@ class GameMap:
         im = Image.fromarray(to_image.astype(np.uint8))
         im.save('background.png')
 
-    def add_players(self, players):
+    def add_players(self, players: dict):
         inds = np.random.choice(np.arange(self.nseeds),
                                 size=len(players),
                                 replace=False)
@@ -73,20 +75,20 @@ class GameMap:
 
 class MapView:
 
-    def __init__(self, array):
+    def __init__(self, array: np.ndarray):
         self.array = array
 
-    def __getitem__(self, inds):
+    def __getitem__(self, inds: Any) -> np.ndarray:
         return self.array[inds]
 
-    def __setitem__(self, inds, value):
+    def __setitem__(self, inds: Any, value: Any):
         self.array[inds] = value
 
-    def view(self, x, y, dx, dy):
+    def view(self, x: float, y: float, dx: int, dy: int) -> List[np.ndarray]:
         slices = self.view_slices(x, y, dx, dy)
         return [self.array[s[0], s[1]] for s in slices]
 
-    def view_slices(self, x, y, dx, dy):
+    def view_slices(self, x: float, y: float, dx: int, dy: int) -> List[slice]:
         ix = int(x)
         iy = int(y)
         ny, nx = self.array.shape

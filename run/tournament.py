@@ -31,5 +31,5 @@ if os.path.exists(fname):
 
 for i in range(current_round, 10):
     print(f'############# ROUND {i + 1} #############')
-    supremacy.start(players=players, test=False, time_limit=8 * 60)
+    supremacy.start(players=players, test=False, safe=True, time_limit=8 * 60)
     input()

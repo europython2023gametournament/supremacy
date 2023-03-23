@@ -6,6 +6,8 @@ import pyglet
 import time
 import os
 
+from typing import Dict
+
 from . import config
 from .base import BaseProxy
 from .fight import fight
@@ -13,7 +15,7 @@ from .game_map import GameMap, MapView
 from .graphics import Graphics
 from .player import Player
 from .tools import ReadOnly
-from .vehicles import VehicleProxy
+from .vehicles import Vehicle, VehicleProxy
 
 
 class Engine:
@@ -81,7 +83,7 @@ class Engine:
                                           high_contrast=self.high_contrast,
                                           base_locations=self.base_locations)
 
-    def read_scores(self, players, test):
+    def read_scores(self, players: dict, test: bool) -> Dict[str, int]:
         scores = {}
         fname = 'scores.txt'
         if os.path.exists(fname) and (not test):
@@ -96,12 +98,12 @@ class Engine:
         print('Scores:', scores)
         return scores
 
-    def move(self, vehicle, dt):
+    def move(self, vehicle: Vehicle, dt: float):
         x, y = vehicle.next_position(dt=dt)
         map_value = self.game_map.array[int(y), int(x)]
         vehicle.move(x, y, map_value=map_value)
 
-    def generate_info(self, player):
+    def generate_info(self, player: Player):
         info = {}
         for n, p in [(n, p) for n, p in self.players.items() if not p.dead]:
             info[n] = {'bases': [], 'tanks': [], 'ships': [], 'jets': []}
@@ -118,12 +120,12 @@ class Engine:
                     del info[n][key]
         return info
 
-    def init_dt(self, t, dt):
+    def init_dt(self, t: float):
         min_distance = config.competing_mine_radius
         base_locs = MapView(self.base_locations)
         scoreboard_labels = {}
         for name, player in self.players.items():
-            player.init_dt(dt)
+            player.init_dt()
             for base in player.bases.values():
                 base.reset_info()
                 nbases = sum([
@@ -138,7 +140,7 @@ class Engine:
             scoreboard_labels[name] = player.make_label()
         self.graphics.update_scoreboard(t=t, players=scoreboard_labels)
 
-    def exit(self, message):
+    def exit(self, message: str):
         print(message)
         pyglet.clock.unschedule(self.update)
         pyglet.app.exit()
@@ -158,7 +160,7 @@ class Engine:
         for i, (name, score) in enumerate(sorted_scores):
             print(f'{i + 1}. {name}: {score}')
 
-    def update(self, dt):
+    def update(self, dt: float):
 
         if self.paused:
             if not self.previously_paused:
@@ -187,7 +189,7 @@ class Engine:
         t = time.time() - self.start_time
         if t > self.time_limit:
             self.exit(message="Time limit reached!")
-        self.init_dt(self.time_limit - t, dt)
+        self.init_dt(self.time_limit - t)
 
         for key in list(self.explosions.keys()):
             self.explosions[key].update()

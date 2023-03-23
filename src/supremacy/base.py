@@ -5,31 +5,24 @@ import numpy as np
 import pyglet
 import uuid
 
+from typing import Any
+
 from . import config
 from .vehicles import Tank, Ship, Jet
 from .tools import wrap_position, distance_on_plane, distance_on_torus
 
 
-class Mine:
-
-    def __init__(self, x, y, team, number, owner, uid):
-        self.x = x
-        self.y = y
-        self.team = team
-        self.number = number
-        self.owner = owner
-        self.health = config.health['mine']
-        self.attack = config.attack['mine']
-        self.kind = 'mine'
-        self.uid = uid
-
-    def make_label(self):
-        return
-
-
 class Base:
 
-    def __init__(self, x, y, team, number, batch, owner, uid, high_contrast=False):
+    def __init__(self,
+                 x: float,
+                 y: float,
+                 team: str,
+                 number: int,
+                 batch: Any,
+                 owner: Any,
+                 uid: str,
+                 high_contrast: bool = False):
         self.x = x
         self.y = y
         self._as_info = None
@@ -157,7 +150,7 @@ class Base:
     def reset_info(self):
         self._as_info = None
 
-    def as_info(self):
+    def as_info(self) -> dict:
         if self._as_info is None:
             self._as_info = {
                 'x': self.x,
@@ -170,10 +163,10 @@ class Base:
             }
         return self._as_info
 
-    def mine_cost(self):
+    def mine_cost(self) -> int:
         return config.cost['mine'] * (2**(len(self.mines) - 1))
 
-    def not_enough_crystal(self, kind):
+    def not_enough_crystal(self, kind: str) -> bool:
         if kind == 'mine':
             cost = self.mine_cost()
         else:
@@ -198,7 +191,7 @@ class Base:
                                uid=uid)
         self.make_label()
 
-    def build_tank(self, heading):
+    def build_tank(self, heading: float):
         if self.not_enough_crystal('tank'):
             return
         print(f'Player {self.team} is building a TANK at {self.x}, {self.y}')
@@ -213,7 +206,7 @@ class Base:
                                      uid=uid)
         self.crystal -= config.cost['tank']
 
-    def build_ship(self, heading):
+    def build_ship(self, heading: float):
         if self.not_enough_crystal('ship'):
             return
         print(f'Player {self.team} is building a SHIP at {self.x}, {self.y}')
@@ -228,7 +221,7 @@ class Base:
                                      uid=uid)
         self.crystal -= config.cost['ship']
 
-    def build_jet(self, heading):
+    def build_jet(self, heading: float):
         if self.not_enough_crystal('jet'):
             return
         print(f'Player {self.team} is building a JET at {self.x}, {self.y}')
@@ -244,6 +237,9 @@ class Base:
         self.crystal -= config.cost['jet']
 
     def get_distance(self, x: float, y: float, shortest=True) -> float:
+        """
+        Get the distance between this base and the given position (x, y).
+        """
         if not shortest:
             return distance_on_plane(self.x, self.y, x, y)
         else:
@@ -280,3 +276,21 @@ class BaseProxy:
             return self.mine_cost()
         else:
             return config.cost[kind]
+
+
+class Mine:
+
+    def __init__(self, x: float, y: float, team: str, number: int, owner: Base,
+                 uid: str):
+        self.x = x
+        self.y = y
+        self.team = team
+        self.number = number
+        self.owner = owner
+        self.health = config.health['mine']
+        self.attack = config.attack['mine']
+        self.kind = 'mine'
+        self.uid = uid
+
+    def make_label(self):
+        return

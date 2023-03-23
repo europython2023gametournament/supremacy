@@ -3,11 +3,13 @@
 import numpy as np
 import pyglet
 
+from typing import Any, Tuple
+
 from . import config
 from .tools import distance_on_torus
 
 
-def fight(players, batch):
+def fight(players, batch: Any) -> Tuple[dict, dict, dict]:
     troops = [child for player in players.values() for child in player.children]
     n = len(troops)
     x = np.array([child.x for child in troops])
@@ -46,7 +48,7 @@ def fight(players, batch):
 
 class Explosion:
 
-    def __init__(self, x, y, batch):
+    def __init__(self, x: float, y: float, batch: Any):
         self.animate = 10
         self.opacities = np.linspace(0, 255, self.animate, dtype=int)
         self.sprite = pyglet.sprite.Sprite(img=config.images['explosion'],
