@@ -1,12 +1,12 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
+from typing import Any, List
+
 import matplotlib as mpl
 import numpy as np
-from scipy.ndimage import gaussian_filter
-from PIL import Image
 from matplotlib.colors import Normalize
-
-from typing import Any, List
+from PIL import Image
+from scipy.ndimage import gaussian_filter
 
 from . import config
 from .tools import periodic_distances

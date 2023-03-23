@@ -1,12 +1,12 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
-from matplotlib import colors
-import numpy as np
-from PIL import Image
-import pyglet
-import importlib_resources as ir
-
 from typing import Any
+
+import importlib_resources as ir
+import numpy as np
+import pyglet
+from matplotlib import colors
+from PIL import Image
 
 
 def _recenter_image(img: Any) -> Any:

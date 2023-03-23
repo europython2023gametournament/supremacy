@@ -1,9 +1,9 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 import datetime
-import pyglet
-
 from typing import Any
+
+import pyglet
 
 from . import config
 

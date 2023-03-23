@@ -1,7 +1,8 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
-import supremacy
 import template_ai
+
+import supremacy
 
 names = [
     'Neil', 'Drew', 'Simon', 'Jankas', 'Greg', 'Mads', 'Afonso', 'Sun', 'Troels',

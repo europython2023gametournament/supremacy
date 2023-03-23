@@ -1,8 +1,8 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
-import numpy as np
-
 from typing import Any, Iterator, Tuple
+
+import numpy as np
 
 from . import config
 

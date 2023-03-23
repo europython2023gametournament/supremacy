@@ -1,12 +1,12 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 import importlib
+import os
+import time
+from typing import Dict
+
 import numpy as np
 import pyglet
-import time
-import os
-
-from typing import Dict
 
 from . import config
 from .base import BaseProxy

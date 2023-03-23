@@ -1,9 +1,9 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
+from typing import Any, Iterator, Sequence, Tuple, Union
+
 import numpy as np
 import pyglet
-
-from typing import Any, Iterator, Sequence, Tuple, Union
 
 from . import config
 from . import tools as tls

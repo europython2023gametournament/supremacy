@@ -1,9 +1,9 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
+from typing import Any, Tuple
+
 import numpy as np
 import pyglet
-
-from typing import Any, Tuple
 
 from . import config
 from .tools import distance_on_torus

@@ -1,10 +1,11 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
+import uuid
 from itertools import chain
+from typing import Any, Iterator, Tuple
+
 import numpy as np
 import pyglet
-from typing import Any, Iterator, Tuple
-import uuid
 
 from . import config
 from .base import Base

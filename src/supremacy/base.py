@@ -1,15 +1,15 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
-from matplotlib import colors
-import numpy as np
-import pyglet
 import uuid
-
 from typing import Any
 
+import numpy as np
+import pyglet
+from matplotlib import colors
+
 from . import config
-from .vehicles import Tank, Ship, Jet
-from .tools import wrap_position, distance_on_plane, distance_on_torus
+from .tools import distance_on_plane, distance_on_torus, wrap_position
+from .vehicles import Jet, Ship, Tank
 
 
 class Base:
