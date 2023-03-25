@@ -27,7 +27,10 @@ class Engine:
                  test=True,
                  fps=30,
                  time_limit=300,
-                 crystal_boost=1):
+                 crystal_boost=1,
+                 seed=None):
+
+        np.random.seed(seed)
 
         config.generate_images(nplayers=len(players))
 
