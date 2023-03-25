@@ -73,6 +73,7 @@ class Player:
                                uid=uid,
                                high_contrast=self.high_contrast)
         self.base_locations[int(y), int(x)] = 1
+        return uid
 
     def init_dt(self):
         self.transformed_ships.clear()
