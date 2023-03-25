@@ -205,6 +205,7 @@ class Base:
                                      owner=self,
                                      uid=uid)
         self.crystal -= config.cost['tank']
+        return uid
 
     def build_ship(self, heading: float):
         if self.not_enough_crystal('ship'):
@@ -220,6 +221,7 @@ class Base:
                                      owner=self,
                                      uid=uid)
         self.crystal -= config.cost['ship']
+        return uid
 
     def build_jet(self, heading: float):
         if self.not_enough_crystal('jet'):
@@ -235,6 +237,7 @@ class Base:
                                    owner=self,
                                    uid=uid)
         self.crystal -= config.cost['jet']
+        return uid
 
     def get_distance(self, x: float, y: float, shortest=True) -> float:
         """
