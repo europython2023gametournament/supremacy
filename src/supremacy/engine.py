@@ -28,7 +28,8 @@ class Engine:
                  fps=30,
                  time_limit=300,
                  crystal_boost=1,
-                 seed=None):
+                 seed=None,
+                 current_round=0):
 
         np.random.seed(seed)
 
@@ -51,7 +52,7 @@ class Engine:
         self.crystal_boost = crystal_boost
         self.paused = False
         self.previously_paused = False
-        self.round = 0
+        self.round = current_round
         self.pause_time = 0
 
         self.game_map = GameMap(nx=self.nx,
@@ -149,7 +150,8 @@ class Engine:
         pyglet.app.exit()
         score_left = len(self.scores)
         for name, p in self.players.items():
-            self.scores[name] = p.score + score_left
+            if not p.dead:
+                self.scores[name] = p.score + score_left
             p.dump_map()
         fname = 'scores.txt'
         with open(fname, 'w') as f:
