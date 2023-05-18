@@ -13,18 +13,19 @@ from .game_map import MapView
 
 
 class Player:
-
-    def __init__(self,
-                 ai: Any,
-                 location: Tuple[int, int],
-                 number: int,
-                 team: str,
-                 batch: Any,
-                 game_map: np.ndarray,
-                 score: int,
-                 nplayers: int,
-                 base_locations: np.ndarray,
-                 high_contrast: bool = False):
+    def __init__(
+        self,
+        ai: Any,
+        location: Tuple[int, int],
+        number: int,
+        team: str,
+        batch: Any,
+        game_map: np.ndarray,
+        score: int,
+        nplayers: int,
+        base_locations: np.ndarray,
+        high_contrast: bool = False,
+    ):
         self.ai = ai
         self.ai.team = team
         self.hq = location
@@ -45,16 +46,19 @@ class Player:
         self.transformed_ships = []
         self.label = None
         self.animate_skull = 0
-        if nplayers <= 5:
-            dx = 250
-        elif nplayers <= 10:
-            dx = 160
-        else:
-            dx = 120
-        self.avatar = pyglet.sprite.Sprite(img=config.images[f'base_{self.number}'],
-                                           x=(self.number * dx) + 180,
-                                           y=config.ny + 12,
-                                           batch=self.batch)
+        # if nplayers <= 5:
+        #     dx = 250
+        # elif nplayers <= 10:
+        #     dx = 160
+        # else:
+        #     dx = 120
+        dy = 50
+        self.avatar = pyglet.sprite.Sprite(
+            img=config.images[f"base_{self.number}"],
+            x=config.nx + 10,
+            y=config.ny - (dy * (self.number + 1)),
+            batch=self.batch,
+        )
 
     def update_player_map(self, x: float, y: float):
         r = config.view_radius
@@ -64,14 +68,16 @@ class Player:
 
     def build_base(self, x: float, y: float):
         uid = uuid.uuid4().hex
-        self.bases[uid] = Base(x=x,
-                               y=y,
-                               team=self.team,
-                               number=self.number,
-                               batch=self.batch,
-                               owner=self,
-                               uid=uid,
-                               high_contrast=self.high_contrast)
+        self.bases[uid] = Base(
+            x=x,
+            y=y,
+            team=self.team,
+            number=self.number,
+            batch=self.batch,
+            owner=self,
+            uid=uid,
+            high_contrast=self.high_contrast,
+        )
         self.base_locations[int(y), int(x)] = 1
         return uid
 
@@ -137,7 +143,19 @@ class Player:
         return int(sum([base.crystal for base in self.bases.values()]))
 
     def make_label(self) -> str:
-        return f'{self.economy()}[{self.score}]'
+        # return f'{self.economy()}[{self.score}]'
+        # if self.label is not None:
+        #     self.label.delete()
+        self.label = pyglet.text.Label(
+            f"{self.economy()}[{self.score}]",
+            color=(255, 255, 255, 255),
+            font_name="monospace",
+            font_size=14,
+            x=config.nx + 10,
+            y=self.avatar.y - 10,
+            anchor_x="left",
+            batch=self.batch,
+        )
 
     def rip(self):
         for v in self.vehicles:
@@ -148,19 +166,19 @@ class Player:
         avx = self.avatar.x
         avy = self.avatar.y
         self.avatar.delete()
-        self.avatar = pyglet.sprite.Sprite(img=config.images[f'skull_{self.number}'],
-                                           x=avx,
-                                           y=avy,
-                                           batch=self.batch)
+        self.avatar = pyglet.sprite.Sprite(
+            img=config.images[f"skull_{self.number}"], x=avx, y=avy, batch=self.batch
+        )
 
         self.dead = True
         self.init_skull_animation()
 
     def dump_map(self):
         import matplotlib.pyplot as plt
+
         fig, ax = plt.subplots(figsize=(15, 9))
-        ax.imshow(self.game_map.array, origin='lower', aspect='equal')
-        fig.savefig(f'{self.team}_map.png', bbox_inches='tight')
+        ax.imshow(self.game_map.array, origin="lower", aspect="equal")
+        fig.savefig(f"{self.team}_map.png", bbox_inches="tight")
 
     def init_skull_animation(self):
         self.animate_skull = 15

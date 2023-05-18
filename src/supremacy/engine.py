@@ -19,18 +19,17 @@ from .vehicles import Vehicle, VehicleProxy
 
 
 class Engine:
-
-    def __init__(self,
-                 players: dict,
-                 safe=False,
-                 high_contrast=False,
-                 test=True,
-                 fps=30,
-                 time_limit=300,
-                 crystal_boost=1,
-                 seed=None,
-                 current_round=0):
-
+    def __init__(
+        self,
+        players: dict,
+        safe=False,
+        high_contrast=False,
+        test=True,
+        time_limit=300,
+        crystal_boost=1,
+        seed=None,
+        current_round=0,
+    ):
         np.random.seed(seed)
 
         config.generate_images(nplayers=len(players))
@@ -55,13 +54,13 @@ class Engine:
         self.round = current_round
         self.pause_time = 0
 
-        self.game_map = GameMap(nx=self.nx,
-                                ny=self.ny,
-                                high_contrast=self.high_contrast)
+        self.game_map = GameMap(
+            nx=self.nx, ny=self.ny, high_contrast=self.high_contrast
+        )
 
         self.graphics = Graphics(engine=self)
 
-        pyglet.clock.schedule_interval(self.update, 1 / fps)
+        pyglet.clock.schedule_interval(self.update, 1 / config.fps)
         pyglet.app.run()
 
     def setup(self):
@@ -76,30 +75,32 @@ class Engine:
         for i, (name, ai) in enumerate(self.player_ais.items()):
             p = ai.PlayerAi()
             p.team = name
-            self.players[p.team] = Player(ai=p,
-                                          location=player_locations[p.team],
-                                          number=i,
-                                          team=p.team,
-                                          batch=self.graphics.main_batch,
-                                          game_map=self.game_map.array,
-                                          score=self.current_scores[p.team],
-                                          nplayers=len(self.player_ais),
-                                          high_contrast=self.high_contrast,
-                                          base_locations=self.base_locations)
+            self.players[p.team] = Player(
+                ai=p,
+                location=player_locations[p.team],
+                number=i,
+                team=p.team,
+                batch=self.graphics.main_batch,
+                game_map=self.game_map.array,
+                score=self.current_scores[p.team],
+                nplayers=len(self.player_ais),
+                high_contrast=self.high_contrast,
+                base_locations=self.base_locations,
+            )
 
     def read_scores(self, players: dict, test: bool) -> Dict[str, int]:
         scores = {}
-        fname = 'scores.txt'
+        fname = "scores.txt"
         if os.path.exists(fname) and (not test):
-            with open(fname, 'r') as f:
+            with open(fname, "r") as f:
                 contents = f.readlines()
-            self.round = int(contents[0].split('=')[1].strip())
+            self.round = int(contents[0].split("=")[1].strip())
             for line in contents[1:]:
-                name, score = line.split(':')
+                name, score = line.split(":")
                 scores[name] = int(score.strip())
         else:
             scores = {p: 0 for p in players}
-        print('Scores:', scores)
+        print("Scores:", scores)
         return scores
 
     def move(self, vehicle: Vehicle, dt: float):
@@ -110,15 +111,17 @@ class Engine:
     def generate_info(self, player: Player):
         info = {}
         for n, p in [(n, p) for n, p in self.players.items() if not p.dead]:
-            info[n] = {'bases': [], 'tanks': [], 'ships': [], 'jets': []}
+            info[n] = {"bases": [], "tanks": [], "ships": [], "jets": []}
             army = list(p.army)
             xy = np.array([(v.y, v.x) for v in army]).astype(int)
             inds = np.where(player.game_map.array[(xy[:, 0], xy[:, 1])] != -1)[0]
             for ind in inds:
                 v = army[ind]
-                info[n][f'{v.kind}s'].append((
-                    BaseProxy(v) if v.kind == 'base' else VehicleProxy(v)
-                ) if player.team == n else ReadOnly(v.as_info()))
+                info[n][f"{v.kind}s"].append(
+                    (BaseProxy(v) if v.kind == "base" else VehicleProxy(v))
+                    if player.team == n
+                    else ReadOnly(v.as_info())
+                )
             for key in list(info[n].keys()):
                 if len(info[n][key]) == 0:
                     del info[n][key]
@@ -132,17 +135,22 @@ class Engine:
             player.init_dt()
             for base in player.bases.values():
                 base.reset_info()
-                nbases = sum([
-                    view.sum() for view in base_locs.view(
-                        x=base.x, y=base.y, dx=min_distance, dy=min_distance)
-                ])
+                nbases = sum(
+                    [
+                        view.sum()
+                        for view in base_locs.view(
+                            x=base.x, y=base.y, dx=min_distance, dy=min_distance
+                        )
+                    ]
+                )
                 base.crystal += self.crystal_boost * 2 * len(base.mines) / nbases
                 before = base.competing
                 base.competing = nbases > 1
                 if before != base.competing:
                     base.make_label()
-            scoreboard_labels[name] = player.make_label()
-        self.graphics.update_scoreboard(t=t, players=scoreboard_labels)
+            # scoreboard_labels[name] = player.make_label()
+            player.make_label()
+        self.graphics.update_scoreboard(t=t)  # players=scoreboard_labels)
 
     def exit(self, message: str):
         print(message)
@@ -153,20 +161,19 @@ class Engine:
             if not p.dead:
                 self.scores[name] = p.score + score_left
             p.dump_map()
-        fname = 'scores.txt'
-        with open(fname, 'w') as f:
-            f.write(f'Round = {self.round + 1}\n')
+        fname = "scores.txt"
+        with open(fname, "w") as f:
+            f.write(f"Round = {self.round + 1}\n")
             for name, score in self.scores.items():
-                f.write(f'{name}: {score}\n')
+                f.write(f"{name}: {score}\n")
         sorted_scores = [
             (k, v)
             for k, v in sorted(self.scores.items(), key=lambda x: x[1], reverse=True)
         ]
         for i, (name, score) in enumerate(sorted_scores):
-            print(f'{i + 1}. {name}: {score}')
+            print(f"{i + 1}. {name}: {score}")
 
     def update(self, dt: float):
-
         if self.paused:
             if not self.previously_paused:
                 self.previously_paused = True
@@ -217,9 +224,9 @@ class Engine:
                     player.update_player_map(x=v.x, y=v.y)
 
         dead_vehicles, dead_bases, explosions = fight(
-            players={key: p
-                     for key, p in self.players.items() if not p.dead},
-            batch=self.graphics.main_batch)
+            players={key: p for key, p in self.players.items() if not p.dead},
+            batch=self.graphics.main_batch,
+        )
         self.explosions.update(explosions)
         for name in dead_vehicles:
             for uid in dead_vehicles[name]:
@@ -231,11 +238,11 @@ class Engine:
                     self.base_locations[int(b.y), int(b.x)] = 0
                     self.players[name].remove_base(uid)
             if len(self.players[name].bases) == 0:
-                print(f'Player {name} died!')
+                print(f"Player {name} died!")
                 self.scores[name] = self.players[name].score + len(self.scores)
                 self.players[name].rip()
         players_alive = [p.team for p in self.players.values() if not p.dead]
         if len(players_alive) == 1:
-            self.exit(message=f'Player {players_alive[0]} won!')
+            self.exit(message=f"Player {players_alive[0]} won!")
         if len(players_alive) == 0:
-            self.exit(message='Everyone died!')
+            self.exit(message="Everyone died!")

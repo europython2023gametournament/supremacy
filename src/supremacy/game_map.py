@@ -13,22 +13,20 @@ from .tools import periodic_distances
 
 
 class GameMap:
-
     def __init__(self, nx: int, ny: int, high_contrast: bool = False):
-
         self.nx = nx
         self.ny = ny
         image = np.zeros([self.ny, self.nx])
-        self.nseeds = 200
+        self.nseeds = 200  #  * 4
         self.xseed = np.random.randint(self.nx, size=self.nseeds)
         self.yseed = np.random.randint(self.ny, size=self.nseeds)
 
         image[(self.yseed, self.xseed)] = 10000
 
-        smooth = gaussian_filter(image, sigma=30, mode='wrap')
+        smooth = gaussian_filter(image, sigma=30, mode="wrap")
 
         self.array = np.clip(smooth, 0, 1).astype(int)
-        cmap = mpl.colormaps['terrain']
+        cmap = mpl.colormaps["terrain"]
         norm = Normalize()
         if high_contrast:
             to_image = np.flipud(self.array * 255)
@@ -36,17 +34,17 @@ class GameMap:
             gy, gx = np.gradient(np.flipud(self.array))
             contour = np.abs(gy) + np.abs(gx)
             inds = contour > 0
-            ii = np.broadcast_to(inds.reshape(inds.shape + (1, )), inds.shape + (3, ))
+            ii = np.broadcast_to(inds.reshape(inds.shape + (1,)), inds.shape + (3,))
             to_image = cmap(norm(np.flipud(smooth)))[..., :3] * 255
             contour_color = np.full_like(to_image, (0, 140, 240))
             to_image[ii] = contour_color[ii]
         im = Image.fromarray(to_image.astype(np.uint8))
-        im.save('background.png')
+        im.save("background.png")
 
     def add_players(self, players: dict):
-        inds = np.random.choice(np.arange(self.nseeds),
-                                size=len(players),
-                                replace=False)
+        inds = np.random.choice(
+            np.arange(self.nseeds), size=len(players), replace=False
+        )
         locations = {}
         for n, player in enumerate(players):
             not_set = True
@@ -74,7 +72,6 @@ class GameMap:
 
 
 class MapView:
-
     def __init__(self, array: np.ndarray):
         self.array = array
 
@@ -96,24 +93,33 @@ class MapView:
         xmax = ix + dx + 1
         ymin = iy - dy
         ymax = iy + dy + 1
-        slices = [(slice(max(ymin, 0), min(ymax, ny)), slice(max(xmin, 0),
-                                                             min(xmax, nx)))]
+        slices = [
+            (slice(max(ymin, 0), min(ymax, ny)), slice(max(xmin, 0), min(xmax, nx)))
+        ]
         if (xmin < 0) and (ymin < 0):
-            slices += [(slice(0, ymax), slice(nx + xmin, nx)),
-                       (slice(ny + ymin, ny), slice(0, xmax)),
-                       (slice(ny + ymin, ny), slice(nx + xmin, nx))]
+            slices += [
+                (slice(0, ymax), slice(nx + xmin, nx)),
+                (slice(ny + ymin, ny), slice(0, xmax)),
+                (slice(ny + ymin, ny), slice(nx + xmin, nx)),
+            ]
         elif (xmin < 0) and (ymax >= ny):
-            slices += [(slice(ymin, ny), slice(nx + xmin, nx)),
-                       (slice(0, ymax - ny), slice(0, xmax)),
-                       (slice(0, ymax - ny), slice(nx + xmin, nx))]
+            slices += [
+                (slice(ymin, ny), slice(nx + xmin, nx)),
+                (slice(0, ymax - ny), slice(0, xmax)),
+                (slice(0, ymax - ny), slice(nx + xmin, nx)),
+            ]
         elif (xmax >= nx) and (ymin < 0):
-            slices += [(slice(0, ymax), slice(0, xmax - nx)),
-                       (slice(ny + ymin, ny), slice(xmin, nx)),
-                       (slice(ny + ymin, ny), slice(0, xmax - nx))]
+            slices += [
+                (slice(0, ymax), slice(0, xmax - nx)),
+                (slice(ny + ymin, ny), slice(xmin, nx)),
+                (slice(ny + ymin, ny), slice(0, xmax - nx)),
+            ]
         elif (xmax >= nx) and (ymax >= ny):
-            slices += [(slice(0, ymax - ny), slice(xmin, nx)),
-                       (slice(ymin, ny), slice(0, xmax - nx)),
-                       (slice(0, ymax - ny), slice(0, xmax - nx))]
+            slices += [
+                (slice(0, ymax - ny), slice(xmin, nx)),
+                (slice(ymin, ny), slice(0, xmax - nx)),
+                (slice(0, ymax - ny), slice(0, xmax - nx)),
+            ]
         elif xmin < 0:
             slices.append((slice(ymin, ymax), slice(nx + xmin, nx)))
         elif xmax >= nx:
