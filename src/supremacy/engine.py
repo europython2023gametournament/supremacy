@@ -60,6 +60,7 @@ class Engine:
 
         self.graphics = Graphics(engine=self)
 
+        print("FPS", 1 / config.fps)
         pyglet.clock.schedule_interval(self.update, 1 / config.fps)
         pyglet.app.run()
 

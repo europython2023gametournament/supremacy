@@ -10,18 +10,18 @@ from . import tools as tls
 
 
 class Vehicle:
-
-    def __init__(self,
-                 x: float,
-                 y: float,
-                 team: str,
-                 number: int,
-                 kind: str,
-                 batch: Any,
-                 owner: Any,
-                 uid: str,
-                 heading: float = 0):
-
+    def __init__(
+        self,
+        x: float,
+        y: float,
+        team: str,
+        number: int,
+        kind: str,
+        batch: Any,
+        owner: Any,
+        uid: str,
+        heading: float = 0,
+    ):
         self.team = team
         self.number = number
         self.owner = owner
@@ -38,34 +38,36 @@ class Vehicle:
         self.y = y
         self._heading = heading
 
-        self.avatar = pyglet.sprite.Sprite(img=config.images[f'{kind}_{self.number}'],
-                                           x=self.x,
-                                           y=self.y,
-                                           batch=batch)
+        self.avatar = pyglet.sprite.Sprite(
+            img=config.images[f"{kind}_{self.number}"], x=self.x, y=self.y, batch=batch
+        )
         self.avatar.rotation = -heading
         self.label = None
         self.make_label()
         self._as_info = None
 
     def make_label(self):
+        return
         if self.label is not None:
             self.label.delete()
-        self.label = pyglet.text.Label(str(self.health),
-                                       color=(0, 0, 0, 255),
-                                       font_size=8,
-                                       x=self.x,
-                                       y=self.y,
-                                       anchor_x='center',
-                                       anchor_y='center',
-                                       batch=self.batch)
+        self.label = pyglet.text.Label(
+            str(self.health),
+            color=(0, 0, 0, 255),
+            font_size=8,
+            x=self.x,
+            y=self.y,
+            anchor_x="center",
+            anchor_y="center",
+            batch=self.batch,
+        )
 
     def set_position(self, x: float, y: float):
         self.x = x
         self.y = y
         self.avatar.x = self.x
         self.avatar.y = self.y
-        self.label.x = self.x
-        self.label.y = self.y
+        # self.label.x = self.x
+        # self.label.y = self.y
 
     def reset_info(self):
         self._as_info = None
@@ -73,18 +75,18 @@ class Vehicle:
     def as_info(self) -> dict:
         if self._as_info is None:
             self._as_info = {
-                'team': self.team,
-                'number': self.number,
-                'uid': self.uid,
-                'speed': self.speed,
-                'health': self.health,
-                'attack': self.attack,
-                'x': self.x,
-                'y': self.y,
-                'heading': self.get_heading(),
-                'vector': self.get_vector(),
-                'position': self.get_position(),
-                'stopped': self.stopped
+                "team": self.team,
+                "number": self.number,
+                "uid": self.uid,
+                "speed": self.speed,
+                "health": self.health,
+                "attack": self.attack,
+                "x": self.x,
+                "y": self.y,
+                "heading": self.get_heading(),
+                "vector": self.get_vector(),
+                "position": self.get_position(),
+                "stopped": self.stopped,
             }
         return self._as_info
 
@@ -140,7 +142,8 @@ class Vehicle:
         d, xl, yl = tls.periodic_distances(self.x, self.y, x, y)
         ind = np.argmin(d)
         self.set_vector(
-            [xl[ind] - (self.x + config.nx), yl[ind] - (self.y + config.ny)])
+            [xl[ind] - (self.x + config.nx), yl[ind] - (self.y + config.ny)]
+        )
 
     def next_position(self, dt: float) -> Tuple[float, float]:
         pos = self.get_position() + self.get_vector() * self.speed * dt
@@ -168,7 +171,6 @@ class Vehicle:
 
 
 class VehicleProxy:
-
     def __init__(self, vehicle: Vehicle):
         self._data = vehicle.as_info()
         for key, item in self._data.items():
@@ -178,7 +180,7 @@ class VehicleProxy:
         self.set_vector = vehicle.set_vector
         self.goto = vehicle.goto
         self.get_distance = vehicle.get_distance
-        if vehicle.kind == 'ship':
+        if vehicle.kind == "ship":
             self.convert_to_base = vehicle.convert_to_base
         self.stop = vehicle.stop
         self.start = vehicle.start
@@ -197,9 +199,8 @@ class VehicleProxy:
 
 
 class Tank(Vehicle):
-
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, kind='tank', **kwargs)
+        super().__init__(*args, kind="tank", **kwargs)
 
     def move(self, x: float, y: float, map_value: int):
         if map_value == 1:
@@ -207,9 +208,8 @@ class Tank(Vehicle):
 
 
 class Ship(Vehicle):
-
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, kind='ship', **kwargs)
+        super().__init__(*args, kind="ship", **kwargs)
 
     def move(self, x: float, y: float, map_value: int):
         if map_value == 0:
@@ -234,9 +234,8 @@ class Ship(Vehicle):
 
 
 class Jet(Vehicle):
-
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, kind='jet', **kwargs)
+        super().__init__(*args, kind="jet", **kwargs)
 
     def move(self, x: float, y: float, map_value: int):
         self.set_position(x, y)

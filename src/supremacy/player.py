@@ -5,6 +5,7 @@ from itertools import chain
 from typing import Any, Iterator, Tuple
 
 import numpy as np
+from PIL import Image, ImageDraw
 import pyglet
 
 from . import config
@@ -143,19 +144,41 @@ class Player:
         return int(sum([base.crystal for base in self.bases.values()]))
 
     def make_label(self) -> str:
+        return
         # return f'{self.economy()}[{self.score}]'
         # if self.label is not None:
         #     self.label.delete()
-        self.label = pyglet.text.Label(
+        img = Image.new("RGBA", (200, 20), (0, 0, 0, 0))
+        d = ImageDraw.Draw(img)
+        d.text(
+            (0, 0),
             f"{self.economy()}[{self.score}]",
-            color=(255, 255, 255, 255),
-            font_name="monospace",
-            font_size=14,
-            x=config.nx + 10,
-            y=self.avatar.y - 10,
-            anchor_x="left",
+            fill=(255, 255, 255),
+            font=config.large_font,
+        )
+        imdata = pyglet.image.ImageData(
+            width=img.width,
+            height=img.height,
+            fmt="RGBA",
+            data=img.tobytes(),
+            pitch=-img.width * 4,
+        )
+        self.label = pyglet.sprite.Sprite(
+            img=imdata,
+            x=self.avatar.x + 10,
+            y=self.avatar.y,
             batch=self.batch,
         )
+        # self.label = pyglet.text.Label(
+        #     f"{self.economy()}[{self.score}]",
+        #     color=(255, 255, 255, 255),
+        #     font_name="monospace",
+        #     font_size=14,
+        #     x=config.nx + 10,
+        #     y=self.avatar.y - 10,
+        #     anchor_x="left",
+        #     batch=self.batch,
+        # )
 
     def rip(self):
         for v in self.vehicles:

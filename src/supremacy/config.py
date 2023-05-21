@@ -6,7 +6,8 @@ import importlib_resources as ir
 import numpy as np
 import pyglet
 from matplotlib import colors
-from PIL import Image
+from matplotlib import font_manager
+from PIL import Image, ImageFont
 
 
 def _recenter_image(img: Any) -> Any:
@@ -33,6 +34,9 @@ class Config:
         self.resources = ir.files("supremacy") / "resources"
         img = _recenter_image(pyglet.image.load(self.resources / "explosion.png"))
         self.images = {"explosion": img}
+        file = font_manager.findfont("sans")
+        self.small_font = ImageFont.truetype(file, size=10)
+        self.large_font = ImageFont.truetype(file, size=14)
 
     def generate_images(self, nplayers: int):
         for n in range(nplayers):

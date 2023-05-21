@@ -13,22 +13,23 @@ from .vehicles import Jet, Ship, Tank
 
 
 class Base:
-
-    def __init__(self,
-                 x: float,
-                 y: float,
-                 team: str,
-                 number: int,
-                 batch: Any,
-                 owner: Any,
-                 uid: str,
-                 high_contrast: bool = False):
+    def __init__(
+        self,
+        x: float,
+        y: float,
+        team: str,
+        number: int,
+        batch: Any,
+        owner: Any,
+        uid: str,
+        high_contrast: bool = False,
+    ):
         self.x = x
         self.y = y
         self._as_info = None
-        self.kind = 'base'
-        self.health = config.health['base']
-        self.attack = config.attack['base']
+        self.kind = "base"
+        self.health = config.health["base"]
+        self.attack = config.attack["base"]
         self.team = team
         self.number = number
         self.owner = owner
@@ -38,29 +39,30 @@ class Base:
         self.high_contrast = high_contrast
         muid = uuid.uuid4().hex
         self.mines = {
-            muid:
-            Mine(x=self.x,
-                 y=self.y,
-                 team=self.team,
-                 number=self.number,
-                 owner=self,
-                 uid=muid)
+            muid: Mine(
+                x=self.x,
+                y=self.y,
+                team=self.team,
+                number=self.number,
+                owner=self,
+                uid=muid,
+            )
         }
-        self.crystal = 0
+        self.crystal = 10000
         self.owner.update_player_map(x=self.x, y=self.y)
-        self.avatar = pyglet.sprite.Sprite(img=config.images[f'base_{self.number}'],
-                                           x=self.x,
-                                           y=self.y,
-                                           batch=batch)
+        self.avatar = pyglet.sprite.Sprite(
+            img=config.images[f"base_{self.number}"], x=self.x, y=self.y, batch=batch
+        )
         if self.high_contrast:
-            rgb = colors.to_rgb(f'C{self.number}')
+            rgb = colors.to_rgb(f"C{self.number}")
             self.shape = pyglet.shapes.Rectangle(
                 x=self.x - config.competing_mine_radius,
                 y=self.y - config.competing_mine_radius,
                 width=config.competing_mine_radius * 2,
                 height=config.competing_mine_radius * 2,
-                color=tuple(int(round(c * 255)) for c in rgb) + (50, ),
-                batch=batch)
+                color=tuple(int(round(c * 255)) for c in rgb) + (50,),
+                batch=batch,
+            )
         else:
             self.shape = None
         self.label = None
@@ -71,7 +73,7 @@ class Base:
         iy = int(y)
         dx = config.vehicle_offset
         offset = None
-        while (offset is None):
+        while offset is None:
             xx, yy = wrap_position(ix + dx, iy + dx)
             if self.owner.game_map[yy, xx] == 1:
                 offset = (dx, dx)
@@ -93,7 +95,7 @@ class Base:
 
         dx = config.vehicle_offset
         offset = None
-        while (offset is None):
+        while offset is None:
             xx, yy = wrap_position(ix + dx, iy + dx)
             if self.owner.game_map[yy, xx] == 0:
                 offset = (dx, dx)
@@ -119,23 +121,27 @@ class Base:
         if self.clabel is not None:
             self.clabel.delete()
         color = (128, 128, 128, 255) if self.high_contrast else (0, 0, 0, 255)
-        self.label = pyglet.text.Label(f'{self.health} [{len(self.mines)}]',
-                                       color=color,
-                                       font_size=10,
-                                       x=self.x,
-                                       y=self.y + 18,
-                                       anchor_x='center',
-                                       anchor_y='center',
-                                       batch=self.batch)
+        self.label = pyglet.text.Label(
+            f"{self.health} [{len(self.mines)}]",
+            color=color,
+            font_size=10,
+            x=self.x,
+            y=self.y + 18,
+            anchor_x="center",
+            anchor_y="center",
+            batch=self.batch,
+        )
         if self.competing:
-            self.clabel = pyglet.text.Label('C',
-                                            color=color,
-                                            font_size=10,
-                                            x=self.x,
-                                            y=self.y,
-                                            anchor_x='center',
-                                            anchor_y='center',
-                                            batch=self.batch)
+            self.clabel = pyglet.text.Label(
+                "C",
+                color=color,
+                font_size=10,
+                x=self.x,
+                y=self.y,
+                anchor_x="center",
+                anchor_y="center",
+                batch=self.batch,
+            )
         else:
             self.clabel = None
 
@@ -153,90 +159,93 @@ class Base:
     def as_info(self) -> dict:
         if self._as_info is None:
             self._as_info = {
-                'x': self.x,
-                'y': self.y,
-                'team': self.team,
-                'number': self.number,
-                'mines': len(self.mines),
-                'crystal': self.crystal,
-                'uid': self.uid
+                "x": self.x,
+                "y": self.y,
+                "team": self.team,
+                "number": self.number,
+                "mines": len(self.mines),
+                "crystal": self.crystal,
+                "uid": self.uid,
             }
         return self._as_info
 
     def mine_cost(self) -> int:
-        return config.cost['mine'] * (2**(len(self.mines) - 1))
+        return config.cost["mine"] * (2 ** (len(self.mines) - 1))
 
     def not_enough_crystal(self, kind: str) -> bool:
-        if kind == 'mine':
+        if kind == "mine":
             cost = self.mine_cost()
         else:
             cost = config.cost[kind]
 
         not_ok = self.crystal < cost
         if not_ok:
-            print(f'Not enough crystal to build {kind}')
+            print(f"Not enough crystal to build {kind}")
         return not_ok
 
     def build_mine(self):
-        if self.not_enough_crystal('mine'):
+        if self.not_enough_crystal("mine"):
             return
-        print(f'Player {self.team} is building a MINE at {self.x}, {self.y}')
+        print(f"Player {self.team} is building a MINE at {self.x}, {self.y}")
         self.crystal -= self.mine_cost()
         uid = uuid.uuid4().hex
-        self.mines[uid] = Mine(x=self.x,
-                               y=self.y,
-                               team=self.team,
-                               number=self.number,
-                               owner=self,
-                               uid=uid)
+        self.mines[uid] = Mine(
+            x=self.x, y=self.y, team=self.team, number=self.number, owner=self, uid=uid
+        )
         self.make_label()
 
     def build_tank(self, heading: float):
-        if self.not_enough_crystal('tank'):
+        if self.not_enough_crystal("tank"):
             return
-        print(f'Player {self.team} is building a TANK at {self.x}, {self.y}')
+        print(f"Player {self.team} is building a TANK at {self.x}, {self.y}")
         uid = uuid.uuid4().hex
-        self.owner.tanks[uid] = Tank(x=self.x + self.tank_offset[0],
-                                     y=self.y + self.tank_offset[1],
-                                     team=self.team,
-                                     number=self.number,
-                                     heading=heading,
-                                     batch=self.batch,
-                                     owner=self,
-                                     uid=uid)
-        self.crystal -= config.cost['tank']
+        self.owner.tanks[uid] = Tank(
+            x=self.x + self.tank_offset[0],
+            y=self.y + self.tank_offset[1],
+            team=self.team,
+            number=self.number,
+            heading=heading,
+            batch=self.batch,
+            owner=self,
+            uid=uid,
+        )
+        self.crystal -= config.cost["tank"]
         return uid
 
     def build_ship(self, heading: float):
-        if self.not_enough_crystal('ship'):
+        if self.not_enough_crystal("ship"):
             return
-        print(f'Player {self.team} is building a SHIP at {self.x}, {self.y}')
+        print(f"Player {self.team} is building a SHIP at {self.x}, {self.y}")
         uid = uuid.uuid4().hex
-        self.owner.ships[uid] = Ship(x=self.x + self.ship_offset[0],
-                                     y=self.y + self.ship_offset[1],
-                                     team=self.team,
-                                     number=self.number,
-                                     heading=heading,
-                                     batch=self.batch,
-                                     owner=self,
-                                     uid=uid)
-        self.crystal -= config.cost['ship']
+        self.owner.ships[uid] = Ship(
+            x=self.x + self.ship_offset[0],
+            y=self.y + self.ship_offset[1],
+            team=self.team,
+            number=self.number,
+            heading=heading,
+            batch=self.batch,
+            owner=self,
+            uid=uid,
+        )
+        self.crystal -= config.cost["ship"]
         return uid
 
     def build_jet(self, heading: float):
-        if self.not_enough_crystal('jet'):
+        if self.not_enough_crystal("jet"):
             return
-        print(f'Player {self.team} is building a JET at {self.x}, {self.y}')
+        print(f"Player {self.team} is building a JET at {self.x}, {self.y}")
         uid = uuid.uuid4().hex
-        self.owner.jets[uid] = Jet(x=self.x,
-                                   y=self.y,
-                                   team=self.team,
-                                   number=self.number,
-                                   heading=heading,
-                                   batch=self.batch,
-                                   owner=self,
-                                   uid=uid)
-        self.crystal -= config.cost['jet']
+        self.owner.jets[uid] = Jet(
+            x=self.x,
+            y=self.y,
+            team=self.team,
+            number=self.number,
+            heading=heading,
+            batch=self.batch,
+            owner=self,
+            uid=uid,
+        )
+        self.crystal -= config.cost["jet"]
         return uid
 
     def get_distance(self, x: float, y: float, shortest=True) -> float:
@@ -250,7 +259,6 @@ class Base:
 
 
 class BaseProxy:
-
     def __init__(self, base):
         self._data = base.as_info()
         for key, item in self._data.items():
@@ -275,24 +283,24 @@ class BaseProxy:
         return self._data.items()
 
     def cost(self, kind):
-        if kind == 'mine':
+        if kind == "mine":
             return self.mine_cost()
         else:
             return config.cost[kind]
 
 
 class Mine:
-
-    def __init__(self, x: float, y: float, team: str, number: int, owner: Base,
-                 uid: str):
+    def __init__(
+        self, x: float, y: float, team: str, number: int, owner: Base, uid: str
+    ):
         self.x = x
         self.y = y
         self.team = team
         self.number = number
         self.owner = owner
-        self.health = config.health['mine']
-        self.attack = config.attack['mine']
-        self.kind = 'mine'
+        self.health = config.health["mine"]
+        self.attack = config.attack["mine"]
+        self.kind = "mine"
         self.uid = uid
 
     def make_label(self):
