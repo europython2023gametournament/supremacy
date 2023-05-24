@@ -131,7 +131,7 @@ class Engine:
     def init_dt(self, t: float):
         min_distance = config.competing_mine_radius
         base_locs = MapView(self.base_locations)
-        scoreboard_labels = {}
+        scoreboard_labels = []
         for name, player in self.players.items():
             player.init_dt()
             for base in player.bases.values():
@@ -148,10 +148,10 @@ class Engine:
                 before = base.competing
                 base.competing = nbases > 1
                 if before != base.competing:
-                    base.make_label()
-            # scoreboard_labels[name] = player.make_label()
-            player.make_label()
-        self.graphics.update_scoreboard(t=t)  # players=scoreboard_labels)
+                    base.make_avatar()
+            scoreboard_labels.append((player.score, player.make_label()))
+            # player.make_label()
+        self.graphics.update_scoreboard(t=t, players=scoreboard_labels)
 
     def exit(self, message: str):
         print(message)

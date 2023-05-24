@@ -28,9 +28,8 @@ def fight(players, batch: Any) -> Tuple[dict, dict, dict]:
         defender = troops[d_ind]
         if attacker.team != defender.team:
             defender.health -= attacker.attack
-            defender.make_label()
             if defender.health <= 0:
-                if defender.kind == 'base':
+                if defender.kind == "base":
                     if defender.team not in dead_bases:
                         dead_bases[defender.team] = []
                     dead_bases[defender.team].append(defender.uid)
@@ -39,22 +38,24 @@ def fight(players, batch: Any) -> Tuple[dict, dict, dict]:
                     if defender.team not in dead_vehicles:
                         dead_vehicles[defender.team] = []
                     dead_vehicles[defender.team].append(defender.uid)
-                print(f"{defender.team}'s {defender.kind} was destroyed "
-                      f"by {attacker.team}'s {attacker.kind} at "
-                      f"{defender.x}, {defender.y}")
+                print(
+                    f"{defender.team}'s {defender.kind} was destroyed "
+                    f"by {attacker.team}'s {attacker.kind} at "
+                    f"{defender.x}, {defender.y}"
+                )
                 explosions[defender.uid] = Explosion(defender.x, defender.y, batch)
+            else:
+                defender.make_avatar()
     return dead_vehicles, dead_bases, explosions
 
 
 class Explosion:
-
     def __init__(self, x: float, y: float, batch: Any):
         self.animate = 10
         self.opacities = np.linspace(0, 255, self.animate, dtype=int)
-        self.sprite = pyglet.sprite.Sprite(img=config.images['explosion'],
-                                           x=x,
-                                           y=y,
-                                           batch=batch)
+        self.sprite = pyglet.sprite.Sprite(
+            img=config.images["explosion"], x=x, y=y, batch=batch
+        )
 
     def update(self):
         self.animate -= 1

@@ -11,6 +11,7 @@ import pyglet
 from . import config
 from .base import Base
 from .game_map import MapView
+from .tools import text_to_image
 
 
 class Player:
@@ -58,6 +59,14 @@ class Player:
             img=config.images[f"base_{self.number}"],
             x=config.nx + 10,
             y=config.ny - (dy * (self.number + 1)),
+            batch=self.batch,
+        )
+        img = text_to_image(self.team, width=80, height=20)
+        img.anchor_y = img.height // 2
+        self.name_label = pyglet.sprite.Sprite(
+            img=img,
+            x=self.avatar.x + 20,
+            y=self.avatar.y,
             batch=self.batch,
         )
 
@@ -134,7 +143,7 @@ class Player:
             for base in self.bases.values():
                 if uid in base.mines:
                     del base.mines[uid]
-                    base.make_label()
+                    base.make_avatar()
 
     def remove_base(self, uid: str):
         self.bases[uid].delete()
@@ -144,8 +153,8 @@ class Player:
         return int(sum([base.crystal for base in self.bases.values()]))
 
     def make_label(self) -> str:
-        return
-        # return f'{self.economy()}[{self.score}]'
+        # return
+        return f"{self.economy()}[{self.score}]"
         # if self.label is not None:
         #     self.label.delete()
         img = Image.new("RGBA", (200, 20), (0, 0, 0, 0))
@@ -190,7 +199,7 @@ class Player:
         avy = self.avatar.y
         self.avatar.delete()
         self.avatar = pyglet.sprite.Sprite(
-            img=config.images[f"skull_{self.number}"], x=avx, y=avy, batch=self.batch
+            img=config.images[f"cross_{self.number}"], x=avx, y=avy, batch=self.batch
         )
 
         self.dead = True
@@ -204,7 +213,7 @@ class Player:
         fig.savefig(f"{self.team}_map.png", bbox_inches="tight")
 
     def init_skull_animation(self):
-        self.animate_skull = 15
+        self.animate_skull = 10
         self.skull_x = np.linspace(self.avatar.x, config.nx / 2, self.animate_skull)
         self.skull_y = np.linspace(self.avatar.y, config.ny / 2, self.animate_skull)
         self.skull_s = np.linspace(1, 30, self.animate_skull)

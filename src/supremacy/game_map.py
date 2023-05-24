@@ -6,6 +6,7 @@ import matplotlib as mpl
 import numpy as np
 from matplotlib.colors import Normalize
 from PIL import Image
+import pyglet
 from scipy.ndimage import gaussian_filter
 
 from . import config
@@ -17,7 +18,7 @@ class GameMap:
         self.nx = nx
         self.ny = ny
         image = np.zeros([self.ny, self.nx])
-        self.nseeds = 200  #  * 4
+        self.nseeds = int((nx * ny) * 200 / (1920 * 1080))  #  * 4
         self.xseed = np.random.randint(self.nx, size=self.nseeds)
         self.yseed = np.random.randint(self.ny, size=self.nseeds)
 
@@ -38,8 +39,15 @@ class GameMap:
             to_image = cmap(norm(np.flipud(smooth)))[..., :3] * 255
             contour_color = np.full_like(to_image, (0, 140, 240))
             to_image[ii] = contour_color[ii]
-        im = Image.fromarray(to_image.astype(np.uint8))
-        im.save("background.png")
+        img = Image.fromarray(to_image.astype(np.uint8))
+        # im.save("background.png")
+        self.background_image = pyglet.image.ImageData(
+            width=img.width,
+            height=img.height,
+            fmt="RGBA",
+            data=img.tobytes(),
+            pitch=-img.width * 4,
+        )
 
     def add_players(self, players: dict):
         inds = np.random.choice(

@@ -6,19 +6,25 @@ import neil_ai
 import supremacy
 
 names = [
-    'Afonso',
-    'Drew',
-    'Greg',
-    'Jankas',
-    'Mads',
-    'Simon',
-    'Sun',
+    "Afonso",
+    "Drew",
+    "Greg",
+    "Jankas",
+    "Mads",
+    "Simon",
+    "Sun",
+    "Tobias",
+    "Vlad",
+    "Zach",
+    "Rob",
+    "Dave",
+    "Ann",
+    "Thor",
 ]
 
 players = {name: template_ai for name in names}
-players['Neil'] = neil_ai
+players["Neil"] = neil_ai
 
-supremacy.start(players=players,
-                high_contrast=False,
-                time_limit=8 * 60,
-                crystal_boost=5)
+supremacy.start(
+    players=players, high_contrast=False, time_limit=8 * 60, crystal_boost=5
+)

@@ -48,10 +48,16 @@ class Base:
                 uid=muid,
             )
         }
-        self.crystal = 10000
+        self.crystal = 0
         self.owner.update_player_map(x=self.x, y=self.y)
+        # self.avatar = pyglet.sprite.Sprite(
+        #     img=config.images[f"base_{self.number}"], x=self.x, y=self.y, batch=batch
+        # )
         self.avatar = pyglet.sprite.Sprite(
-            img=config.images[f"base_{self.number}"], x=self.x, y=self.y, batch=batch
+            img=config.images[f"base_{self.number}"],
+            x=self.x,
+            y=self.y,
+            batch=self.batch,
         )
         if self.high_contrast:
             rgb = colors.to_rgb(f"C{self.number}")
@@ -65,9 +71,10 @@ class Base:
             )
         else:
             self.shape = None
-        self.label = None
+        self.health_label = None
+        self.mines_label = None
         self.clabel = None
-        self.make_label()
+        self.make_avatar()
 
         ix = int(x)
         iy = int(y)
@@ -115,41 +122,61 @@ class Base:
             dx += 1
         self.ship_offset = offset
 
-    def make_label(self):
-        if self.label is not None:
-            self.label.delete()
-        if self.clabel is not None:
-            self.clabel.delete()
-        color = (128, 128, 128, 255) if self.high_contrast else (0, 0, 0, 255)
-        self.label = pyglet.text.Label(
-            f"{self.health} [{len(self.mines)}]",
-            color=color,
-            font_size=10,
+    def make_avatar(self):
+        if self.health <= 0:
+            return
+        if self.health_label is not None:
+            self.health_label.delete()
+            self.mines_label.delete()
+        self.health_label = pyglet.sprite.Sprite(
+            img=config.images[f"health_{self.health}"],
             x=self.x,
             y=self.y + 18,
-            anchor_x="center",
-            anchor_y="center",
             batch=self.batch,
         )
-        if self.competing:
-            self.clabel = pyglet.text.Label(
-                "C",
-                color=color,
-                font_size=10,
-                x=self.x,
-                y=self.y,
-                anchor_x="center",
-                anchor_y="center",
-                batch=self.batch,
-            )
-        else:
-            self.clabel = None
+        self.mines_label = pyglet.sprite.Sprite(
+            img=config.images[f"mines_{len(self.mines)}"],
+            x=self.x + 18,
+            y=self.y + 18,
+            batch=self.batch,
+        )
+
+    # def make_label(self):
+    #     if self.label is not None:
+    #         self.label.delete()
+    #     if self.clabel is not None:
+    #         self.clabel.delete()
+    #     color = (128, 128, 128, 255) if self.high_contrast else (0, 0, 0, 255)
+    #     self.label = pyglet.text.Label(
+    #         f"{self.health} [{len(self.mines)}]",
+    #         color=color,
+    #         font_size=10,
+    #         x=self.x,
+    #         y=self.y + 18,
+    #         anchor_x="center",
+    #         anchor_y="center",
+    #         batch=self.batch,
+    #     )
+    #     if self.competing:
+    #         self.clabel = pyglet.text.Label(
+    #             "C",
+    #             color=color,
+    #             font_size=10,
+    #             x=self.x,
+    #             y=self.y,
+    #             anchor_x="center",
+    #             anchor_y="center",
+    #             batch=self.batch,
+    #         )
+    #     else:
+    #         self.clabel = None
 
     def delete(self):
         self.avatar.delete()
-        self.label.delete()
-        if self.clabel is not None:
-            self.clabel.delete()
+        self.health_label.delete()
+        self.mines_label.delete()
+        # if self.clabel is not None:
+        #     self.clabel.delete()
         if self.shape is not None:
             self.shape.delete()
 
@@ -192,7 +219,7 @@ class Base:
         self.mines[uid] = Mine(
             x=self.x, y=self.y, team=self.team, number=self.number, owner=self, uid=uid
         )
-        self.make_label()
+        self.make_avatar()
 
     def build_tank(self, heading: float):
         if self.not_enough_crystal("tank"):
@@ -303,5 +330,5 @@ class Mine:
         self.kind = "mine"
         self.uid = uid
 
-    def make_label(self):
+    def make_avatar(self):
         return

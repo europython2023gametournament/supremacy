@@ -14,6 +14,7 @@ from PIL import Image, ImageDraw
 
 
 from . import config
+from .tools import text_to_image
 
 
 class Graphics:
@@ -29,7 +30,8 @@ class Graphics:
         )
         # self.window.flip()
         # glScalef(0.5, 0.5, 1.0)
-        self.background = pyglet.resource.image("background.png")
+        # self.background = pyglet.resource.image("background.png")
+        self.background = self.engine.game_map.background_image
         self.main_batch = pyglet.graphics.Batch()
 
         # self.economy_label = pyglet.text.Label(
@@ -71,8 +73,8 @@ class Graphics:
         #     elif symbol == pyglet.window.key.P:
         #         self.engine.paused = not self.engine.paused
 
-    def update_scoreboard(self, t: float):
-        return
+    def update_scoreboard(self, t: float, players: dict):
+        # return
         if self.scoreboard_label is not None:
             self.scoreboard_label.delete()
         # t_str = str(datetime.timedelta(seconds=int(t)))[2:]
@@ -100,7 +102,7 @@ class Graphics:
         #     batch=self.main_batch,
         # )
 
-        img = Image.new("RGBA", (200, 1000), (0, 0, 0, 0))
+        # img = Image.new("RGBA", (200, 1000), (0, 0, 0, 0))
         # d = ImageDraw.Draw(img)
         # d.text(
         #     (0, 0),
@@ -108,17 +110,19 @@ class Graphics:
         #     fill=(255, 255, 255),
         #     font=config.large_font,
         # )
-        imdata = pyglet.image.ImageData(
-            width=img.width,
-            height=img.height,
-            fmt="RGBA",
-            data=img.tobytes(),
-            pitch=-img.width * 4,
-        )
+        # imdata = pyglet.image.ImageData(
+        #     width=img.width,
+        #     height=img.height,
+        #     fmt="RGBA",
+        #     data=img.tobytes(),
+        #     pitch=-img.width * 4,
+        # )
         self.scoreboard_label = pyglet.sprite.Sprite(
-            img=imdata,
-            x=config.nx,
-            y=0,
+            img=text_to_image(
+                "\n\n\n".join(players.values()), width=200, height=config.ny
+            ),
+            x=config.nx + 100,
+            y=-30,
             batch=self.main_batch,
         )
 
