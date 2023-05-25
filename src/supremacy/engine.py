@@ -239,6 +239,7 @@ class Engine:
         for name in dead_vehicles:
             for uid in dead_vehicles[name]:
                 self.players[name].remove(uid)
+        rip_players = []
         for name in dead_bases:
             for uid in dead_bases[name]:
                 if uid in self.players[name].bases:
@@ -252,6 +253,7 @@ class Engine:
                 self.players[name].update_score(len(self.dead_players))
                 # self.players[name].global_score += len(self.dead_players)
                 self.players[name].rip()
+                rip_players.append(name)
         if dead_bases:
             players = sorted(
                 self.players.values(),
@@ -261,6 +263,8 @@ class Engine:
             for i, p in enumerate(players):
                 p.make_avatar(ind=i)
             # self.graphics.update_scoreboard(t=t, players=players)
+        for name in rip_players:
+            self.players[name].init_skull_animation()
         players_alive = [p.team for p in self.players.values() if not p.dead]
         if len(players_alive) == 1:
             self.exit(message=f"Player {players_alive[0]} won!")

@@ -44,6 +44,11 @@ def _make_base_image(resources: Any, name: str, rgb: tuple) -> Image:
     return Image.fromarray(new_data.astype(np.uint8))
 
 
+def _make_color(number):
+    hue = number * 137.508
+    return colors.hsv_to_rgb([(hue % 360) / 360, 0.5, 0.75])
+
+
 class Config:
     def __init__(self):
         self.speed = {"tank": 10, "ship": 5, "jet": 20, "base": 0}
@@ -73,7 +78,8 @@ class Config:
             self.generate_dead_images(n)
 
     def generate_vehicle_images(self, n: int):
-        rgb = colors.to_rgb(f"C{n}")
+        # rgb = colors.to_rgb(f"C{n}")
+        rgb = _make_color(n)
         for name in ("jet", "ship", "tank"):
             # print(name)
             # img = Image.open(self.resources / f"{name}.png")
@@ -96,7 +102,8 @@ class Config:
                 self.images[f"{name}_{n}_{health}"] = _to_image(img)
 
     def generate_base_images(self, n: int):
-        rgb = colors.to_rgb(f"C{n}")
+        # rgb = colors.to_rgb(f"C{n}")
+        rgb = _make_color(n)
         name = "base"
         # img = Image.open(self.resources / f"{name}.png")
         # img = img.convert("RGBA")
@@ -136,7 +143,8 @@ class Config:
             self.images[f"mines_{mines}"] = _to_image(img)
 
     def generate_dead_images(self, n: int):
-        rgb = colors.to_rgb(f"C{n}")
+        # rgb = colors.to_rgb(f"C{n}")
+        rgb = _make_color(n)
         name = "cross"
         # img = _make_base_image(self.resources, name, rgb)
         self.images[f"{name}_{n}"] = _make_base_image(self.resources, name, rgb)

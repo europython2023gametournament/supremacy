@@ -261,8 +261,8 @@ class Player:
 
         self.dead = True
         self.make_avatar_base_image()
-        self.make_avatar()
-        self.init_skull_animation()
+        # self.make_avatar()
+        # self.init_skull_animation()
 
     def dump_map(self):
         import matplotlib.pyplot as plt
