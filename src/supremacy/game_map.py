@@ -40,14 +40,14 @@ class GameMap:
             contour_color = np.full_like(to_image, (0, 140, 240))
             to_image[ii] = contour_color[ii]
         img = Image.fromarray(to_image.astype(np.uint8))
-        # im.save("background.png")
-        self.background_image = pyglet.image.ImageData(
-            width=img.width,
-            height=img.height,
-            fmt="RGBA",
-            data=img.tobytes(),
-            pitch=-img.width * 4,
-        )
+        img.save("background.png")
+        # self.background_image = pyglet.image.ImageData(
+        #     width=img.width,
+        #     height=img.height,
+        #     fmt="RGBA",
+        #     data=img.tobytes(),
+        #     pitch=-img.width * 4,
+        # )
 
     def add_players(self, players: dict):
         inds = np.random.choice(

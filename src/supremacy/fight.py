@@ -33,7 +33,8 @@ def fight(players, batch: Any) -> Tuple[dict, dict, dict]:
                     if defender.team not in dead_bases:
                         dead_bases[defender.team] = []
                     dead_bases[defender.team].append(defender.uid)
-                    attacker.owner.owner.score += 1
+                    attacker.owner.owner.update_score(1)
+                    # attacker.owner.owner.score_this_round += 1
                 else:
                     if defender.team not in dead_vehicles:
                         dead_vehicles[defender.team] = []
@@ -51,7 +52,7 @@ def fight(players, batch: Any) -> Tuple[dict, dict, dict]:
 
 class Explosion:
     def __init__(self, x: float, y: float, batch: Any):
-        self.animate = 10
+        self.animate = 8
         self.opacities = np.linspace(0, 255, self.animate, dtype=int)
         self.sprite = pyglet.sprite.Sprite(
             img=config.images["explosion"], x=x, y=y, batch=batch

@@ -138,5 +138,5 @@ class Config:
     def generate_dead_images(self, n: int):
         rgb = colors.to_rgb(f"C{n}")
         name = "cross"
-        img = _make_base_image(self.resources, name, rgb)
-        self.images[f"{name}_{n}"] = _to_image(img)
+        # img = _make_base_image(self.resources, name, rgb)
+        self.images[f"{name}_{n}"] = _make_base_image(self.resources, name, rgb)

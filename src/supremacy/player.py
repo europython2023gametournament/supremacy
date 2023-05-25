@@ -42,7 +42,8 @@ class Player:
         self.tanks = {}
         self.ships = {}
         self.jets = {}
-        self.score = score
+        self.global_score = score
+        self.score_this_round = 0
         self.high_contrast = high_contrast
         self.build_base(x=location[0], y=location[1])
         self.transformed_ships = []
@@ -55,17 +56,21 @@ class Player:
         # else:
         #     dx = 120
         dy = 50
+        self.score_position = self.number
 
         # image1_size = image1.size
         # image2_size = image2.size
         # new_image = Image.new('RGB',(2*image1_size[0], image1_size[1]), (250,250,250))
         # new_image.paste(image1,(0,0))
         # new_image.paste(image2,(image1_size[0],0))
-        self.avatar_base_image = Image.new("RGBA", (100, 24), (0, 0, 0, 0))
-        self.avatar_base_image.paste(config.images[f"player_{self.number}"], (0, 0))
-        self.avatar_base_image.paste(
-            text_to_raw_image(self.team, width=70, height=24), (30, 0)
-        )
+        # self.avatar_base_image = Image.new("RGBA", (100, 24), (0, 0, 0, 0))
+        # self.avatar_base_image.paste(config.images[f"player_{self.number}"], (0, 0))
+        # self.avatar_base_image.paste(
+        #     text_to_raw_image(self.team, width=70, height=24), (30, 0)
+        # )
+        self.avatar = None
+        self.make_avatar_base_image()
+        self.make_avatar()
         # self.avatar = pyglet.sprite.Sprite(
         #     img=config.images[f"base_{self.number}"],
         #     x=config.nx + 10,
@@ -163,19 +168,46 @@ class Player:
     def economy(self) -> int:
         return int(sum([base.crystal for base in self.bases.values()]))
 
-    def make_avatar(self):
-        self.avatar = Image.new("RGBA", (200, 24), (0, 0, 0, 0))
-        self.avatar.paste(self.avatar_base_image, (0, 0))
-        self.avatar.paste(
-            text_to_raw_image(f"{self.economy()}[{self.score}]", width=100, height=24),
+    def make_avatar_base_image(self):
+        self.avatar_base_image = Image.new("RGBA", (100, 24), (0, 0, 0, 0))
+        key = "cross" if self.dead else "player"
+        self.avatar_base_image.paste(config.images[f"{key}_{self.number}"], (0, 0))
+        self.avatar_base_image.paste(
+            text_to_raw_image(self.team, width=70, height=24), (30, 0)
+        )
+
+    def update_score(self, score: int):
+        self.score_this_round += score
+        self.global_score += score
+
+    def make_avatar(self, ind=None):
+        if ind is not None:
+            self.score_position = ind
+        img = Image.new("RGBA", (200, 24), (0, 0, 0, 0))
+        img.paste(self.avatar_base_image, (0, 0))
+        img.paste(
+            text_to_raw_image(
+                f"{self.score_position + 1}. {self.global_score}[{self.score_this_round}]",
+                width=100,
+                height=24,
+            ),
             (100, 0),
         )
-        # self.avatar = pyglet.sprite.Sprite(
-        #     img=img,
-        #     x=config.nx + 10,
-        #     y=0,
-        #     batch=self.batch,
-        # )
+        imd = pyglet.image.ImageData(
+            width=img.width,
+            height=img.height,
+            fmt="RGBA",
+            data=img.tobytes(),
+            pitch=-img.width * 4,
+        )
+        if self.avatar is not None:
+            self.avatar.delete()
+        self.avatar = pyglet.sprite.Sprite(
+            img=imd,
+            x=config.nx + 10,
+            y=config.ny - 50 - 50 * self.score_position,
+            batch=self.batch,
+        )
 
     def make_label(self) -> str:
         # return
@@ -220,14 +252,16 @@ class Player:
         self.tanks.clear()
         self.ships.clear()
         self.jets.clear()
-        avx = self.avatar.x
-        avy = self.avatar.y
-        self.avatar.delete()
-        self.avatar = pyglet.sprite.Sprite(
-            img=config.images[f"cross_{self.number}"], x=avx, y=avy, batch=self.batch
-        )
+        # avx = self.avatar.x
+        # avy = self.avatar.y
+        # self.avatar.delete()
+        # self.avatar = pyglet.sprite.Sprite(
+        #     img=config.images[f"cross_{self.number}"], x=avx, y=avy, batch=self.batch
+        # )
 
         self.dead = True
+        self.make_avatar_base_image()
+        self.make_avatar()
         self.init_skull_animation()
 
     def dump_map(self):

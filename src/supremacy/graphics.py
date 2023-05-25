@@ -73,8 +73,8 @@ class Graphics:
         #     elif symbol == pyglet.window.key.P:
         #         self.engine.paused = not self.engine.paused
 
-    def update_scoreboard(self, t: float, players: list):
-        # return
+    def update_scoreboard(self, t: float):  # , players: list):
+        return
 
         for sprite in self.scoreboard_labels:
             sprite.delete()
@@ -86,7 +86,7 @@ class Graphics:
                 pyglet.sprite.Sprite(
                     img=p.avatar,
                     x=config.nx + 10,
-                    y=config.ny - 10 - dy * i,
+                    y=config.ny - 50 - dy * i,
                     batch=self.main_batch,
                 )
             )

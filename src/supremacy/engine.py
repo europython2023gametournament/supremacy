@@ -41,8 +41,9 @@ class Engine:
         self.test = test
         self.map_review_stage = True
         self.need_new_map = True
-        self.current_scores = self.read_scores(players=players, test=self.test)
-        self.scores = {}
+        self.scores = self.read_scores(players=players, test=self.test)
+        # self.scores = {}
+        self.dead_players = []
         self.high_contrast = high_contrast
         self.safe = safe
         self.player_ais = players
@@ -83,11 +84,12 @@ class Engine:
                 team=p.team,
                 batch=self.graphics.main_batch,
                 game_map=self.game_map.array,
-                score=self.current_scores[p.team],
+                score=self.scores[p.team],
                 nplayers=len(self.player_ais),
                 high_contrast=self.high_contrast,
                 base_locations=self.base_locations,
             )
+        # self.graphics.update_scoreboard(t=0, players=list(self.players.values()))
 
     def read_scores(self, players: dict, test: bool) -> Dict[str, int]:
         scores = {}
@@ -95,8 +97,8 @@ class Engine:
         if os.path.exists(fname) and (not test):
             with open(fname, "r") as f:
                 contents = f.readlines()
-            self.round = int(contents[0].split("=")[1].strip())
-            for line in contents[1:]:
+            # self.round = int(contents[0].split("=")[1].strip())
+            for line in contents:
                 name, score = line.split(":")
                 scores[name] = int(score.strip())
         else:
@@ -151,26 +153,31 @@ class Engine:
                     base.make_avatar()
             # scoreboard_labels.append((player.score, player.make_label()))
             # player.make_label()
-        # self.graphics.update_scoreboard(t=t, players=scoreboard_labels)
+        self.graphics.update_scoreboard(t=t)  # , players=scoreboard_labels)
 
     def exit(self, message: str):
         print(message)
         pyglet.clock.unschedule(self.update)
-        pyglet.app.exit()
-        score_left = len(self.scores)
+        score_left = len(self.dead_players)
         for name, p in self.players.items():
             if not p.dead:
-                self.scores[name] = p.score + score_left
+                p.update_score(score_left)
             p.dump_map()
+        sorted_scores = [
+            (p.team, p.global_score)
+            for p in sorted(
+                self.players.values(), key=lambda x: x.global_score, reverse=True
+            )
+        ]
+        for i, (name, score) in enumerate(sorted_scores):
+            p.make_avatar(ind=i)
+        pyglet.app.exit()
         fname = "scores.txt"
         with open(fname, "w") as f:
-            f.write(f"Round = {self.round + 1}\n")
-            for name, score in self.scores.items():
-                f.write(f"{name}: {score}\n")
-        sorted_scores = [
-            (k, v)
-            for k, v in sorted(self.scores.items(), key=lambda x: x[1], reverse=True)
-        ]
+            # f.write(f"Round = {self.round + 1}\n")
+            # for name, score in self.scores.items():
+            for name, p in self.players.items():
+                f.write(f"{name}: {p.global_score}\n")
         for i, (name, score) in enumerate(sorted_scores):
             print(f"{i + 1}. {name}: {score}")
 
@@ -240,17 +247,20 @@ class Engine:
                     self.players[name].remove_base(uid)
             if len(self.players[name].bases) == 0:
                 print(f"Player {name} died!")
-                self.scores[name] = self.players[name].score + len(self.scores)
+                self.dead_players.append(name)
+                # self.scores[name] = self.players[name].score + len(self.scores)
+                self.players[name].update_score(len(self.dead_players))
+                # self.players[name].global_score += len(self.dead_players)
                 self.players[name].rip()
         if dead_bases:
-            for p in self.players.values():
-                p.make_avatar()
             players = sorted(
-                list(self.players.values()),
-                key=lambda p: p.score,
+                self.players.values(),
+                key=lambda p: p.global_score,
                 reverse=True,
             )
-            self.graphics.update_scoreboard(t=t, players=players)
+            for i, p in enumerate(players):
+                p.make_avatar(ind=i)
+            # self.graphics.update_scoreboard(t=t, players=players)
         players_alive = [p.team for p in self.players.values() if not p.dead]
         if len(players_alive) == 1:
             self.exit(message=f"Player {players_alive[0]} won!")
