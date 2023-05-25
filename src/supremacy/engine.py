@@ -149,9 +149,9 @@ class Engine:
                 base.competing = nbases > 1
                 if before != base.competing:
                     base.make_avatar()
-            scoreboard_labels.append((player.score, player.make_label()))
+            # scoreboard_labels.append((player.score, player.make_label()))
             # player.make_label()
-        self.graphics.update_scoreboard(t=t, players=scoreboard_labels)
+        # self.graphics.update_scoreboard(t=t, players=scoreboard_labels)
 
     def exit(self, message: str):
         print(message)
@@ -242,6 +242,15 @@ class Engine:
                 print(f"Player {name} died!")
                 self.scores[name] = self.players[name].score + len(self.scores)
                 self.players[name].rip()
+        if dead_bases:
+            for p in self.players.values():
+                p.make_avatar()
+            players = sorted(
+                list(self.players.values()),
+                key=lambda p: p.score,
+                reverse=True,
+            )
+            self.graphics.update_scoreboard(t=t, players=players)
         players_alive = [p.team for p in self.players.values() if not p.dead]
         if len(players_alive) == 1:
             self.exit(message=f"Player {players_alive[0]} won!")

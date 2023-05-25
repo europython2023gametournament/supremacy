@@ -105,6 +105,7 @@ class Config:
         # for i in range(3):
         #     new_data[..., i] = int(round(rgb[i] * 255))
         img = _make_base_image(self.resources, name, rgb)
+        self.images[f"player_{n}"] = img
         self.images[f"{name}_{n}"] = _to_image(img)
 
         for health in range(0, MAX_HEALTH + 1, 10):

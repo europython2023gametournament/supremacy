@@ -30,8 +30,8 @@ class Graphics:
         )
         # self.window.flip()
         # glScalef(0.5, 0.5, 1.0)
-        # self.background = pyglet.resource.image("background.png")
-        self.background = self.engine.game_map.background_image
+        self.background = pyglet.resource.image("background.png")
+        # self.background = self.engine.game_map.background_image
         self.main_batch = pyglet.graphics.Batch()
 
         # self.economy_label = pyglet.text.Label(
@@ -54,7 +54,7 @@ class Graphics:
                 batch=self.main_batch,
             )
 
-        self.scoreboard_label = None
+        self.scoreboard_labels = []
 
         @self.window.event
         def on_draw():
@@ -73,10 +73,25 @@ class Graphics:
         #     elif symbol == pyglet.window.key.P:
         #         self.engine.paused = not self.engine.paused
 
-    def update_scoreboard(self, t: float, players: dict):
+    def update_scoreboard(self, t: float, players: list):
         # return
-        if self.scoreboard_label is not None:
-            self.scoreboard_label.delete()
+
+        for sprite in self.scoreboard_labels:
+            sprite.delete()
+
+        self.scoreboard_labels = []
+        dy = 50
+        for i, p in enumerate(players):
+            self.scoreboard_labels.append(
+                pyglet.sprite.Sprite(
+                    img=p.avatar,
+                    x=config.nx + 10,
+                    y=config.ny - 10 - dy * i,
+                    batch=self.main_batch,
+                )
+            )
+        # if self.scoreboard_label is not None:
+        #     self.scoreboard_label.delete()
         # t_str = str(datetime.timedelta(seconds=int(t)))[2:]
         # # p_str = [f"{name}: {value}" for name, value in players.items()]
         # # if len(players) <= 5:
@@ -111,22 +126,22 @@ class Graphics:
         #     font=config.large_font,
         # )
         # imdata = pyglet.image.ImageData(
-        #     width=img.width,
-        #     height=img.height,
-        #     fmt="RGBA",
-        #     data=img.tobytes(),
-        #     pitch=-img.width * 4,
+        # #     width=img.width,
+        # #     height=img.height,
+        # #     fmt="RGBA",
+        # #     data=img.tobytes(),
+        # #     pitch=-img.width * 4,
+        # # )
+        # self.scoreboard_label = pyglet.sprite.Sprite(
+        #     img=text_to_image(
+        #         "\n\n\n".join(players.values()), width=200, height=config.ny
+        #     ),
+        #     x=config.nx + 100,
+        #     y=-30,
+        #     batch=self.main_batch,
         # )
-        self.scoreboard_label = pyglet.sprite.Sprite(
-            img=text_to_image(
-                "\n\n\n".join(players.values()), width=200, height=config.ny
-            ),
-            x=config.nx + 100,
-            y=-30,
-            batch=self.main_batch,
-        )
 
-        # document = pyglet.text.decode_text("Hello, \n world.")
+        # # document = pyglet.text.decode_text("Hello, \n world.")
         # self.scoreboard_label = pyglet.text.layout.TextLayout(
         #     document,
         #     200,
