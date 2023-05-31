@@ -34,7 +34,6 @@ def fight(players, batch: Any) -> Tuple[dict, dict, dict]:
                         dead_bases[defender.team] = []
                     dead_bases[defender.team].append(defender.uid)
                     attacker.owner.owner.update_score(1)
-                    # attacker.owner.owner.score_this_round += 1
                 else:
                     if defender.team not in dead_vehicles:
                         dead_vehicles[defender.team] = []

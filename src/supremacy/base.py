@@ -3,10 +3,8 @@
 import uuid
 from typing import Any
 
-# import numpy as np
 import pyglet
 
-# from matplotlib import colors
 
 from . import config
 from .tools import distance_on_plane, distance_on_torus, wrap_position
@@ -51,9 +49,6 @@ class Base:
         }
         self.crystal = 0
         self.owner.update_player_map(x=self.x, y=self.y)
-        # self.avatar = pyglet.sprite.Sprite(
-        #     img=config.images[f"base_{self.number}"], x=self.x, y=self.y, batch=batch
-        # )
         self.avatar = pyglet.sprite.Sprite(
             img=config.images[f"base_{self.number}"],
             x=self.x,
@@ -61,7 +56,6 @@ class Base:
             batch=self.batch,
         )
         if self.high_contrast:
-            # rgb = colors.to_rgb(f"C{self.number}")
             rgb = config.colors[self.number]
             self.shape = pyglet.shapes.Rectangle(
                 x=self.x - config.competing_mine_radius,
@@ -142,36 +136,6 @@ class Base:
             y=self.y + 18,
             batch=self.batch,
         )
-
-    # def make_label(self):
-    #     if self.label is not None:
-    #         self.label.delete()
-    #     if self.clabel is not None:
-    #         self.clabel.delete()
-    #     color = (128, 128, 128, 255) if self.high_contrast else (0, 0, 0, 255)
-    #     self.label = pyglet.text.Label(
-    #         f"{self.health} [{len(self.mines)}]",
-    #         color=color,
-    #         font_size=10,
-    #         x=self.x,
-    #         y=self.y + 18,
-    #         anchor_x="center",
-    #         anchor_y="center",
-    #         batch=self.batch,
-    #     )
-    #     if self.competing:
-    #         self.clabel = pyglet.text.Label(
-    #             "C",
-    #             color=color,
-    #             font_size=10,
-    #             x=self.x,
-    #             y=self.y,
-    #             anchor_x="center",
-    #             anchor_y="center",
-    #             batch=self.batch,
-    #         )
-    #     else:
-    #         self.clabel = None
 
     def delete(self):
         self.avatar.delete()

@@ -24,7 +24,6 @@ class Player:
         batch: Any,
         game_map: np.ndarray,
         score: int,
-        nplayers: int,
         base_locations: np.ndarray,
         high_contrast: bool = False,
     ):
@@ -49,42 +48,10 @@ class Player:
         self.transformed_ships = []
         self.label = None
         self.animate_skull = 0
-        # if nplayers <= 5:
-        #     dx = 250
-        # elif nplayers <= 10:
-        #     dx = 160
-        # else:
-        #     dx = 120
-        dy = 50
         self.score_position = self.number
-
-        # image1_size = image1.size
-        # image2_size = image2.size
-        # new_image = Image.new('RGB',(2*image1_size[0], image1_size[1]), (250,250,250))
-        # new_image.paste(image1,(0,0))
-        # new_image.paste(image2,(image1_size[0],0))
-        # self.avatar_base_image = Image.new("RGBA", (100, 24), (0, 0, 0, 0))
-        # self.avatar_base_image.paste(config.images[f"player_{self.number}"], (0, 0))
-        # self.avatar_base_image.paste(
-        #     text_to_raw_image(self.team, width=70, height=24), (30, 0)
-        # )
         self.avatar = None
         self.make_avatar_base_image()
         self.make_avatar()
-        # self.avatar = pyglet.sprite.Sprite(
-        #     img=config.images[f"base_{self.number}"],
-        #     x=config.nx + 10,
-        #     y=config.ny - (dy * (self.number + 1)),
-        #     batch=self.batch,
-        # )
-        # img = text_to_image(self.team, width=80, height=20)
-        # img.anchor_y = img.height // 2
-        # self.name_label = pyglet.sprite.Sprite(
-        #     img=img,
-        #     x=self.avatar.x + 20,
-        #     y=self.avatar.y,
-        #     batch=self.batch,
-        # )
 
     def update_player_map(self, x: float, y: float):
         r = config.view_radius
@@ -209,60 +176,14 @@ class Player:
             batch=self.batch,
         )
 
-    def make_label(self) -> str:
-        # return
-        return f"{self.economy()}[{self.score}]"
-        # if self.label is not None:
-        #     self.label.delete()
-        img = Image.new("RGBA", (200, 20), (0, 0, 0, 0))
-        d = ImageDraw.Draw(img)
-        d.text(
-            (0, 0),
-            f"{self.economy()}[{self.score}]",
-            fill=(255, 255, 255),
-            font=config.large_font,
-        )
-        imdata = pyglet.image.ImageData(
-            width=img.width,
-            height=img.height,
-            fmt="RGBA",
-            data=img.tobytes(),
-            pitch=-img.width * 4,
-        )
-        self.label = pyglet.sprite.Sprite(
-            img=imdata,
-            x=self.avatar.x + 10,
-            y=self.avatar.y,
-            batch=self.batch,
-        )
-        # self.label = pyglet.text.Label(
-        #     f"{self.economy()}[{self.score}]",
-        #     color=(255, 255, 255, 255),
-        #     font_name="monospace",
-        #     font_size=14,
-        #     x=config.nx + 10,
-        #     y=self.avatar.y - 10,
-        #     anchor_x="left",
-        #     batch=self.batch,
-        # )
-
     def rip(self):
         for v in self.vehicles:
             v.delete()
         self.tanks.clear()
         self.ships.clear()
         self.jets.clear()
-        # avx = self.avatar.x
-        # avy = self.avatar.y
-        # self.avatar.delete()
-        # self.avatar = pyglet.sprite.Sprite(
-        #     img=config.images[f"cross_{self.number}"], x=avx, y=avy, batch=self.batch
-        # )
-
         self.dead = True
         self.make_avatar_base_image()
-        # self.make_avatar()
-        # self.init_skull_animation()
 
     def dump_map(self):
         import matplotlib.pyplot as plt

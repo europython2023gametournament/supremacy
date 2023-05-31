@@ -74,14 +74,6 @@ def text_to_raw_image(text, width, height):
 
 
 def text_to_image(text, width, height):
-    # img = Image.new("RGBA", (width, height), (0, 0, 0, 0))
-    # d = ImageDraw.Draw(img)
-    # d.text(
-    #     (0, 0),
-    #     text,
-    #     fill=(255, 255, 255),
-    #     font=config.large_font,
-    # )
     img = text_to_raw_image(text, width, height)
     return pyglet.image.ImageData(
         width=img.width,

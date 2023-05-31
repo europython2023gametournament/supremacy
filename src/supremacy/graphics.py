@@ -28,20 +28,9 @@ class Graphics:
             fullscreen=False,
             resizable=True,
         )
-        # self.window.flip()
-        # glScalef(0.5, 0.5, 1.0)
         self.background = pyglet.resource.image("background.png")
         # self.background = self.engine.game_map.background_image
         self.main_batch = pyglet.graphics.Batch()
-
-        # self.economy_label = pyglet.text.Label(
-        #     "Economy [score]:",
-        #     color=(255, 255, 255, 255),
-        #     font_size=14,
-        #     x=10,
-        #     y=config.ny + 5,
-        #     batch=self.main_batch,
-        # )
 
         self.time_label = pyglet.sprite.Sprite(
             img=text_to_image("Time left:", width=100, height=24),
@@ -81,7 +70,7 @@ class Graphics:
         #     elif symbol == pyglet.window.key.P:
         #         self.engine.paused = not self.engine.paused
 
-    def update_scoreboard(self, t: float):  # , players: list):
+    def update_scoreboard(self, t: float):
         if self.time_left is not None:
             self.time_left.delete()
         t_str = str(datetime.timedelta(seconds=int(t)))[2:]
@@ -91,89 +80,3 @@ class Graphics:
             y=config.ny - 50,
             batch=self.main_batch,
         )
-        return
-
-        for sprite in self.scoreboard_labels:
-            sprite.delete()
-
-        self.scoreboard_labels = []
-        dy = 50
-        for i, p in enumerate(players):
-            self.scoreboard_labels.append(
-                pyglet.sprite.Sprite(
-                    img=p.avatar,
-                    x=config.nx + 10,
-                    y=config.ny - 50 - dy * i,
-                    batch=self.main_batch,
-                )
-            )
-        # if self.scoreboard_label is not None:
-        #     self.scoreboard_label.delete()
-        # t_str = str(datetime.timedelta(seconds=int(t)))[2:]
-        # # p_str = [f"{name}: {value}" for name, value in players.items()]
-        # # if len(players) <= 5:
-        # #     nspaces = 3
-        # #     font_size = 14
-        # # elif len(players) <= 10:
-        # #     nspaces = 0
-        # #     font_size = 10
-        # # else:
-        # #     nspaces = 0
-        # #     font_size = 8
-        # # text = (" " * nspaces).join(p_str + ["Time: " + t_str])
-        # # font_size
-        # # text = "\n".join(p_str)
-        # self.scoreboard_label = pyglet.text.Label(
-        #     t_str,
-        #     color=(255, 255, 255, 255),
-        #     font_name="monospace",
-        #     font_size=14,
-        #     x=config.nx + 10,
-        #     y=10,
-        #     anchor_x="left",
-        #     batch=self.main_batch,
-        # )
-
-        # img = Image.new("RGBA", (200, 1000), (0, 0, 0, 0))
-        # d = ImageDraw.Draw(img)
-        # d.text(
-        #     (0, 0),
-        #     f"{self.economy()}[{self.score}]",
-        #     fill=(255, 255, 255),
-        #     font=config.large_font,
-        # )
-        # imdata = pyglet.image.ImageData(
-        # #     width=img.width,
-        # #     height=img.height,
-        # #     fmt="RGBA",
-        # #     data=img.tobytes(),
-        # #     pitch=-img.width * 4,
-        # # )
-        # self.scoreboard_label = pyglet.sprite.Sprite(
-        #     img=text_to_image(
-        #         "\n\n\n".join(players.values()), width=200, height=config.ny
-        #     ),
-        #     x=config.nx + 100,
-        #     y=-30,
-        #     batch=self.main_batch,
-        # )
-
-        # # document = pyglet.text.decode_text("Hello, \n world.")
-        # self.scoreboard_label = pyglet.text.layout.TextLayout(
-        #     document,
-        #     200,
-        #     500,
-        #     multiline=True,
-        #     x=100,  # config.nx,
-        #     y=100,  # config.ny,
-        #     anchor_y="top",
-        #     batch=self.main_batch,
-        # )
-
-        # self.scoreboard_label = pyglet.text.HTMLLabel(
-        #     '<span style="color: white;">Hello, <i><br>world</i></span>',
-        #     x=100,  # config.nx,
-        #     y=100,  # config.ny,
-        #     anchor_y="top",
-        #     batch=self.main_batch,
-        # )

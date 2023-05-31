@@ -37,14 +37,6 @@ class Vehicle:
         self.x = x
         self.y = y
         self._heading = heading
-
-        # self.avatar = pyglet.sprite.Sprite(
-        #     img=config.images[f"{kind}_{self.number}_{self.health}"],
-        #     x=self.x,
-        #     y=self.y,
-        #     batch=batch,
-        # )
-        # self.avatar.rotation = -heading
         self.avatar = None
         self.make_avatar()
         self._as_info = None
@@ -61,27 +53,12 @@ class Vehicle:
             batch=self.batch,
         )
         self.avatar.rotation = -self._heading
-        # return
-        # if self.label is not None:
-        #     self.label.delete()
-        # self.label = pyglet.text.Label(
-        #     str(self.health),
-        #     color=(0, 0, 0, 255),
-        #     font_size=8,
-        #     x=self.x,
-        #     y=self.y,
-        #     anchor_x="center",
-        #     anchor_y="center",
-        #     batch=self.batch,
-        # )
 
     def set_position(self, x: float, y: float):
         self.x = x
         self.y = y
         self.avatar.x = self.x
         self.avatar.y = self.y
-        # self.label.x = self.x
-        # self.label.y = self.y
 
     def reset_info(self):
         self._as_info = None
