@@ -6,6 +6,7 @@ import importlib_resources as ir
 import numpy as np
 import pyglet
 from matplotlib import colors, font_manager
+import matplotlib.pyplot as plt
 from PIL import Image, ImageFont, ImageDraw
 
 MAX_HEALTH = 100
@@ -18,11 +19,6 @@ def _recenter_image(img: Any) -> Any:
 
 
 def _to_image(img: Any) -> Any:
-    # img.anchor_x = img.width // 2
-    # img.anchor_y = img.height // 2
-    # img = _recenter_image(img)
-    # print(img.width, img.anchor_x)
-    # print(img.height, img.anchor_y)
     return _recenter_image(
         pyglet.image.ImageData(
             width=img.width,
@@ -44,9 +40,12 @@ def _make_base_image(resources: Any, name: str, rgb: tuple) -> Image:
     return Image.fromarray(new_data.astype(np.uint8))
 
 
-def _make_color(number):
-    hue = number * 137.508
-    return colors.hsv_to_rgb([(hue % 360) / 360, 0.5, 0.75])
+def _make_colors(num_colors):
+    cols = []
+    cmap = plt.get_cmap("gist_ncar")
+    for i in range(num_colors):
+        cols.append(cmap(i / (num_colors - 1)))
+    return cols
 
 
 class Config:
@@ -61,7 +60,7 @@ class Config:
         self.fight_radius = 5
         f = 1.2
         self.nx = int(1920 * f)
-        self.ny = int(1080 * f)  # int(992 * f)
+        self.ny = int(1080 * f)
         self.scoreboard_width = 200
         self.fps = 15
         self.resources = ir.files("supremacy") / "resources"
@@ -72,24 +71,16 @@ class Config:
         self.large_font = ImageFont.truetype(file, size=14)
 
     def generate_images(self, nplayers: int):
+        cols = _make_colors(nplayers)
         for n in range(nplayers):
-            self.generate_vehicle_images(n)
-            self.generate_base_images(n)
-            self.generate_dead_images(n)
+            rgb = cols[n]
+            self.generate_vehicle_images(n, rgb)
+            self.generate_base_images(n, rgb)
+            self.generate_dead_images(n, rgb)
 
-    def generate_vehicle_images(self, n: int):
-        # rgb = colors.to_rgb(f"C{n}")
-        rgb = _make_color(n)
+    def generate_vehicle_images(self, n: int, rgb: tuple):
         for name in ("jet", "ship", "tank"):
-            # print(name)
-            # img = Image.open(self.resources / f"{name}.png")
-            # img = img.convert("RGBA")
-            # data = img.getdata()
-            # new_data = np.array(data).reshape(img.height, img.width, 4)
-            # for i in range(3):
-            #     new_data[..., i] = int(round(rgb[i] * 255))
             for health in range(0, MAX_HEALTH + 1, 10):
-                # temp_image = Image.fromarray(new_data.astype(np.uint8))
                 img = _make_base_image(self.resources, name, rgb)
                 d = ImageDraw.Draw(img)
                 d.text(
@@ -101,25 +92,14 @@ class Config:
                 )
                 self.images[f"{name}_{n}_{health}"] = _to_image(img)
 
-    def generate_base_images(self, n: int):
-        # rgb = colors.to_rgb(f"C{n}")
-        rgb = _make_color(n)
+    def generate_base_images(self, n: int, rgb: tuple):
         name = "base"
-        # img = Image.open(self.resources / f"{name}.png")
-        # img = img.convert("RGBA")
-        # data = img.getdata()
-        # new_data = np.array(data).reshape(img.height, img.width, 4)
-        # for i in range(3):
-        #     new_data[..., i] = int(round(rgb[i] * 255))
         img = _make_base_image(self.resources, name, rgb)
         self.images[f"player_{n}"] = img
         self.images[f"{name}_{n}"] = _to_image(img)
 
         for health in range(0, MAX_HEALTH + 1, 10):
-            # img = _make_base_image(self.resources, name, rgb)
             img = Image.new("RGBA", (24, 24), (0, 0, 0, 0))
-            # self.images[f"{name}_{n}"] = _to_image(temp_image)
-            # temp_image = Image.fromarray(new_data.astype(np.uint8))
             d = ImageDraw.Draw(img)
             d.text(
                 (img.width / 2, img.height / 2),
@@ -130,7 +110,6 @@ class Config:
             )
             self.images[f"health_{health}"] = _to_image(img)
         for mines in range(0, 20):
-            # img = _make_base_image(self.resources, name, rgb)
             img = Image.new("RGBA", (24, 24), (0, 0, 0, 0))
             d = ImageDraw.Draw(img)
             d.text(
@@ -142,9 +121,6 @@ class Config:
             )
             self.images[f"mines_{mines}"] = _to_image(img)
 
-    def generate_dead_images(self, n: int):
-        # rgb = colors.to_rgb(f"C{n}")
-        rgb = _make_color(n)
+    def generate_dead_images(self, n: int, rgb: tuple):
         name = "cross"
-        # img = _make_base_image(self.resources, name, rgb)
         self.images[f"{name}_{n}"] = _make_base_image(self.resources, name, rgb)
