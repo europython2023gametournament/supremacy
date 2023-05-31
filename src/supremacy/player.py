@@ -47,7 +47,7 @@ class Player:
         self.build_base(x=location[0], y=location[1])
         self.transformed_ships = []
         self.label = None
-        self.animate_skull = 0
+        self.animate_cross = 0
         self.score_position = self.number
         self.avatar = None
         self.make_avatar_base_image()
@@ -192,21 +192,21 @@ class Player:
         ax.imshow(self.game_map.array, origin="lower", aspect="equal")
         fig.savefig(f"{self.team}_map.png", bbox_inches="tight")
 
-    def init_skull_animation(self):
-        self.animate_skull = 10
-        self.skull_x = np.linspace(self.avatar.x, config.nx / 2, self.animate_skull)
-        self.skull_y = np.linspace(self.avatar.y, config.ny / 2, self.animate_skull)
-        self.skull_s = np.linspace(1, 30, self.animate_skull)
-        self.skull_o = [255] + ([128] * (self.animate_skull - 1))
-        ind = self.animate_skull - 1
-        self.avatar.x = self.skull_x[ind]
-        self.avatar.y = self.skull_y[ind]
-        self.avatar.opacity = self.skull_o[ind]
-        self.avatar.scale = self.skull_s[ind]
+    def init_cross_animation(self):
+        self.animate_cross = 10
+        self.cross_x = np.linspace(self.avatar.x, config.nx / 2, self.animate_cross)
+        self.cross_y = np.linspace(self.avatar.y, config.ny / 2, self.animate_cross)
+        self.cross_s = np.linspace(1, 30, self.animate_cross)
+        self.cross_o = [255] + ([128] * (self.animate_cross - 1))
+        ind = self.animate_cross - 1
+        self.avatar.x = self.cross_x[ind]
+        self.avatar.y = self.cross_y[ind]
+        self.avatar.opacity = self.cross_o[ind]
+        self.avatar.scale = self.cross_s[ind]
 
-    def skull_animate(self):
-        self.animate_skull -= 1
-        self.avatar.x = self.skull_x[self.animate_skull]
-        self.avatar.y = self.skull_y[self.animate_skull]
-        self.avatar.scale = self.skull_s[self.animate_skull]
-        self.avatar.opacity = self.skull_o[self.animate_skull]
+    def cross_animate(self):
+        self.animate_cross -= 1
+        self.avatar.x = self.cross_x[self.animate_cross]
+        self.avatar.y = self.cross_y[self.animate_cross]
+        self.avatar.scale = self.cross_s[self.animate_cross]
+        self.avatar.opacity = self.cross_o[self.animate_cross]

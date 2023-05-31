@@ -214,8 +214,8 @@ class Engine:
 
         for name, player in self.players.items():
             if player.dead:
-                if player.animate_skull > 0:
-                    player.skull_animate()
+                if player.animate_cross > 0:
+                    player.cross_animate()
             else:
                 info = self.generate_info(player)
                 player.execute_ai(t=t, dt=dt, info=info, safe=self.safe)
@@ -257,7 +257,7 @@ class Engine:
             for i, p in enumerate(players):
                 p.make_avatar(ind=i)
         for name in rip_players:
-            self.players[name].init_skull_animation()
+            self.players[name].init_cross_animation()
         players_alive = [p.team for p in self.players.values() if not p.dead]
         if len(players_alive) == 1:
             self.exit(message=f"Player {players_alive[0]} won!")
