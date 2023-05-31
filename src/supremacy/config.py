@@ -71,9 +71,9 @@ class Config:
         self.large_font = ImageFont.truetype(file, size=14)
 
     def generate_images(self, nplayers: int):
-        cols = _make_colors(nplayers)
+        self.colors = _make_colors(nplayers)
         for n in range(nplayers):
-            rgb = cols[n]
+            rgb = self.colors[n]
             self.generate_vehicle_images(n, rgb)
             self.generate_base_images(n, rgb)
             self.generate_dead_images(n, rgb)

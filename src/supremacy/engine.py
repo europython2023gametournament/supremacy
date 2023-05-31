@@ -54,6 +54,7 @@ class Engine:
         self.previously_paused = False
         self.round = current_round
         self.pause_time = 0
+        self.time_of_last_scoreboard_update = 0
 
         self.game_map = GameMap(
             nx=self.nx, ny=self.ny, high_contrast=self.high_contrast
@@ -153,7 +154,10 @@ class Engine:
                     base.make_avatar()
             # scoreboard_labels.append((player.score, player.make_label()))
             # player.make_label()
-        self.graphics.update_scoreboard(t=t)  # , players=scoreboard_labels)
+        if abs(t - self.time_of_last_scoreboard_update) > 1:
+            self.time_of_last_scoreboard_update = t
+            self.graphics.update_scoreboard(t=t)
+        # self.graphics.update_scoreboard(t=t)  # , players=scoreboard_labels)
 
     def exit(self, message: str):
         print(message)

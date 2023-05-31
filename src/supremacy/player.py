@@ -205,7 +205,7 @@ class Player:
         self.avatar = pyglet.sprite.Sprite(
             img=imd,
             x=config.nx + 10,
-            y=config.ny - 50 - 50 * self.score_position,
+            y=config.ny - 100 - 50 * self.score_position,
             batch=self.batch,
         )
 

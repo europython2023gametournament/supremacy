@@ -43,6 +43,14 @@ class Graphics:
         #     batch=self.main_batch,
         # )
 
+        self.time_label = pyglet.sprite.Sprite(
+            img=text_to_image("Time left:", width=100, height=24),
+            x=config.nx + 20,
+            y=config.ny - 50,
+            batch=self.main_batch,
+        )
+        self.time_left = None
+
         self.map_review_label = None
         if not self.engine.test:
             self.map_review_label = pyglet.text.Label(
@@ -74,6 +82,15 @@ class Graphics:
         #         self.engine.paused = not self.engine.paused
 
     def update_scoreboard(self, t: float):  # , players: list):
+        if self.time_left is not None:
+            self.time_left.delete()
+        t_str = str(datetime.timedelta(seconds=int(t)))[2:]
+        self.time_left = pyglet.sprite.Sprite(
+            img=text_to_image(t_str, width=100, height=24),
+            x=config.nx + 100,
+            y=config.ny - 50,
+            batch=self.main_batch,
+        )
         return
 
         for sprite in self.scoreboard_labels:

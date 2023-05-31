@@ -3,9 +3,10 @@
 import uuid
 from typing import Any
 
-import numpy as np
+# import numpy as np
 import pyglet
-from matplotlib import colors
+
+# from matplotlib import colors
 
 from . import config
 from .tools import distance_on_plane, distance_on_torus, wrap_position
@@ -60,13 +61,14 @@ class Base:
             batch=self.batch,
         )
         if self.high_contrast:
-            rgb = colors.to_rgb(f"C{self.number}")
+            # rgb = colors.to_rgb(f"C{self.number}")
+            rgb = config.colors[self.number]
             self.shape = pyglet.shapes.Rectangle(
                 x=self.x - config.competing_mine_radius,
                 y=self.y - config.competing_mine_radius,
                 width=config.competing_mine_radius * 2,
                 height=config.competing_mine_radius * 2,
-                color=tuple(int(round(c * 255)) for c in rgb) + (50,),
+                color=tuple(int(round(c * 255)) for c in rgb[:-1]) + (50,),
                 batch=batch,
             )
         else:
