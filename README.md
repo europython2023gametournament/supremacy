@@ -1,6 +1,6 @@
 # supremacy
 
-![supremacy](https://user-images.githubusercontent.com/39047984/227036299-973a0494-32ac-44ba-b113-607fb64745c0.jpeg)
+![supremacy](https://github.com/nvaytet/supremacy/assets/39047984/6e800f7c-6eb4-47d4-9621-1465aeaae879)
 
 Get started:
 
