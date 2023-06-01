@@ -3,6 +3,8 @@
 import datetime
 from typing import Any
 
+# import time
+
 
 import pyglet
 
@@ -47,7 +49,7 @@ class Graphics:
             fullscreen=False,
             resizable=True,
         )
-        self.redraw = True
+        # self.redraw = time.time()
         # pyglet.clock.set_fps_limit(config.fps)
         # self.window = Window(
         #     config.nx + config.scoreboard_width,
@@ -93,11 +95,15 @@ class Graphics:
 
         @self.window.event
         def on_draw():
-            # if self.redraw:
+            # t = time.time()
+            # if (t - self.redraw) > 1 / config.fps:
+            # print("REDRAWING")
             self.window.clear()
             self.background.blit(0, 0)
             self.main_batch.draw()
-            # self.redraw = False
+            # self.redraw = t
+            # else:
+            #     print("NOT REDRAWING")
 
         # @self.window.event
         # def on_key_release(symbol, modifiers):
