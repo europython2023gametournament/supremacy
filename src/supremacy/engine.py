@@ -178,6 +178,7 @@ class Engine:
             print(f"{i + 1}. {name}: {score}")
 
     def update(self, dt: float):
+        # self.graphics.redraw = True
         if self.paused:
             if not self.previously_paused:
                 self.previously_paused = True
