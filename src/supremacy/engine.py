@@ -88,7 +88,6 @@ class Engine:
                 high_contrast=self.high_contrast,
                 base_locations=self.base_locations,
             )
-        # self.graphics.update_scoreboard(t=0, players=list(self.players.values()))
 
     def read_scores(self, players: dict, test: bool) -> Dict[str, int]:
         scores = {}
@@ -178,7 +177,6 @@ class Engine:
             print(f"{i + 1}. {name}: {score}")
 
     def update(self, dt: float):
-        # self.graphics.redraw = True
         if self.paused:
             if not self.previously_paused:
                 self.previously_paused = True

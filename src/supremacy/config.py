@@ -1,28 +1,28 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
-from typing import Any, Optional
+from typing import Any, List, Tuple
 
 import importlib_resources as ir
 import numpy as np
 import pyglet
-from matplotlib import colors, font_manager
+from matplotlib import font_manager
 import matplotlib.pyplot as plt
 from PIL import Image, ImageFont, ImageDraw
 
 MAX_HEALTH = 100
 
 
-def _recenter_image(img: Any) -> Any:
+def _recenter_image(img: pyglet.image.ImageData) -> pyglet.image.ImageData:
     img.anchor_x = img.width // 2
     img.anchor_y = img.height // 2
     return img
 
 
-def scale_image(img: Any, scale: float) -> Any:
+def scale_image(img: Image, scale: float) -> Image:
     return img.resize((int(img.width * scale), int(img.height * scale)))
 
 
-def _to_image(img: Any) -> Any:
+def _to_image(img: Image) -> pyglet.image.ImageData:
     return _recenter_image(
         pyglet.image.ImageData(
             width=img.width,
@@ -34,7 +34,7 @@ def _to_image(img: Any) -> Any:
     )
 
 
-def _make_base_image(resources: Any, name: str, rgb: tuple) -> Image:
+def _make_base_image(resources: Any, name: str, rgb: Tuple[float, ...]) -> Image:
     img = Image.open(resources / f"{name}.png")
     img = img.convert("RGBA")
     data = img.getdata()
@@ -44,7 +44,7 @@ def _make_base_image(resources: Any, name: str, rgb: tuple) -> Image:
     return Image.fromarray(new_data.astype(np.uint8))
 
 
-def _make_colors(num_colors):
+def _make_colors(num_colors: int) -> List[Tuple[float, ...]]:
     cols = []
     cmap = plt.get_cmap("gist_ncar")
     for i in range(num_colors):
@@ -62,16 +62,9 @@ class Config:
         self.vehicle_offset = 5
         self.competing_mine_radius = 40
         self.fight_radius = 5
-        # self.scaling = 0.8
-        # self.nx = 2560
-        # self.ny = 1300
-
         self.scoreboard_width = 200
         self.fps = 15
         self.resources = ir.files("supremacy") / "resources"
-        # img = Image.open(self.resources / "explosion.png")
-        # # img = _recenter_image(pyglet.image.load(self.resources / "explosion.png"))
-        # self.images = {"explosion": _to_image(scale_image(img, self.scaling))}
         file = font_manager.findfont("sans")
         self.small_font = ImageFont.truetype(file, size=10)
         self.large_font = ImageFont.truetype(file, size=14)
@@ -85,18 +78,13 @@ class Config:
         ratio = ref_nx / ref_ny
         self.nx = min(max(int(np.sqrt(area * ratio)), ref_nx), max_nx)
         self.ny = min(max(int(np.sqrt(area / ratio)), ref_ny), max_ny)
-        print(self.nx, self.ny)
 
         display = pyglet.canvas.Display()
         screen = display.get_default_screen()
         screen_width = screen.width
         screen_height = screen.height - 50  # for the taskbar
         self.scaling = min(min(screen_width / self.nx, screen_height / self.ny), 1.0)
-        print(self.scaling)
 
-        # self.scaling = 0.8
-        # self.nx = 2560
-        # self.ny = 1300
         self.generate_images(nplayers)
 
     def generate_images(self, nplayers: int):

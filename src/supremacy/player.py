@@ -5,7 +5,7 @@ from itertools import chain
 from typing import Any, Iterator, Tuple
 
 import numpy as np
-from PIL import Image, ImageDraw
+from PIL import Image
 import pyglet
 
 from . import config
@@ -172,12 +172,6 @@ class Player:
         )
         if self.avatar is not None:
             self.avatar.delete()
-        # self.avatar = make_sprite(
-        #     img=imd,
-        #     x=config.nx + 10,
-        #     y=config.ny - 100 - 50 * self.score_position,
-        #     batch=self.batch,
-        # )
         self.avatar = pyglet.sprite.Sprite(
             img=imd,
             x=(config.nx + 10) * config.scaling,

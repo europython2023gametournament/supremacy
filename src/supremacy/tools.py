@@ -83,12 +83,3 @@ def text_to_image(text, width, height):
         data=img.tobytes(),
         pitch=-img.width * 4,
     )
-
-
-# def make_sprite(img, x, y, **kwargs):
-#     return pyglet.sprite.Sprite(
-#         img=scale_image(img, config.scaling),
-#         x=x * config.scaling,
-#         y=y * config.scaling,
-#         **kwargs,
-#     )

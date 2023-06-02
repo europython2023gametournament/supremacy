@@ -41,12 +41,7 @@ class GameMap:
             contour_color = np.full_like(to_image, (0, 140, 240))
             to_image[ii] = contour_color[ii]
 
-        # print(to_image.astype(np.uint8).shape)
         img = scale_image(Image.fromarray(to_image.astype(np.uint8)), config.scaling)
-        # img = img.resize(
-        #     (int(img.width * config.scaling), int(img.height * config.scaling))
-        # )
-        # img.save("background.png")
         self.background_image = pyglet.image.ImageData(
             width=img.width,
             height=img.height,

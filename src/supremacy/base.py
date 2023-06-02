@@ -51,12 +51,6 @@ class Base:
         }
         self.crystal = 0
         self.owner.update_player_map(x=self.x, y=self.y)
-        # self.avatar = pyglet.sprite.Sprite(
-        #     img=config.images[f"base_{self.number}"],
-        #     x=self.screen_x,
-        #     y=self.screen_y,
-        #     batch=self.batch,
-        # )
         self.avatar = None
         if self.high_contrast:
             rgb = config.colors[self.number]
@@ -151,8 +145,6 @@ class Base:
         self.avatar.delete()
         self.health_label.delete()
         self.mines_label.delete()
-        # if self.clabel is not None:
-        #     self.clabel.delete()
         if self.shape is not None:
             self.shape.delete()
 
