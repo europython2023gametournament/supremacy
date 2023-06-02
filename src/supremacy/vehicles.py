@@ -36,6 +36,8 @@ class Vehicle:
         x, y = tls.wrap_position(x, y)
         self.x = x
         self.y = y
+        self.screen_x = x * config.scaling
+        self.screen_y = y * config.scaling
         self._heading = heading
         self.avatar = None
         self.make_avatar()
@@ -48,8 +50,8 @@ class Vehicle:
             self.avatar.delete()
         self.avatar = pyglet.sprite.Sprite(
             img=config.images[f"{self.kind}_{self.number}_{self.health}"],
-            x=self.x,
-            y=self.y,
+            x=self.screen_x,
+            y=self.screen_y,
             batch=self.batch,
         )
         self.avatar.rotation = -self._heading
@@ -57,8 +59,10 @@ class Vehicle:
     def set_position(self, x: float, y: float):
         self.x = x
         self.y = y
-        self.avatar.x = self.x
-        self.avatar.y = self.y
+        self.screen_x = x * config.scaling
+        self.screen_y = y * config.scaling
+        self.avatar.x = self.screen_x
+        self.avatar.y = self.screen_y
 
     def reset_info(self):
         self._as_info = None

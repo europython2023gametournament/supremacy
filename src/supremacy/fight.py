@@ -54,7 +54,10 @@ class Explosion:
         self.animate = 8
         self.opacities = np.linspace(0, 255, self.animate, dtype=int)
         self.sprite = pyglet.sprite.Sprite(
-            img=config.images["explosion"], x=x, y=y, batch=batch
+            img=config.images["explosion"],
+            x=x * config.scaling,
+            y=y * config.scaling,
+            batch=batch,
         )
 
     def update(self):

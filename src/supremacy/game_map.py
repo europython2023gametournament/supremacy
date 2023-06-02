@@ -10,6 +10,7 @@ import pyglet
 from scipy.ndimage import gaussian_filter
 
 from . import config
+from .config import scale_image
 from .tools import periodic_distances
 
 
@@ -41,7 +42,10 @@ class GameMap:
             to_image[ii] = contour_color[ii]
 
         # print(to_image.astype(np.uint8).shape)
-        img = Image.fromarray(to_image.astype(np.uint8))
+        img = scale_image(Image.fromarray(to_image.astype(np.uint8)), config.scaling)
+        # img = img.resize(
+        #     (int(img.width * config.scaling), int(img.height * config.scaling))
+        # )
         # img.save("background.png")
         self.background_image = pyglet.image.ImageData(
             width=img.width,

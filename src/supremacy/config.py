@@ -18,6 +18,10 @@ def _recenter_image(img: Any) -> Any:
     return img
 
 
+def scale_image(img: Any, scale: float) -> Any:
+    return img.resize((int(img.width * scale), int(img.height * scale)))
+
+
 def _to_image(img: Any) -> Any:
     return _recenter_image(
         pyglet.image.ImageData(
@@ -58,14 +62,15 @@ class Config:
         self.vehicle_offset = 5
         self.competing_mine_radius = 40
         self.fight_radius = 5
-        f = 1.2
-        self.nx = int(1920 * f)
-        self.ny = int(1080 * f)
+        self.scaling = 0.8
+        self.nx = 2560
+        self.ny = 1300
         self.scoreboard_width = 200
         self.fps = 15
         self.resources = ir.files("supremacy") / "resources"
-        img = _recenter_image(pyglet.image.load(self.resources / "explosion.png"))
-        self.images = {"explosion": img}
+        img = Image.open(self.resources / "explosion.png")
+        # img = _recenter_image(pyglet.image.load(self.resources / "explosion.png"))
+        self.images = {"explosion": _to_image(scale_image(img, self.scaling))}
         file = font_manager.findfont("sans")
         self.small_font = ImageFont.truetype(file, size=10)
         self.large_font = ImageFont.truetype(file, size=14)
@@ -90,13 +95,24 @@ class Config:
                     font=self.small_font,
                     anchor="mm",
                 )
-                self.images[f"{name}_{n}_{health}"] = _to_image(img)
+                self.images[f"{name}_{n}_{health}"] = _to_image(
+                    scale_image(img, self.scaling)
+                )
 
     def generate_base_images(self, n: int, rgb: tuple):
         name = "base"
         img = _make_base_image(self.resources, name, rgb)
-        self.images[f"player_{n}"] = img
-        self.images[f"{name}_{n}"] = _to_image(img)
+        self.images[f"player_{n}"] = scale_image(img, self.scaling)
+        self.images[f"{name}_{n}"] = _to_image(scale_image(img, self.scaling))
+        d = ImageDraw.Draw(img)
+        d.text(
+            (img.width / 2, img.height / 2),
+            "C",
+            fill=(0, 0, 0),
+            font=self.large_font,
+            anchor="mm",
+        )
+        self.images[f"{name}_{n}_C"] = _to_image(scale_image(img, self.scaling))
 
         for health in range(0, MAX_HEALTH + 1, 10):
             img = Image.new("RGBA", (24, 24), (0, 0, 0, 0))
@@ -108,7 +124,7 @@ class Config:
                 font=self.small_font,
                 anchor="mm",
             )
-            self.images[f"health_{health}"] = _to_image(img)
+            self.images[f"health_{health}"] = _to_image(scale_image(img, self.scaling))
         for mines in range(0, 20):
             img = Image.new("RGBA", (24, 24), (0, 0, 0, 0))
             d = ImageDraw.Draw(img)
@@ -119,8 +135,10 @@ class Config:
                 font=self.small_font,
                 anchor="mm",
             )
-            self.images[f"mines_{mines}"] = _to_image(img)
+            self.images[f"mines_{mines}"] = _to_image(scale_image(img, self.scaling))
 
     def generate_dead_images(self, n: int, rgb: tuple):
         name = "cross"
-        self.images[f"{name}_{n}"] = _make_base_image(self.resources, name, rgb)
+        self.images[f"{name}_{n}"] = scale_image(
+            _make_base_image(self.resources, name, rgb), self.scaling
+        )

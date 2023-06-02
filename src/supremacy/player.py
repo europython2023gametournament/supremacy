@@ -9,6 +9,7 @@ from PIL import Image, ImageDraw
 import pyglet
 
 from . import config
+from .config import scale_image
 from .base import Base
 from .game_map import MapView
 from .tools import text_to_raw_image
@@ -160,6 +161,8 @@ class Player:
             ),
             (100, 0),
         )
+        img = scale_image(img, config.scaling)
+
         imd = pyglet.image.ImageData(
             width=img.width,
             height=img.height,
@@ -169,10 +172,16 @@ class Player:
         )
         if self.avatar is not None:
             self.avatar.delete()
+        # self.avatar = make_sprite(
+        #     img=imd,
+        #     x=config.nx + 10,
+        #     y=config.ny - 100 - 50 * self.score_position,
+        #     batch=self.batch,
+        # )
         self.avatar = pyglet.sprite.Sprite(
             img=imd,
-            x=config.nx + 10,
-            y=config.ny - 100 - 50 * self.score_position,
+            x=(config.nx + 10) * config.scaling,
+            y=(config.ny - 100 - 50 * self.score_position) * config.scaling,
             batch=self.batch,
         )
 
@@ -194,8 +203,12 @@ class Player:
 
     def init_cross_animation(self):
         self.animate_cross = 10
-        self.cross_x = np.linspace(self.avatar.x, config.nx / 2, self.animate_cross)
-        self.cross_y = np.linspace(self.avatar.y, config.ny / 2, self.animate_cross)
+        self.cross_x = np.linspace(
+            self.avatar.x, (config.nx / 2) * config.scaling, self.animate_cross
+        )
+        self.cross_y = np.linspace(
+            self.avatar.y, (config.ny / 2) * config.scaling, self.animate_cross
+        )
         self.cross_s = np.linspace(1, 30, self.animate_cross)
         self.cross_o = [255] + ([128] * (self.animate_cross - 1))
         ind = self.animate_cross - 1

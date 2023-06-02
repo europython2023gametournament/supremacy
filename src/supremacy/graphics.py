@@ -16,6 +16,7 @@ from PIL import Image, ImageDraw
 
 
 from . import config
+from .config import scale_image
 from .tools import text_to_image
 
 
@@ -43,8 +44,8 @@ class Graphics:
         self.engine = engine
 
         self.window = pyglet.window.Window(
-            config.nx + config.scoreboard_width,
-            config.ny,
+            int((config.nx + config.scoreboard_width) * config.scaling),
+            int((config.ny) * config.scaling),
             caption="Supremacy",
             fullscreen=False,
             resizable=True,
@@ -74,8 +75,8 @@ class Graphics:
 
         self.time_label = pyglet.sprite.Sprite(
             img=text_to_image("Time left:", width=100, height=24),
-            x=config.nx + 20,
-            y=config.ny - 50,
+            x=(config.nx + 20) * config.scaling,
+            y=(config.ny - 50) * config.scaling,
             batch=self.main_batch,
         )
         self.time_left = None
@@ -120,9 +121,11 @@ class Graphics:
         if self.time_left is not None:
             self.time_left.delete()
         t_str = str(datetime.timedelta(seconds=int(t)))[2:]
+        # self.time_left = make_sprite(img=text_to_image(t_str, width=100, height=24),
+        #                              x=config.nx + 100, y=config.ny - 50,)
         self.time_left = pyglet.sprite.Sprite(
             img=text_to_image(t_str, width=100, height=24),
-            x=config.nx + 100,
-            y=config.ny - 50,
+            x=(config.nx + 100) * config.scaling,
+            y=(config.ny - 50) * config.scaling,
             batch=self.main_batch,
         )

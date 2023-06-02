@@ -25,6 +25,8 @@ class Base:
     ):
         self.x = x
         self.y = y
+        self.screen_x = x * config.scaling
+        self.screen_y = y * config.scaling
         self._as_info = None
         self.kind = "base"
         self.health = config.health["base"]
@@ -49,12 +51,13 @@ class Base:
         }
         self.crystal = 0
         self.owner.update_player_map(x=self.x, y=self.y)
-        self.avatar = pyglet.sprite.Sprite(
-            img=config.images[f"base_{self.number}"],
-            x=self.x,
-            y=self.y,
-            batch=self.batch,
-        )
+        # self.avatar = pyglet.sprite.Sprite(
+        #     img=config.images[f"base_{self.number}"],
+        #     x=self.screen_x,
+        #     y=self.screen_y,
+        #     batch=self.batch,
+        # )
+        self.avatar = None
         if self.high_contrast:
             rgb = config.colors[self.number]
             self.shape = pyglet.shapes.Rectangle(
@@ -122,18 +125,25 @@ class Base:
         if self.health <= 0:
             return
         if self.health_label is not None:
+            self.avatar.delete()
             self.health_label.delete()
             self.mines_label.delete()
+        self.avatar = pyglet.sprite.Sprite(
+            img=config.images[f"base_{self.number}{'_C' if self.competing else ''}"],
+            x=self.screen_x,
+            y=self.screen_y,
+            batch=self.batch,
+        )
         self.health_label = pyglet.sprite.Sprite(
             img=config.images[f"health_{self.health}"],
-            x=self.x,
-            y=self.y + 18,
+            x=self.screen_x,
+            y=self.screen_y + (18 * config.scaling),
             batch=self.batch,
         )
         self.mines_label = pyglet.sprite.Sprite(
             img=config.images[f"mines_{len(self.mines)}"],
-            x=self.x + 18,
-            y=self.y + 18,
+            x=self.screen_x + (18 * config.scaling),
+            y=self.screen_y + (18 * config.scaling),
             batch=self.batch,
         )
 

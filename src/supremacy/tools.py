@@ -7,6 +7,7 @@ from PIL import Image, ImageDraw
 import pyglet
 
 from . import config
+from .config import scale_image
 
 
 def wrap_position(x: float, y: float) -> Tuple[float, float]:
@@ -74,7 +75,7 @@ def text_to_raw_image(text, width, height):
 
 
 def text_to_image(text, width, height):
-    img = text_to_raw_image(text, width, height)
+    img = scale_image(text_to_raw_image(text, width, height), config.scaling)
     return pyglet.image.ImageData(
         width=img.width,
         height=img.height,
@@ -82,3 +83,12 @@ def text_to_image(text, width, height):
         data=img.tobytes(),
         pitch=-img.width * 4,
     )
+
+
+# def make_sprite(img, x, y, **kwargs):
+#     return pyglet.sprite.Sprite(
+#         img=scale_image(img, config.scaling),
+#         x=x * config.scaling,
+#         y=y * config.scaling,
+#         **kwargs,
+#     )
