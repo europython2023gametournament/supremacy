@@ -31,5 +31,5 @@ players = {name: template_ai for name in names}
 players["Neil"] = neil_ai
 
 supremacy.start(
-    players=players, high_contrast=False, time_limit=2 * 60, crystal_boost=5
+    players=players, high_contrast=False, time_limit=2 * 60, crystal_boost=5, safe=True
 )

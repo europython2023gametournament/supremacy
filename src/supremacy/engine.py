@@ -28,7 +28,7 @@ class Engine:
         time_limit=300,
         crystal_boost=1,
         seed=None,
-        current_round=0,
+        # current_round=0,
     ):
         np.random.seed(seed)
 
@@ -51,7 +51,7 @@ class Engine:
         self.crystal_boost = crystal_boost
         self.paused = False
         self.previously_paused = False
-        self.round = current_round
+        # self.round = current_round
         self.pause_time = 0
         self.time_of_last_scoreboard_update = 0
 

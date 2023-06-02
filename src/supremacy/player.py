@@ -196,7 +196,7 @@ class Player:
         fig.savefig(f"{self.team}_map.png", bbox_inches="tight")
 
     def init_cross_animation(self):
-        self.animate_cross = 10
+        self.animate_cross = 8
         self.cross_x = np.linspace(
             self.avatar.x, (config.nx / 2) * config.scaling, self.animate_cross
         )

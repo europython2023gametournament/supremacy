@@ -50,16 +50,16 @@ class Graphics:
             self.background.blit(0, 0)
             self.main_batch.draw()
 
-        # @self.window.event
-        # def on_key_release(symbol, modifiers):
-        #     if symbol == pyglet.window.key.Y:
-        #         self.engine.map_review_stage = False
-        #         if self.map_review_label is not None:
-        #             self.map_review_label.delete()
-        #     elif symbol == pyglet.window.key.N:
-        #         self.engine.need_new_map = True
-        #     elif symbol == pyglet.window.key.P:
-        #         self.engine.paused = not self.engine.paused
+        @self.window.event
+        def on_key_release(symbol, modifiers):
+            if symbol == pyglet.window.key.Y:
+                self.engine.map_review_stage = False
+                if self.map_review_label is not None:
+                    self.map_review_label.delete()
+            elif symbol == pyglet.window.key.N:
+                self.engine.need_new_map = True
+            elif symbol == pyglet.window.key.P:
+                self.engine.paused = not self.engine.paused
 
     def update_scoreboard(self, t: float):
         if self.time_left is not None:
