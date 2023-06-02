@@ -7,6 +7,6 @@ config = Config()
 from .engine import Engine
 
 
-def start(*args, **kwargs):
-    eng = Engine(*args, **kwargs)
+def start(players, **kwargs):
+    eng = Engine(players, **kwargs)
     return eng

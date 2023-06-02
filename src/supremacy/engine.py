@@ -32,7 +32,7 @@ class Engine:
     ):
         np.random.seed(seed)
 
-        config.generate_images(nplayers=len(players))
+        config.initialize(nplayers=len(players))
 
         self.nx = config.nx
         self.ny = config.ny

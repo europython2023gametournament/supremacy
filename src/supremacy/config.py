@@ -62,20 +62,46 @@ class Config:
         self.vehicle_offset = 5
         self.competing_mine_radius = 40
         self.fight_radius = 5
-        self.scaling = 0.8
-        self.nx = 2560
-        self.ny = 1300
+        # self.scaling = 0.8
+        # self.nx = 2560
+        # self.ny = 1300
+
         self.scoreboard_width = 200
         self.fps = 15
         self.resources = ir.files("supremacy") / "resources"
-        img = Image.open(self.resources / "explosion.png")
-        # img = _recenter_image(pyglet.image.load(self.resources / "explosion.png"))
-        self.images = {"explosion": _to_image(scale_image(img, self.scaling))}
+        # img = Image.open(self.resources / "explosion.png")
+        # # img = _recenter_image(pyglet.image.load(self.resources / "explosion.png"))
+        # self.images = {"explosion": _to_image(scale_image(img, self.scaling))}
         file = font_manager.findfont("sans")
         self.small_font = ImageFont.truetype(file, size=10)
         self.large_font = ImageFont.truetype(file, size=14)
 
+    def initialize(self, nplayers: int):
+        ref_nx = 1920
+        ref_ny = 1080
+        max_nx = 3840
+        max_ny = 2160
+        area = nplayers * (ref_nx * ref_ny) / 10
+        ratio = ref_nx / ref_ny
+        self.nx = min(max(int(np.sqrt(area * ratio)), ref_nx), max_nx)
+        self.ny = min(max(int(np.sqrt(area / ratio)), ref_ny), max_ny)
+        print(self.nx, self.ny)
+
+        display = pyglet.canvas.Display()
+        screen = display.get_default_screen()
+        screen_width = screen.width
+        screen_height = screen.height - 50  # for the taskbar
+        self.scaling = min(min(screen_width / self.nx, screen_height / self.ny), 1.0)
+        print(self.scaling)
+
+        # self.scaling = 0.8
+        # self.nx = 2560
+        # self.ny = 1300
+        self.generate_images(nplayers)
+
     def generate_images(self, nplayers: int):
+        img = Image.open(self.resources / "explosion.png")
+        self.images = {"explosion": _to_image(scale_image(img, self.scaling))}
         self.colors = _make_colors(nplayers)
         for n in range(nplayers):
             rgb = self.colors[n]

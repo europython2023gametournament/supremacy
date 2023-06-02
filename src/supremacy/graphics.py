@@ -43,6 +43,12 @@ class Graphics:
     def __init__(self, engine: Any):
         self.engine = engine
 
+        # display = pyglet.canvas.Display()
+        # screen = display.get_default_screen()
+        # screen_width = screen.width
+        # screen_height = screen.height
+        # print(screen_width, screen_height)
+
         self.window = pyglet.window.Window(
             int((config.nx + config.scoreboard_width) * config.scaling),
             int((config.ny) * config.scaling),

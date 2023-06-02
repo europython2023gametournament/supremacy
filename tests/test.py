@@ -20,6 +20,11 @@ names = [
     "Dave",
     "Ann",
     "Thor",
+    "Piotr",
+    "Troels",
+    "Arm61",
+    "JohnDoe",
+    "JaneDoe",
 ]
 
 players = {name: template_ai for name in names}
