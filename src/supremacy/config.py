@@ -72,8 +72,9 @@ class Config:
         self.medium_font = ImageFont.truetype(file, size=12)
 
     def initialize(self, nplayers: int, fullscreen=False):
+        dy = self.taskbar_height * (not fullscreen)
         ref_nx = 1920 - self.scoreboard_width
-        ref_ny = 1080 - self.taskbar_height
+        ref_ny = 1080 - dy
         max_nx = 3840
         max_ny = 2160
         area = nplayers * (ref_nx * ref_ny) / 10
@@ -84,7 +85,7 @@ class Config:
         display = pyglet.canvas.Display()
         screen = display.get_default_screen()
         screen_width = screen.width - self.scoreboard_width
-        screen_height = screen.height - (self.taskbar_height * (not fullscreen))
+        screen_height = screen.height - dy
         self.scaling = min(min(screen_width / self.nx, screen_height / self.ny), 1.0)
         # self.scoreboard_width = self.scoreboard_width * self.scaling
 

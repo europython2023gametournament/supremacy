@@ -62,20 +62,22 @@ class ReadOnly:
         return self._data.items()
 
 
-def text_to_raw_image(text, width, height):
+def text_to_raw_image(text, width, height, font=None):
+    if font is None:
+        font = config.large_font
     img = Image.new("RGBA", (width, height), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
     d.text(
         (0, 0),
         text,
         fill=(255, 255, 255),
-        font=config.large_font,
+        font=font,
     )
     return img
 
 
-def text_to_image(text, width, height, scale=True):
-    img = text_to_raw_image(text, width, height)
+def text_to_image(text, width, height, scale=True, font=None):
+    img = text_to_raw_image(text, width, height, font=font)
     if scale:
         img = scale_image(img, config.scaling)
     return pyglet.image.ImageData(

@@ -5,29 +5,29 @@ import neil_ai
 
 import supremacy
 
-# names = [
-#     "Afonso",
-#     "Drew",
-#     "Greg",
-#     "Jankas",
-#     "Mads",
-#     "Simon",
-#     "Sun",
-#     "Tobias",
-#     "Vlad",
-#     "Zach",
-#     "Rob",
-#     "Dave",
-#     "Ann",
-#     "Thor",
-#     "Piotr",
-#     "Troels",
-#     "Arm61",
-#     "JohnDoe",
-#     "JaneDoe",
-# ]
+names = [
+    "Afonsoythfjdjjjdjdj",
+    "Drew",
+    "Greg",
+    "Jankas",
+    "Mads",
+    "Simon",
+    "Sun",
+    "Tobias",
+    "Vlad",
+    "Zach",
+    "Rob",
+    "Dave",
+    "Ann",
+    "Thor",
+    "Piotr",
+    "Troels",
+    "Arm61",
+    "JohnDoe",
+    "JaneDoe",
+]
 
-names = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+# names = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 
 players = {name: template_ai for name in names}

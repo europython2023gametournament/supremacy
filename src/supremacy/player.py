@@ -141,7 +141,10 @@ class Player:
         key = "cross" if self.dead else "player"
         self.avatar_base_image.paste(config.images[f"{key}_{self.number}"], (0, 0))
         self.avatar_base_image.paste(
-            text_to_raw_image(self.team, width=70, height=24), (30, 0)
+            text_to_raw_image(
+                self.team[:10], width=70, height=24, font=config.medium_font
+            ),
+            (30, 0),
         )
 
     def update_score(self, score: int):
@@ -158,6 +161,7 @@ class Player:
                 f"{self.score_position + 1}. {self.global_score}[{self.score_this_round}]",
                 width=100,
                 height=24,
+                font=config.medium_font,
             ),
             (100, 0),
         )
@@ -174,8 +178,8 @@ class Player:
             self.avatar.delete()
         self.avatar = pyglet.sprite.Sprite(
             img=imd,
-            x=(config.nx + 10) * config.scaling,
-            y=(config.ny - 100 - 50 * self.score_position) * config.scaling,
+            x=(config.nx * config.scaling) + 4,
+            y=(config.ny * config.scaling) - 100 - 35 * self.score_position,
             batch=self.batch,
         )
 
