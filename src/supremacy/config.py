@@ -63,6 +63,7 @@ class Config:
         self.competing_mine_radius = 40
         self.fight_radius = 5
         self.scoreboard_width = 200
+        self.taskbar_height = 60
         self.fps = 15
         self.resources = ir.files("supremacy") / "resources"
         file = font_manager.findfont("sans")
@@ -71,7 +72,7 @@ class Config:
 
     def initialize(self, nplayers: int):
         ref_nx = 1920 - self.scoreboard_width
-        ref_ny = 1080
+        ref_ny = 1080 - self.taskbar_height
         max_nx = 3840
         max_ny = 2160
         area = nplayers * (ref_nx * ref_ny) / 10
@@ -81,10 +82,10 @@ class Config:
 
         display = pyglet.canvas.Display()
         screen = display.get_default_screen()
-        screen_width = screen.width
-        screen_height = screen.height - 60  # for the taskbar
+        screen_width = screen.width - self.scoreboard_width
+        screen_height = screen.height - self.taskbar_height
         self.scaling = min(min(screen_width / self.nx, screen_height / self.ny), 1.0)
-        self.scoreboard_width = self.scoreboard_width * self.scaling
+        # self.scoreboard_width = self.scoreboard_width * self.scaling
 
         self.generate_images(nplayers)
 

@@ -74,8 +74,10 @@ def text_to_raw_image(text, width, height):
     return img
 
 
-def text_to_image(text, width, height):
-    img = scale_image(text_to_raw_image(text, width, height), config.scaling)
+def text_to_image(text, width, height, scale=True):
+    img = text_to_raw_image(text, width, height)
+    if scale:
+        img = scale_image(img, config.scaling)
     return pyglet.image.ImageData(
         width=img.width,
         height=img.height,

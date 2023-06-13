@@ -161,7 +161,7 @@ class Player:
             ),
             (100, 0),
         )
-        img = scale_image(img, config.scaling)
+        # img = scale_image(img, config.scaling)
 
         imd = pyglet.image.ImageData(
             width=img.width,

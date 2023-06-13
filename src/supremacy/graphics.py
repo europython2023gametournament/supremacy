@@ -24,7 +24,7 @@ class Graphics:
         self.background = self.engine.game_map.background_image.get_texture()
         self.main_batch = pyglet.graphics.Batch()
         self.time_label = pyglet.sprite.Sprite(
-            img=text_to_image("Time left:", width=100, height=24),
+            img=text_to_image("Time left:", width=100, height=24, scale=False),
             x=(config.nx + 20) * config.scaling,
             y=(config.ny - 50) * config.scaling,
             batch=self.main_batch,
@@ -66,7 +66,7 @@ class Graphics:
             self.time_left.delete()
         t_str = str(datetime.timedelta(seconds=int(t)))[2:]
         self.time_left = pyglet.sprite.Sprite(
-            img=text_to_image(t_str, width=100, height=24),
+            img=text_to_image(t_str, width=100, height=24, scale=False),
             x=(config.nx + 100) * config.scaling,
             y=(config.ny - 50) * config.scaling,
             batch=self.main_batch,
