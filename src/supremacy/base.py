@@ -130,7 +130,7 @@ class Base:
         )
         self.health_label = pyglet.sprite.Sprite(
             img=config.images[f"health_{self.health}"],
-            x=self.screen_x,
+            x=self.screen_x - (6 * config.scaling),
             y=self.screen_y + (18 * config.scaling),
             batch=self.batch,
         )

@@ -28,11 +28,12 @@ class Engine:
         time_limit=300,
         crystal_boost=1,
         seed=None,
+        fullscreen=False,
         # current_round=0,
     ):
         np.random.seed(seed)
 
-        config.initialize(nplayers=len(players))
+        config.initialize(nplayers=len(players), fullscreen=fullscreen)
 
         self.nx = config.nx
         self.ny = config.ny
@@ -59,7 +60,7 @@ class Engine:
             nx=self.nx, ny=self.ny, high_contrast=self.high_contrast
         )
 
-        self.graphics = Graphics(engine=self)
+        self.graphics = Graphics(engine=self, fullscreen=fullscreen)
 
         print("FPS", 1 / config.fps)
         pyglet.clock.schedule_interval(self.update, 1 / config.fps)

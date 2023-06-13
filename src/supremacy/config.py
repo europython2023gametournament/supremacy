@@ -68,9 +68,10 @@ class Config:
         self.resources = ir.files("supremacy") / "resources"
         file = font_manager.findfont("sans")
         self.small_font = ImageFont.truetype(file, size=10)
-        self.large_font = ImageFont.truetype(file, size=14)
+        self.large_font = ImageFont.truetype(file, size=16)
+        self.medium_font = ImageFont.truetype(file, size=12)
 
-    def initialize(self, nplayers: int):
+    def initialize(self, nplayers: int, fullscreen=False):
         ref_nx = 1920 - self.scoreboard_width
         ref_ny = 1080 - self.taskbar_height
         max_nx = 3840
@@ -83,7 +84,7 @@ class Config:
         display = pyglet.canvas.Display()
         screen = display.get_default_screen()
         screen_width = screen.width - self.scoreboard_width
-        screen_height = screen.height - self.taskbar_height
+        screen_height = screen.height - (self.taskbar_height * (not fullscreen))
         self.scaling = min(min(screen_width / self.nx, screen_height / self.ny), 1.0)
         # self.scoreboard_width = self.scoreboard_width * self.scaling
 
@@ -137,7 +138,7 @@ class Config:
                 (img.width / 2, img.height / 2),
                 f"{health}",
                 fill=(0, 0, 0),
-                font=self.small_font,
+                font=self.medium_font,
                 anchor="mm",
             )
             self.images[f"health_{health}"] = _to_image(scale_image(img, self.scaling))
@@ -148,7 +149,7 @@ class Config:
                 (img.width / 2, img.height / 2),
                 f"[{mines}]",
                 fill=(0, 0, 0),
-                font=self.small_font,
+                font=self.medium_font,
                 anchor="mm",
             )
             self.images[f"mines_{mines}"] = _to_image(scale_image(img, self.scaling))

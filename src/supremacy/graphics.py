@@ -10,15 +10,15 @@ from .tools import text_to_image
 
 
 class Graphics:
-    def __init__(self, engine: Any):
+    def __init__(self, engine: Any, fullscreen: bool):
         self.engine = engine
 
         self.window = pyglet.window.Window(
             int((config.nx + config.scoreboard_width) * config.scaling),
             int((config.ny) * config.scaling),
             caption="Supremacy",
-            fullscreen=False,
-            resizable=True,
+            fullscreen=fullscreen,
+            resizable=not fullscreen,
         )
 
         self.background = self.engine.game_map.background_image.get_texture()
