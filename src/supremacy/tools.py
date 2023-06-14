@@ -13,10 +13,14 @@ from .config import scale_image
 def wrap_position(x: float, y: float) -> Tuple[float, float]:
     x = x % config.nx
     y = y % config.ny
-    if x < 0:
-        x = config.nx + x
-    if y < 0:
-        y = config.ny + y
+    if np.isscalar(x):
+        if x < 0:
+            x = config.nx + x
+        if y < 0:
+            y = config.ny + y
+    else:
+        x = np.where(x < 0, x + config.nx, x)
+        y = np.where(y < 0, y + config.ny, y)
     return x, y
 
 

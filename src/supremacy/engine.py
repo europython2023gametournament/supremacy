@@ -39,10 +39,10 @@ class Engine:
         self.ny = config.ny
         self.time_limit = time_limit
         self.start_time = None
-        self.test = test
-        self.map_review_stage = True
+        # self.test = test
+        # self.map_review_stage = True
         self.need_new_map = True
-        self.scores = self.read_scores(players=players, test=self.test)
+        self.scores = self.read_scores(players=players, test=test)
         self.dead_players = []
         self.high_contrast = high_contrast
         self.safe = safe
@@ -62,6 +62,8 @@ class Engine:
 
         self.graphics = Graphics(engine=self, fullscreen=fullscreen)
 
+        self.setup()
+
         print("FPS", 1 / config.fps)
         pyglet.clock.schedule_interval(self.update, 1 / config.fps)
         pyglet.app.run()
@@ -69,9 +71,9 @@ class Engine:
     def setup(self):
         # Cleanup before adding players
         self.base_locations = np.zeros((self.ny, self.nx), dtype=int)
-        for p in self.players.values():
-            for base in p.bases.values():
-                base.delete()
+        # for p in self.players.values():
+        #     for base in p.bases.values():
+        #         base.delete()
 
         player_locations = self.game_map.add_players(players=self.player_ais)
         self.players = {}
@@ -89,6 +91,16 @@ class Engine:
                 high_contrast=self.high_contrast,
                 base_locations=self.base_locations,
             )
+        self.make_player_avatars()
+
+    def make_player_avatars(self):
+        players = sorted(
+            self.players.values(),
+            key=lambda p: p.global_score,
+            reverse=True,
+        )
+        for i, p in enumerate(players):
+            p.make_avatar(ind=i)
 
     def read_scores(self, players: dict, test: bool) -> Dict[str, int]:
         scores = {}
@@ -154,8 +166,9 @@ class Engine:
             self.graphics.update_scoreboard(t=t)
 
     def exit(self, message: str):
+        self.paused = True
         print(message)
-        pyglet.clock.unschedule(self.update)
+        # pyglet.clock.unschedule(self.update)
         score_left = len(self.dead_players)
         for name, p in self.players.items():
             if not p.dead:
@@ -169,6 +182,7 @@ class Engine:
         ]
         for i, (name, score) in enumerate(sorted_scores):
             p.make_avatar(ind=i)
+        pyglet.clock.unschedule(self.update)
         pyglet.app.exit()
         fname = "scores.txt"
         with open(fname, "w") as f:
@@ -193,13 +207,13 @@ class Engine:
                     new_ai.team = name
                     self.players[new_ai.team].ai = new_ai
 
-        if self.map_review_stage:
-            if self.need_new_map:
-                self.setup()
-            self.need_new_map = False
-            if self.test:
-                self.map_review_stage = False
-            return
+        # if self.map_review_stage:
+        #     if self.need_new_map:
+        #         self.setup()
+        #     self.need_new_map = False
+        #     if self.test:
+        #         self.map_review_stage = False
+        #     return
         if self.start_time is None:
             self.start_time = time.time()
         t = time.time() - self.start_time
@@ -249,13 +263,14 @@ class Engine:
                 self.players[name].rip()
                 rip_players.append(name)
         if dead_bases:
-            players = sorted(
-                self.players.values(),
-                key=lambda p: p.global_score,
-                reverse=True,
-            )
-            for i, p in enumerate(players):
-                p.make_avatar(ind=i)
+            self.make_player_avatars()
+            # players = sorted(
+            #     self.players.values(),
+            #     key=lambda p: p.global_score,
+            #     reverse=True,
+            # )
+            # for i, p in enumerate(players):
+            #     p.make_avatar(ind=i)
         for name in rip_players:
             self.players[name].init_cross_animation()
         players_alive = [p.team for p in self.players.values() if not p.dead]

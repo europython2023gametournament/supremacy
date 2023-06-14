@@ -147,7 +147,20 @@ class Vehicle:
 
     def get_distance(self, x: float, y: float, shortest=True) -> float:
         """
-        Return the distance between the vehicle and the given position (x, y).
+        Return the distance between the vehicle's current position and the given
+        position (x, y).
+        If ``shortest`` is True, the distance is the shortest distance, potentially
+        through the periodic boundaries.
+
+        Parameters
+        ----------
+        x : float
+            The x-coordinate of the position.
+        y : float
+            The y-coordinate of the position.
+        shortest : bool, optional
+            Whether to take the shortest path, potentially through the periodic
+            boundaries. Default is True.
         """
         if not shortest:
             return tls.distance_on_plane(self.x, self.y, x, y)

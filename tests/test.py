@@ -6,7 +6,7 @@ import neil_ai
 import supremacy
 
 names = [
-    "Afonsoythfjdjjjdjdj",
+    "Afonso",
     "Drew",
     "Greg",
     "Jankas",
@@ -36,8 +36,9 @@ players["Neil"] = neil_ai
 supremacy.start(
     players=players,
     high_contrast=False,
-    time_limit=2 * 60,
+    time_limit=1 * 60,
     crystal_boost=5,
     safe=True,
     fullscreen=True,
+    seed=12,
 )

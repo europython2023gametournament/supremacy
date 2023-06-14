@@ -11,7 +11,7 @@ from scipy.ndimage import gaussian_filter
 
 from . import config
 from .config import scale_image
-from .tools import periodic_distances
+from .tools import periodic_distances, wrap_position
 
 
 class GameMap:
@@ -75,6 +75,27 @@ class GameMap:
                     dist = periodic_distances(i, j, loc[0], loc[1])[0].min()
                     if dist < 2 * config.competing_mine_radius:
                         not_set = True
+                # Check for lakes
+                if not not_set:
+                    # Ray-trace from (i, j) in 64 directions and find maximum distance
+                    # to land (array value of 1)
+                    thetas = np.linspace(0, 2 * np.pi, 64)
+                    vectors = np.array([np.sin(thetas), np.cos(thetas)]).T
+                    distance = np.linspace(0, config.ny, config.ny)
+                    rays = vectors.reshape(vectors.shape + (1,)) * distance
+                    rays[:, 0, :] += j
+                    rays[:, 1, :] += i
+                    x, y = wrap_position(
+                        rays[:, 1, :].astype(int), rays[:, 0, :].astype(int)
+                    )
+                    map_values = self.array[y, x]
+                    max_dists = np.argmax(map_values, axis=1)
+                    max_map_values = np.max(map_values, axis=1)
+                    w = np.where(max_map_values == 1)
+                    distmax = max_dists[w].max()
+                    if distmax < 100:
+                        not_set = True
+
             locations[player] = (i, j)
 
         return locations

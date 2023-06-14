@@ -52,7 +52,7 @@ class Player:
         self.score_position = self.number
         self.avatar = None
         self.make_avatar_base_image()
-        self.make_avatar()
+        # self.make_avatar()
 
     def update_player_map(self, x: float, y: float):
         r = config.view_radius
@@ -151,9 +151,8 @@ class Player:
         self.score_this_round += score
         self.global_score += score
 
-    def make_avatar(self, ind=None):
-        if ind is not None:
-            self.score_position = ind
+    def make_avatar(self, ind):
+        self.score_position = ind
         img = Image.new("RGBA", (200, 24), (0, 0, 0, 0))
         img.paste(self.avatar_base_image, (0, 0))
         img.paste(
