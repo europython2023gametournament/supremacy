@@ -54,6 +54,8 @@ class Engine:
         self.previously_paused = False
         # self.round = current_round
         self.pause_time = 0
+        self.exiting = False
+        self.exit_time = 0
         self.time_of_last_scoreboard_update = 0
 
         self.game_map = GameMap(
@@ -166,14 +168,16 @@ class Engine:
             self.graphics.update_scoreboard(t=t)
 
     def exit(self, message: str):
-        self.paused = True
+        self.exiting = True
+        self.exit_time = time.time() + 1
         print(message)
         # pyglet.clock.unschedule(self.update)
         score_left = len(self.dead_players)
+        # print("exit 1")
         for name, p in self.players.items():
             if not p.dead:
                 p.update_score(score_left)
-            p.dump_map()
+            # p.dump_map()
         sorted_scores = [
             (p.team, p.global_score)
             for p in sorted(
@@ -181,9 +185,11 @@ class Engine:
             )
         ]
         for i, (name, score) in enumerate(sorted_scores):
+            print("making avatar", i, name, score)
             p.make_avatar(ind=i)
         pyglet.clock.unschedule(self.update)
-        pyglet.app.exit()
+        pyglet.clock.tick()
+        # pyglet.app.exit()
         fname = "scores.txt"
         with open(fname, "w") as f:
             for name, p in self.players.items():
@@ -191,7 +197,20 @@ class Engine:
         for i, (name, score) in enumerate(sorted_scores):
             print(f"{i + 1}. {name}: {score}")
 
+        # def finalize(self):
+        print("writing maps")
+        for p in self.players.values():
+            p.dump_map()
+        input("Press enter to exit")
+        pyglet.app.exit()
+
     def update(self, dt: float):
+        # if self.exiting:
+        #     print("Exiting in", self.exit_time - time.time())
+        #     if time.time() > self.exit_time:
+        #         pyglet.app.exit()
+        #         self.finalize()
+        #     return
         if self.paused:
             if not self.previously_paused:
                 self.previously_paused = True

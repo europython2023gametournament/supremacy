@@ -39,6 +39,6 @@ supremacy.start(
     time_limit=1 * 60,
     crystal_boost=5,
     safe=True,
-    fullscreen=True,
+    fullscreen=False,
     seed=12,
 )
