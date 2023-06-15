@@ -155,7 +155,8 @@ class Player:
         img.paste(self.avatar_base_image, (0, 0))
         img.paste(
             text_to_raw_image(
-                f"{self.score_position + 1}. {self.global_score}[{self.score_this_round}]",
+                f"{self.score_position + 1}. "
+                f"{self.global_score}[{self.score_this_round}]",
                 width=100,
                 height=24,
                 font=config.medium_font,

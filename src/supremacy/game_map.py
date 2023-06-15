@@ -19,7 +19,7 @@ class GameMap:
         self.nx = nx
         self.ny = ny
         image = np.zeros([self.ny, self.nx])
-        self.nseeds = int((nx * ny) * 200 / (1920 * 1080))  #  * 4
+        self.nseeds = int((nx * ny) * 200 / (1920 * 1080))
         self.xseed = np.random.randint(self.nx, size=self.nseeds)
         self.yseed = np.random.randint(self.ny, size=self.nseeds)
 
