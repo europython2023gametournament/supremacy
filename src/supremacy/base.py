@@ -189,7 +189,16 @@ class Base:
         )
         self.make_avatar()
 
-    def build_tank(self, heading: float):
+    def build_tank(self, heading: float) -> str:
+        """
+        Build a tank at this base.
+        Returns the uid of the tank.
+
+        Parameters
+        ----------
+        heading : float
+            The initial heading of the tank in degrees.
+        """
         if self.not_enough_crystal("tank"):
             return
         print(f"Player {self.team} is building a TANK at {self.x}, {self.y}")
@@ -207,7 +216,16 @@ class Base:
         self.crystal -= config.cost["tank"]
         return uid
 
-    def build_ship(self, heading: float):
+    def build_ship(self, heading: float) -> str:
+        """
+        Build a ship at this base.
+        Returns the uid of the ship.
+
+        Parameters
+        ----------
+        heading : float
+            The initial heading of the ship in degrees.
+        """
         if self.not_enough_crystal("ship"):
             return
         print(f"Player {self.team} is building a SHIP at {self.x}, {self.y}")
@@ -225,7 +243,16 @@ class Base:
         self.crystal -= config.cost["ship"]
         return uid
 
-    def build_jet(self, heading: float):
+    def build_jet(self, heading: float) -> str:
+        """
+        Build a jet at this base.
+        Returns the uid of the jet.
+
+        Parameters
+        ----------
+        heading : float
+            The initial heading of the jet in degrees.
+        """
         if self.not_enough_crystal("jet"):
             return
         print(f"Player {self.team} is building a JET at {self.x}, {self.y}")
@@ -246,6 +273,19 @@ class Base:
     def get_distance(self, x: float, y: float, shortest=True) -> float:
         """
         Get the distance between this base and the given position (x, y).
+        If shortest is ``True``, the shortest distance is returned, potentially going
+        via the periodic boundaries.
+
+        Parameters
+        ----------
+        x : float
+            The x position.
+        y : float
+            The y position.
+        shortest : bool
+            If shortest is ``True``, the shortest distance is returned, potentially
+            going via the periodic boundaries. If it is ``False``, a naive distance
+            ignoring the periodic boundaries is returned.
         """
         if not shortest:
             return distance_on_plane(self.x, self.y, x, y)

@@ -130,6 +130,16 @@ class Vehicle:
         potentially through the periodic boundaries.
         If ``shortest_path`` is False, the vehicle will take the direct path, and not
         travel through the periodic boundaries.
+
+        Parameters
+        ----------
+        x : float
+            The x-coordinate of the position to go to.
+        y : float
+            The y-coordinate of the position to go to.
+        shortest_path : bool, optional
+            Whether to take the shortest path, potentially through the periodic
+            boundaries. Default is True.
         """
         if not shortest_path:
             self.set_vector([x - self.x, y - self.y])

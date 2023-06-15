@@ -29,9 +29,9 @@ class Engine:
         crystal_boost=1,
         seed=None,
         fullscreen=False,
-        # current_round=0,
     ):
-        np.random.seed(seed)
+        if seed is not None:
+            np.random.seed(seed)
 
         config.initialize(nplayers=len(players), fullscreen=fullscreen)
 
@@ -39,9 +39,6 @@ class Engine:
         self.ny = config.ny
         self.time_limit = time_limit
         self.start_time = None
-        # self.test = test
-        # self.map_review_stage = True
-        self.need_new_map = True
         self.scores = self.read_scores(players=players, test=test)
         self.dead_players = []
         self.high_contrast = high_contrast
@@ -52,31 +49,21 @@ class Engine:
         self.crystal_boost = crystal_boost
         self.paused = False
         self.previously_paused = False
-        # self.round = current_round
         self.pause_time = 0
         self.exiting = False
-        self.exit_time = 0
         self.time_of_last_scoreboard_update = 0
 
         self.game_map = GameMap(
             nx=self.nx, ny=self.ny, high_contrast=self.high_contrast
         )
-
         self.graphics = Graphics(engine=self, fullscreen=fullscreen)
-
         self.setup()
 
-        print("FPS", 1 / config.fps)
         pyglet.clock.schedule_interval(self.update, 1 / config.fps)
         pyglet.app.run()
 
     def setup(self):
-        # Cleanup before adding players
         self.base_locations = np.zeros((self.ny, self.nx), dtype=int)
-        # for p in self.players.values():
-        #     for base in p.bases.values():
-        #         base.delete()
-
         player_locations = self.game_map.add_players(players=self.player_ais)
         self.players = {}
         for i, (name, ai) in enumerate(self.player_ais.items()):
@@ -145,8 +132,7 @@ class Engine:
     def init_dt(self, t: float):
         min_distance = config.competing_mine_radius
         base_locs = MapView(self.base_locations)
-        scoreboard_labels = []
-        for name, player in self.players.items():
+        for player in self.players.values():
             player.init_dt()
             for base in player.bases.values():
                 base.reset_info()
@@ -171,13 +157,10 @@ class Engine:
         self.exiting = True
         self.exit_time = time.time() + 1
         print(message)
-        # pyglet.clock.unschedule(self.update)
         score_left = len(self.dead_players)
-        # print("exit 1")
         for name, p in self.players.items():
             if not p.dead:
                 p.update_score(score_left)
-            # p.dump_map()
         self.make_player_avatars()
         sorted_scores = [
             (p.team, p.global_score)
@@ -185,12 +168,6 @@ class Engine:
                 self.players.values(), key=lambda x: x.global_score, reverse=True
             )
         ]
-        # for i, (name, score) in enumerate(sorted_scores):
-        #     print("making avatar", i, name, score)
-        #     p.make_avatar(ind=i)
-        # pyglet.clock.unschedule(self.update)
-        # pyglet.clock.tick()
-        # pyglet.app.exit()
         fname = "scores.txt"
         with open(fname, "w") as f:
             for name, p in self.players.items():
@@ -198,17 +175,9 @@ class Engine:
         for i, (name, score) in enumerate(sorted_scores):
             print(f"{i + 1}. {name}: {score}")
 
-        # # # def finalize(self):
-        # print("writing maps")
-        # for p in self.players.values():
-        #     p.dump_map()
-        # # input("Press enter to exit")
-        # # pyglet.app.exit()
-
     def finalize(self):
         # Dump player maps
         for p in self.players.values():
-            print("dumping map", p.team)
             p.dump_map()
 
     def update(self, dt: float):
@@ -216,11 +185,7 @@ class Engine:
             if self.graphics.exit_message is None:
                 self.graphics.show_exit_message()
             return
-            # print("Exiting in", self.exit_time - time.time())
-            # if time.time() > self.exit_time:
-            #     pyglet.app.exit()
-            #     self.finalize()
-            # return
+
         if self.paused:
             if not self.previously_paused:
                 self.previously_paused = True
@@ -236,13 +201,6 @@ class Engine:
                     new_ai.team = name
                     self.players[new_ai.team].ai = new_ai
 
-        # if self.map_review_stage:
-        #     if self.need_new_map:
-        #         self.setup()
-        #     self.need_new_map = False
-        #     if self.test:
-        #         self.map_review_stage = False
-        #     return
         if self.start_time is None:
             self.start_time = time.time()
         t = time.time() - self.start_time
@@ -293,13 +251,6 @@ class Engine:
                 rip_players.append(name)
         if dead_bases:
             self.make_player_avatars()
-            # players = sorted(
-            #     self.players.values(),
-            #     key=lambda p: p.global_score,
-            #     reverse=True,
-            # )
-            # for i, p in enumerate(players):
-            #     p.make_avatar(ind=i)
         for name in rip_players:
             self.players[name].init_cross_animation()
         players_alive = [p.team for p in self.players.values() if not p.dead]

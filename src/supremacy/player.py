@@ -9,7 +9,6 @@ from PIL import Image
 import pyglet
 
 from . import config
-from .config import scale_image
 from .base import Base
 from .game_map import MapView
 from .tools import text_to_raw_image
@@ -52,7 +51,6 @@ class Player:
         self.score_position = self.number
         self.avatar = None
         self.make_avatar_base_image()
-        # self.make_avatar()
 
     def update_player_map(self, x: float, y: float):
         r = config.view_radius
@@ -164,7 +162,6 @@ class Player:
             ),
             (100, 0),
         )
-        # img = scale_image(img, config.scaling)
 
         imd = pyglet.image.ImageData(
             width=img.width,
@@ -194,11 +191,6 @@ class Player:
     def dump_map(self):
         im = Image.fromarray((self.game_map.array.astype(np.uint8) + 1) * 127)
         im.save(f"{self.team}_map.png")
-        # import matplotlib.pyplot as plt
-
-        # fig, ax = plt.subplots(figsize=(15, 9))
-        # ax.imshow(self.game_map.array, origin="lower", aspect="equal")
-        # fig.savefig(f"{self.team}_map.png", bbox_inches="tight")
 
     def init_cross_animation(self):
         self.animate_cross = 8

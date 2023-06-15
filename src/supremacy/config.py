@@ -87,7 +87,6 @@ class Config:
         screen_width = screen.width - self.scoreboard_width
         screen_height = screen.height - dy
         self.scaling = min(min(screen_width / self.nx, screen_height / self.ny), 1.0)
-        # self.scoreboard_width = self.scoreboard_width * self.scaling
 
         self.generate_images(nplayers)
 

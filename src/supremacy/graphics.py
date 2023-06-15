@@ -34,17 +34,6 @@ class Graphics:
         self.time_left = None
         self.exit_message = None
 
-        # self.map_review_label = None
-        # if not self.engine.test:
-        #     self.map_review_label = pyglet.text.Label(
-        #         "Map review stage [Y/N]?",
-        #         color=(255, 255, 255, 255),
-        #         font_size=14,
-        #         x=config.nx * 0.4,
-        #         y=config.ny + 5,
-        #         batch=self.main_batch,
-        #     )
-
         self.scoreboard_labels = []
 
         @self.window.event
@@ -55,12 +44,6 @@ class Graphics:
 
         @self.window.event
         def on_key_release(symbol, modifiers):
-            # if symbol == pyglet.window.key.Y:
-            #     self.engine.map_review_stage = False
-            #     if self.map_review_label is not None:
-            #         self.map_review_label.delete()
-            # elif symbol == pyglet.window.key.N:
-            #     self.engine.need_new_map = True
             if symbol == pyglet.window.key.P:
                 self.engine.paused = not self.engine.paused
 

@@ -1,44 +1,31 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 import template_ai
-import neil_ai
+
+# import my_ai
 
 import supremacy
 
 names = [
-    "Afonso",
-    "Drew",
-    "Greg",
-    "Jankas",
-    "Mads",
-    "Simon",
-    "Sun",
-    "Tobias",
-    "Vlad",
-    "Zach",
-    "Rob",
+    "John",
     "Dave",
-    "Ann",
-    "Thor",
-    "Piotr",
-    "Troels",
-    "Arm61",
-    "JohnDoe",
-    "JaneDoe",
+    "Anna",
+    "Greg",
+    "Lisa",
+    "Simon",
+    "Tobias",
+    "Isobel",
+    "Robert",
 ]
 
-# names = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-
-
 players = {name: template_ai for name in names}
-players["Neil"] = neil_ai
+# players["Me"] = my_ai
 
 supremacy.start(
     players=players,
-    high_contrast=False,
     time_limit=1 * 10,
-    crystal_boost=5,
-    safe=True,
     fullscreen=False,
-    seed=12,
+    seed=None,
+    high_contrast=False,
+    crystal_boost=5,
 )
