@@ -213,6 +213,8 @@ class Engine:
 
     def update(self, dt: float):
         if self.exiting:
+            if self.graphics.exit_message is None:
+                self.graphics.show_exit_message()
             return
             # print("Exiting in", self.exit_time - time.time())
             # if time.time() > self.exit_time:

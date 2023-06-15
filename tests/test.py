@@ -36,7 +36,7 @@ players["Neil"] = neil_ai
 supremacy.start(
     players=players,
     high_contrast=False,
-    time_limit=1 * 60,
+    time_limit=1 * 10,
     crystal_boost=5,
     safe=True,
     fullscreen=False,

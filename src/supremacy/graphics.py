@@ -32,6 +32,7 @@ class Graphics:
             batch=self.main_batch,
         )
         self.time_left = None
+        self.exit_message = None
 
         # self.map_review_label = None
         # if not self.engine.test:
@@ -74,4 +75,16 @@ class Graphics:
             x=self.time_label.x + 60,
             y=self.time_label.y,
             batch=self.main_batch,
+        )
+
+    def show_exit_message(self):
+        self.exit_message = pyglet.text.Label(
+            "Press ESC to exit",
+            color=(0, 0, 0, 255),
+            font_size=80,
+            x=config.nx * 0.5,
+            y=config.ny * 0.5,
+            batch=self.main_batch,
+            anchor_x="center",
+            anchor_y="center",
         )
