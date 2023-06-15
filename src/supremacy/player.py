@@ -192,11 +192,13 @@ class Player:
         self.make_avatar_base_image()
 
     def dump_map(self):
-        import matplotlib.pyplot as plt
+        im = Image.fromarray((self.game_map.array.astype(np.uint8) + 1) * 127)
+        im.save(f"{self.team}_map.png")
+        # import matplotlib.pyplot as plt
 
-        fig, ax = plt.subplots(figsize=(15, 9))
-        ax.imshow(self.game_map.array, origin="lower", aspect="equal")
-        fig.savefig(f"{self.team}_map.png", bbox_inches="tight")
+        # fig, ax = plt.subplots(figsize=(15, 9))
+        # ax.imshow(self.game_map.array, origin="lower", aspect="equal")
+        # fig.savefig(f"{self.team}_map.png", bbox_inches="tight")
 
     def init_cross_animation(self):
         self.animate_cross = 8

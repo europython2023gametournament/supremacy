@@ -9,4 +9,5 @@ from .engine import Engine
 
 def start(players, **kwargs):
     eng = Engine(players, **kwargs)
+    eng.finalize()
     return eng

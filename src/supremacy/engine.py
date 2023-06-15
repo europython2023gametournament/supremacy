@@ -178,17 +178,18 @@ class Engine:
             if not p.dead:
                 p.update_score(score_left)
             # p.dump_map()
+        self.make_player_avatars()
         sorted_scores = [
             (p.team, p.global_score)
             for p in sorted(
                 self.players.values(), key=lambda x: x.global_score, reverse=True
             )
         ]
-        for i, (name, score) in enumerate(sorted_scores):
-            print("making avatar", i, name, score)
-            p.make_avatar(ind=i)
-        pyglet.clock.unschedule(self.update)
-        pyglet.clock.tick()
+        # for i, (name, score) in enumerate(sorted_scores):
+        #     print("making avatar", i, name, score)
+        #     p.make_avatar(ind=i)
+        # pyglet.clock.unschedule(self.update)
+        # pyglet.clock.tick()
         # pyglet.app.exit()
         fname = "scores.txt"
         with open(fname, "w") as f:
@@ -197,20 +198,27 @@ class Engine:
         for i, (name, score) in enumerate(sorted_scores):
             print(f"{i + 1}. {name}: {score}")
 
-        # def finalize(self):
-        print("writing maps")
+        # # # def finalize(self):
+        # print("writing maps")
+        # for p in self.players.values():
+        #     p.dump_map()
+        # # input("Press enter to exit")
+        # # pyglet.app.exit()
+
+    def finalize(self):
+        # Dump player maps
         for p in self.players.values():
+            print("dumping map", p.team)
             p.dump_map()
-        input("Press enter to exit")
-        pyglet.app.exit()
 
     def update(self, dt: float):
-        # if self.exiting:
-        #     print("Exiting in", self.exit_time - time.time())
-        #     if time.time() > self.exit_time:
-        #         pyglet.app.exit()
-        #         self.finalize()
-        #     return
+        if self.exiting:
+            return
+            # print("Exiting in", self.exit_time - time.time())
+            # if time.time() > self.exit_time:
+            #     pyglet.app.exit()
+            #     self.finalize()
+            # return
         if self.paused:
             if not self.previously_paused:
                 self.previously_paused = True
