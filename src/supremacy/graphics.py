@@ -14,8 +14,8 @@ class Graphics:
         self.engine = engine
 
         self.window = pyglet.window.Window(
-            int((config.nx + config.scoreboard_width) * config.scaling),
-            int((config.ny) * config.scaling),
+            int((config.nx * config.scaling) + config.scoreboard_width),
+            int(config.ny * config.scaling),
             caption="Supremacy",
             fullscreen=fullscreen,
             resizable=not fullscreen,

@@ -16,6 +16,12 @@ names = [
     "Tobias",
     "Isobel",
     "Robert",
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
 ]
 
 players = {name: template_ai for name in names}
@@ -23,8 +29,8 @@ players = {name: template_ai for name in names}
 
 supremacy.start(
     players=players,
-    time_limit=1 * 10,
-    fullscreen=False,
+    time_limit=4 * 60,
+    fullscreen=True,
     seed=None,
     high_contrast=False,
     crystal_boost=5,
