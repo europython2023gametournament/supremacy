@@ -47,3 +47,33 @@ Preview
     <td><img src="https://github.com/europython2023gametournament/supremacy/assets/39047984/d1dd0cb0-2b6f-4904-ac99-f842b4771099" width="100%" /></td>
   </tr>
 </table>
+
+## Goal
+
+- Mine resources to build an army
+- Destroy enemy bases and eliminate other players
+
+## Rounds
+
+- All participants play on the map at the same time
+- Each round lasts 8 minutes
+- The tournament will consist of 8(?) rounds of 8 minutes
+
+## Game map
+
+- The map is auto-generated every round
+- It has periodic boundary conditions (for example when a vehicle arrives at the right edge of the map, it will re-appear at the left edge)
+- The map size will scale with the number of players (more players = larger map)
+- Coordinate system: lower left corner: `(x=0, y=0)`, upper right corner: `(x=nx, y=ny)`
+
+## Mining
+
+- Everyone starts with 1 base, housing 1 mine
+- Every timestep, each mine will extract `crystal = 2 * number_of_mines`
+- Crystal is used to build mines and vehicles
+- Mines too close to other mines compete for resources: `crystal = 2 * number_of_mines / number_of_bases_inside_square_of_80px`
+- Bases that contain mines that are competing with others will have a “C” label on them:
+
+
+
+
