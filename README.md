@@ -36,3 +36,11 @@ python test.py
 
 ## The game: Supremacy
 
+Preview
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Time = 2min
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Time = 4min
+
+<img src="https://github.com/europython2023gametournament/supremacy/assets/39047984/07e66dc0-ed5d-4e2b-91f6-b7302e1e0a4f" width="49%" />
+<img src="https://github.com/europython2023gametournament/supremacy/assets/39047984/d1dd0cb0-2b6f-4904-ac99-f842b4771099" width="49%" />
+
