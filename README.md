@@ -74,6 +74,33 @@ Preview
 - Mines too close to other mines compete for resources: `crystal = 2 * number_of_mines / number_of_bases_inside_square_of_80px`
 - Bases that contain mines that are competing with others will have a “C” label on them:
 
+![Screenshot at 2023-06-22 21-58-52](https://github.com/europython2023gametournament/supremacy/assets/39047984/e2df2246-532e-4989-9892-582d53d171a8)
 
+## Fights
+
+- Whenever two or more vehicles or bases from opposing teams come within 5px from each other, they will fight
+- During each time step, every object hits all the others with its attack force, and it takes damage from all other objects
+
+## Vehicles
+
+<table>
+  <th>
+    <td></td>
+    <td>Tank</td>
+    <td>Ship</td> 
+    <td>Jet</td>
+  </th>
+  <tr>
+    <td>Speed</td>
+    <td>10</td>
+    <td>5</td>
+    <td>20</td>
+  </tr>
+    <td>Attack | 20 | 10 | 30 |
+| Health | 50 | 80 | 50 |
+| Cost | 500 | 2000 | 4000 |
+| Can travel| On land | On sea | Anywhere |
+|  |  | Can turn into base |  |
+</table>
 
 
