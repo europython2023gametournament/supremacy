@@ -84,23 +84,48 @@ Preview
 ## Vehicles
 
 <table>
-  <th>
-    <td></td>
-    <td>Tank</td>
-    <td>Ship</td> 
-    <td>Jet</td>
-  </th>
+  <tr>
+    <th></th>
+    <th>Tank</th>
+    <th>Ship</th> 
+    <th>Jet</th>
+  </tr>
   <tr>
     <td>Speed</td>
     <td>10</td>
     <td>5</td>
     <td>20</td>
   </tr>
-    <td>Attack | 20 | 10 | 30 |
-| Health | 50 | 80 | 50 |
-| Cost | 500 | 2000 | 4000 |
-| Can travel| On land | On sea | Anywhere |
-|  |  | Can turn into base |  |
+  <tr>
+    <td>Attack</td>
+    <td>20</td>
+    <td>10</td>
+    <td>30</td>
+  </tr>
+  <tr>
+    <td>Health</td>
+    <td>50</td>
+    <td>80</td>
+    <td>50</td>
+  </tr>
+  <tr>
+    <td>Cost</td>
+    <td>500</td>
+    <td>2000</td>
+    <td>4000</td>
+  </tr>
+  <tr>
+    <td>Can travel</td>
+    <td>On land</td>
+    <td>On sea</td>
+    <td>Anywhere</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+    <td>Can turn into base</td>
+    <td></td>
+  </tr>
 </table>
 
 
