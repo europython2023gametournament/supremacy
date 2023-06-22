@@ -158,10 +158,11 @@ Look at the comments in the `template_ai.py` for details on what information is 
 
 ### `game_map`
 
-The `game_map` is one of the arguments the `run` function will receive.
-It is a Numpy array that automatically gets filled when your vehicles or bases visit that region of the map.
-Any visit makes anything in that part of the map permanently visible.
-This is basically what defines which enemy bases and vehicles you get in your info every time step.
+- The `game_map` is one of the arguments the `run` function will receive.
+- It is a Numpy array that automatically gets filled when your vehicles or bases visit that region of the map.
+- `1` means land, `0` means sea, `-1` means no info.
+- Any visit makes anything in that part of the map permanently visible.
+- This is basically what defines which enemy bases and vehicles you get in your info every time step.
 
 ![Screenshot at 2023-06-22 22-32-11](https://github.com/europython2023gametournament/supremacy/assets/39047984/a207ac95-4006-4b6e-82ce-f64d6c5a6c4f)
 
