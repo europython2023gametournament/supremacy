@@ -165,3 +165,24 @@ This is basically what defines which enemy bases and vehicles you get in your in
 
 ![Screenshot at 2023-06-22 22-32-11](https://github.com/europython2023gametournament/supremacy/assets/39047984/a207ac95-4006-4b6e-82ce-f64d6c5a6c4f)
 
+## Optimizing development
+
+There are 3 ways you can speed up your development.
+
+### 1. The high contrast mode
+
+Activate `high_contrast = True` to see the land borders better and competing areas for mines:
+![Screenshot at 2023-06-22 22-34-32](https://github.com/europython2023gametournament/supremacy/assets/39047984/0da61cd3-9449-4e99-9a40-0c4b3ba0fdf6)
+
+### 2. Crystal boost
+
+Waiting for things to develop can be time consuming.
+You can artificially increase mine yield using `crystal_boost=5` (or any number you want, although behavior is untested beyond 10).
+
+### 3. Use the 'Pause' Luke (experimental)
+
+While the game is running, you can hit `P` on the keyboard.
+This will pause the game.
+You can edit your AI code.
+When the game resumes (hit `P` again), it will reload your AI module.
+
