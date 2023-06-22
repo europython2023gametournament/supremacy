@@ -86,9 +86,12 @@ Preview
 <table>
   <tr>
     <th></th>
-    <th>Tank</th>
-    <th>Ship</th> 
-    <th>Jet</th>
+    <th>Tank &nbsp;&nbsp;&nbsp; <img src="https://github.com/europython2023gametournament/supremacy/assets/39047984/0be25f1b-9d14-4438-b5cb-3a355a6b088a" />
+</th>
+    <th>Ship &nbsp;&nbsp;&nbsp; <img src="https://github.com/europython2023gametournament/supremacy/assets/39047984/248ab310-2a53-4132-9179-b360ebbb45f4" />
+</th>
+    <th>Jet &nbsp;&nbsp;&nbsp; <img src="https://github.com/europython2023gametournament/supremacy/assets/39047984/594f9902-e848-465a-a5f2-5d9081d4b863" />
+</th>
   </tr>
   <tr>
     <td>Speed</td>
