@@ -131,4 +131,37 @@ Preview
   </tr>
 </table>
 
+## Additional rules:
+
+- Mine cost doubles for every new mine on a given base (first mine=1000, second=2000, third=4000, etc…)
+- Base has `health = 100`, mine has `health = 50` (both have `0` attack)
+- Vehicles move at `speed * dt` (`dt = 1/15s`)
+- A ship can be turned into a new base, by calling `convert_to_base()`
+- A conversion to base will only work if there is land in the immediate vicinity
+- A player is eliminated when all his/her bases have been destroyed
+- If a player is eliminated, all his/her vehicles disappear instantly
+
+## Scoring
+
+- +1 point if you destroy a base
+- If a player gets eliminated, they receive a number of points equal to the number of players that were eliminated before them
+- At the end of the round, every player still alive gets a number of points equal to the number of eliminated players
+
+## The control center - the AI
+
+- To play the game, you will have to create a Python program.
+- It should contain a class named `PlayerAI` and that class should have a method named `run`. 
+- Every time step, the `run` method will be called, and it will be inside that function that you should control your vehicles, decide what to build, etc...
+- You are provided with a `template_ai.py` to give you an example/
+
+Look at the comments in the `template_ai.py` for details on what information is available to you at every time step and what methods can be called.
+
+### `game_map`
+
+The `game_map` is one of the arguments the `run` function will receive.
+It is a Numpy array that automatically gets filled when your vehicles or bases visit that region of the map.
+Any visit makes anything in that part of the map permanently visible.
+This is basically what defines which enemy bases and vehicles you get in your info every time step.
+
+![Screenshot at 2023-06-22 22-32-11](https://github.com/europython2023gametournament/supremacy/assets/39047984/a207ac95-4006-4b6e-82ce-f64d6c5a6c4f)
 
