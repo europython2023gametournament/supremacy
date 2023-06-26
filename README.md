@@ -1,6 +1,8 @@
-# supremacy
+## Register your team here https://forms.gle/v2s9oHZ1xLTUo5ov7 !
 
 ![supremacy](https://github.com/nvaytet/supremacy/assets/39047984/6e800f7c-6eb4-47d4-9621-1465aeaae879)
+
+# EuroPython 2023 AI game tournament
 
 ## What is the tournament about?
 
@@ -16,11 +18,12 @@ We just want to make a fun event for EuroPython participants, we do not want to 
 
 ## How to participate?
 
-- Register your team filling in the form at https://forms.gle/v2s9oHZ1xLTUo5ov7 (30 spots available)
+- Register your team: fill in the form at https://forms.gle/v2s9oHZ1xLTUo5ov7 (30 spots available)
 - You will be given a private GH repository in the `europython2023gametournament` organisation
 - Read the game rules below and start working on your bot
 - Once your bot is ready, make sure you copy it into the `main` branch of the repo you were given
 - Deadline is 15:00 on Friday July 21st
+- Tournament will be 15:30 - 16:45 on Friday July 21st in the Open Space
 
 ## TL;DR
 
@@ -167,6 +170,11 @@ Look at the comments in the `template_ai.py` for details on what information is 
 - This is basically what defines which enemy bases and vehicles you get in your info every time step.
 
 ![Screenshot at 2023-06-22 22-32-11](https://github.com/europython2023gametournament/supremacy/assets/39047984/a207ac95-4006-4b6e-82ce-f64d6c5a6c4f)
+
+### Alliances
+
+- Creating alliances might be the key to your success
+- But beware that betrayals are also common practice in this corner of the Universe...
 
 ## Optimizing development
 
