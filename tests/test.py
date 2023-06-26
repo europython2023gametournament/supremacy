@@ -16,22 +16,16 @@ names = [
     "Tobias",
     "Isobel",
     "Robert",
-    "A",
-    "B",
-    "C",
-    "D",
-    "E",
-    "F",
 ]
 
 players = {name: template_ai for name in names}
-# players["Me"] = my_ai
+# players[my_ai.CREATOR] = my_ai
 
 supremacy.start(
     players=players,
-    time_limit=4 * 60,
-    fullscreen=True,
-    seed=None,
-    high_contrast=False,
-    crystal_boost=5,
+    time_limit=8 * 60,  # Time limit in seconds
+    fullscreen=False,  # Set to True for fullscreen
+    seed=None,  # Set seed to always generate the same map
+    high_contrast=False,  # Set to True for high contrast mode
+    crystal_boost=1,  # Set to > 1 to artificially increase crystal production
 )
