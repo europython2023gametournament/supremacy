@@ -55,17 +55,17 @@ class PlayerAi:
         # Description of information available on bases:
         #
         # This is read-only information that all the bases (enemy and your own) have.
-        # We define base_1 = info[team_name_1]["bases"][0]. Then:
+        # We define base = info[team_name_1]["bases"][0]. Then:
         #
-        # base_1.x (float): the x position of the base
-        # base_1.y (float): the y position of the base
-        # base_1.position (np.ndarray): the (x, y) position as a numpy array
-        # base_1.team (str): the name of the team the base belongs to, e.g. ‘John’
-        # base_1.number (int): the player number
-        # base_1.mines (int): the number of mines inside the base
-        # base_1.crystal (int): the amount of crystal the base has in stock
+        # base.x (float): the x position of the base
+        # base.y (float): the y position of the base
+        # base.position (np.ndarray): the (x, y) position as a numpy array
+        # base.team (str): the name of the team the base belongs to, e.g. ‘John’
+        # base.number (int): the player number
+        # base.mines (int): the number of mines inside the base
+        # base.crystal (int): the amount of crystal the base has in stock
         #     (crystal is per base, not shared globally)
-        # base_1.uid (str): unique id for the base
+        # base.uid (str): unique id for the base
         #
         # Description of base methods:
         #
@@ -124,24 +124,24 @@ class PlayerAi:
         # (same info for tanks, ships, and jets):
         #
         # This is read-only information that all the vehicles (enemy and your own) have.
-        # We define tank_1 = info[team_name_1]["tanks"][0]. Then:
+        # We define tank = info[team_name_1]["tanks"][0]. Then:
         #
-        # tank_1.x (float): the x position of the tank
-        # tank_1.y (float): the y position of the tank
-        # tank_1.team (str): the name of the team the tank belongs to, e.g. ‘John’
-        # tank_1.number (int): the player number
-        # tank_1.speed (int): vehicle speed
-        # tank_1.health (int): current health
-        # tank_1.attack (int): vehicle attack force (how much damage it deals to enemy
+        # tank.x (float): the x position of the tank
+        # tank.y (float): the y position of the tank
+        # tank.team (str): the name of the team the tank belongs to, e.g. ‘John’
+        # tank.number (int): the player number
+        # tank.speed (int): vehicle speed
+        # tank.health (int): current health
+        # tank.attack (int): vehicle attack force (how much damage it deals to enemy
         #     vehicles and bases)
-        # tank_1.stopped (bool): True if the vehicle has been told to stop
-        # tank_1.heading (float): the heading angle (in degrees) of the direction in
+        # tank.stopped (bool): True if the vehicle has been told to stop
+        # tank.heading (float): the heading angle (in degrees) of the direction in
         #     which the vehicle will advance (0 = east, 90 = north, 180 = west,
         #     270 = south)
-        # tank_1.vector (np.ndarray): the heading of the vehicle as a vector
+        # tank.vector (np.ndarray): the heading of the vehicle as a vector
         #     (basically equal to (cos(heading), sin(heading))
-        # tank_1.position (np.ndarray): the (x, y) position as a numpy array
-        # tank_1.uid (str): unique id for the tank
+        # tank.position (np.ndarray): the (x, y) position as a numpy array
+        # tank.uid (str): unique id for the tank
         #
         # Description of vehicle methods:
         #
@@ -159,6 +159,9 @@ class PlayerAi:
         #     position and the given point (x, y) on the map
         # ship.convert_to_base(): convert the ship to a new base (only for ships).
         #     This only succeeds if there is land close to the ship.
+        #
+        # Note that by default, the goto() and get_distance() methods will use the
+        # shortest path on the map (i.e. they may go through the map boundaries).
 
         # Iterate through all my tanks
         if "tanks" in myinfo:
@@ -179,7 +182,7 @@ class PlayerAi:
             for ship in myinfo["ships"]:
                 if ship.uid in self.previous_positions:
                     # If the ship position is the same as the previous position,
-                    # convert the ship to a base if it is far from the owner,
+                    # convert the ship to a base if it is far from the owning base,
                     # set a random heading otherwise
                     if all(ship.position == self.previous_positions[ship.uid]):
                         if ship.get_distance(ship.owner.x, ship.owner.y) > 20:

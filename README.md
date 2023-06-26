@@ -16,9 +16,11 @@ We just want to make a fun event for EuroPython participants, we do not want to 
 
 ## How to participate?
 
-- Register your team filling in the form at ....
-- You will be given a private GH repository
+- Register your team filling in the form at https://forms.gle/v2s9oHZ1xLTUo5ov7 (30 spots available)
+- You will be given a private GH repository in the `europython2023gametournament` organisation
 - Read the game rules below and start working on your bot
+- Once your bot is ready, make sure you copy it into the `main` branch of the repo you were given
+- Deadline is 15:00 on Friday July 21st
 
 ## TL;DR
 
@@ -29,7 +31,7 @@ conda create -n <NAME> -c conda-forge python=3.10
 conda activate <NAME>
 git clone git@github.com:europython2023gametournament/supremacy.git
 cd supremacy/
-python -m pip install -e .
+python -m pip install .
 cd tests/
 python test.py
 ```
@@ -71,7 +73,7 @@ Preview
 - Everyone starts with 1 base, housing 1 mine
 - Every timestep, each mine will extract `crystal = 2 * number_of_mines`
 - Crystal is used to build mines and vehicles
-- Mines too close to other mines compete for resources: `crystal = 2 * number_of_mines / number_of_bases_inside_square_of_80px`
+- Mines too close to other bases compete for resources: `crystal = 2 * number_of_mines / number_of_bases_inside_square_of_80px`
 - Bases that contain mines that are competing with others will have a “C” label on them:
 
 ![Screenshot at 2023-06-22 21-58-52](https://github.com/europython2023gametournament/supremacy/assets/39047984/e2df2246-532e-4989-9892-582d53d171a8)
@@ -150,9 +152,9 @@ Preview
 ## The control center - the AI
 
 - To play the game, you will have to create a Python program.
-- It should contain a class named `PlayerAI` and that class should have a method named `run`. 
+- It should contain a class named `PlayerAI` and that class should have a method named `run`.
 - Every time step, the `run` method will be called, and it will be inside that function that you should control your vehicles, decide what to build, etc...
-- You are provided with a `template_ai.py` to give you an example/
+- You are provided with a `template_ai.py` to give you an example.
 
 Look at the comments in the `template_ai.py` for details on what information is available to you at every time step and what methods can be called.
 
