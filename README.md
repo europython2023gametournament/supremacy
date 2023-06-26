@@ -1,6 +1,8 @@
-# supremacy
+## Register your team here https://forms.gle/v2s9oHZ1xLTUo5ov7 !
 
 ![supremacy](https://github.com/nvaytet/supremacy/assets/39047984/6e800f7c-6eb4-47d4-9621-1465aeaae879)
+
+# EuroPython 2023 AI game tournament
 
 ## What is the tournament about?
 
