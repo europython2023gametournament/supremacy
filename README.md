@@ -23,7 +23,7 @@ We just want to make a fun event for EuroPython participants, we do not want to 
 - Read the game rules below and start working on your bot
 - Once your bot is ready, make sure you copy it into the `main` branch of the repo you were given
 - Deadline is 15:00 on Friday July 21st
-- Tournament will be 15:30 - 16:45 on Friday July 21st in the Open Space
+- Tournament will be 15:30 - 16:45 on Friday July 21st in the Open Space area
 
 ## TL;DR
 
