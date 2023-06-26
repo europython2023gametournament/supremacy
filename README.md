@@ -62,7 +62,7 @@ Preview
 
 - All participants play on the map at the same time
 - Each round lasts 8 minutes
-- The tournament will consist of 8(?) rounds of 8 minutes
+- The tournament will consist of 8 rounds of 8 minutes
 
 ## Game map
 
