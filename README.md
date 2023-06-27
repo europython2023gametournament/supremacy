@@ -174,7 +174,7 @@ Look at the comments in the `template_ai.py` for details on what information is 
 
 ### Alliances
 
-- Creating alliances might be the key to your success
+- Creating alliances is allowed and indeed encouraged: they might be the key to your success
 - But beware that betrayals are also common practice in this corner of the Universe...
 
 ## Optimizing development
