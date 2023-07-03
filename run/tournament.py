@@ -1,24 +1,14 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 import importlib
+import glob
 
 import supremacy
 
-names = [
-    "John",
-    "Dave",
-    "Anna",
-    "Greg",
-    "Lisa",
-    "Simon",
-    "Tobias",
-    "Isobel",
-    "Robert",
-]
 
 players = {}
-for name in names:
-    ai = importlib.import_module(f"{name}_ai")
+for repo in glob.glob("*_ai"):
+    ai = importlib.import_module(f"{repo}.{repo}")
     players[ai.CREATOR] = ai
 
 supremacy.start(
