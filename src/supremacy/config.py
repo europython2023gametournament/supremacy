@@ -91,6 +91,8 @@ class Config:
         self.scaling = min(min(screen_width / self.nx, screen_height / self.ny), 1.0)
         self.scaling_str = f"{self.scaling:.3f}"
 
+        if not os.path.exists(self.cache_dir):
+            os.makedirs(self.cache_dir)
         self.generate_images(nplayers)
 
     def generate_images(self, nplayers: int):
@@ -143,6 +145,7 @@ class Config:
         else:
             img = _make_base_image(self.resources, name, rgb)
             player_img = scale_image(img, self.scaling)
+            player_img.save(player_img_fname)
         self.images[player_img_name] = player_img
 
         name_img_name = f"{name}_{n}"
@@ -154,6 +157,7 @@ class Config:
         else:
             img = _make_base_image(self.resources, name, rgb)
             name_img = _to_image(scale_image(img, self.scaling))
+            name_img.save(name_img_fname)
         self.images[name_img_name] = name_img
 
         name_c_img_name = f"{name}_{n}_C"
@@ -173,33 +177,60 @@ class Config:
                 anchor="mm",
             )
             name_c_img = _to_image(scale_image(img, self.scaling))
+            name_c_img.save(name_c_img_fname)
         self.images[name_c_img_name] = name_c_img
 
         for health in range(0, MAX_HEALTH + 1, 10):
-            img = Image.new("RGBA", (24, 24), (0, 0, 0, 0))
-            d = ImageDraw.Draw(img)
-            d.text(
-                (img.width / 2, img.height / 2),
-                f"{health}",
-                fill=(0, 0, 0),
-                font=self.medium_font,
-                anchor="mm",
+            health_img_name = f"health_{health}"
+            health_img_fname = os.path.join(
+                self.cache_dir, f"{health_img_name}_{self.scaling_str}.png"
             )
-            self.images[f"health_{health}"] = _to_image(scale_image(img, self.scaling))
+            if os.path.exists(health_img_fname):
+                health_img = Image.open(health_img_fname)
+            else:
+                img = Image.new("RGBA", (24, 24), (0, 0, 0, 0))
+                d = ImageDraw.Draw(img)
+                d.text(
+                    (img.width / 2, img.height / 2),
+                    f"{health}",
+                    fill=(0, 0, 0),
+                    font=self.medium_font,
+                    anchor="mm",
+                )
+                health_img = _to_image(scale_image(img, self.scaling))
+                health_img.save(health_img_fname)
+            self.images[health_img_name] = health_img
         for mines in range(0, 20):
-            img = Image.new("RGBA", (24, 24), (0, 0, 0, 0))
-            d = ImageDraw.Draw(img)
-            d.text(
-                (img.width / 2, img.height / 2),
-                f"[{mines}]",
-                fill=(0, 0, 0),
-                font=self.medium_font,
-                anchor="mm",
+            mine_img_name = f"mines_{mines}"
+            mine_img_fname = os.path.join(
+                self.cache_dir, f"{mine_img_name}_{self.scaling_str}.png"
             )
-            self.images[f"mines_{mines}"] = _to_image(scale_image(img, self.scaling))
+            if os.path.exists(mine_img_fname):
+                mine_img = Image.open(mine_img_fname)
+            else:
+                img = Image.new("RGBA", (24, 24), (0, 0, 0, 0))
+                d = ImageDraw.Draw(img)
+                d.text(
+                    (img.width / 2, img.height / 2),
+                    f"[{mines}]",
+                    fill=(0, 0, 0),
+                    font=self.medium_font,
+                    anchor="mm",
+                )
+                mine_img = _to_image(scale_image(img, self.scaling))
+                mine_img.save(mine_img_fname)
+            self.images[mine_img_name] = mine_img
 
     def generate_dead_images(self, n: int, rgb: tuple):
         name = "cross"
-        self.images[f"{name}_{n}"] = scale_image(
-            _make_base_image(self.resources, name, rgb), self.scaling
+        cross_img_name = f"{name}_{n}"
+        cross_img_fname = os.path.join(
+            self.cache_dir, f"{cross_img_name}_{self.scaling_str}.png"
         )
+        if os.path.exists(cross_img_fname):
+            cross_img = Image.open(cross_img_fname)
+        else:
+            cross_img = scale_image(
+                _make_base_image(self.resources, name, rgb), self.scaling
+            )
+        self.images[cross_img_name] = cross_img
