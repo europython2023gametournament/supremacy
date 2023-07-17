@@ -101,9 +101,9 @@ class Config:
             expl_img = Image.open(expl_fname)
         else:
             img = Image.open(self.resources / "explosion.png")
-            expl_img = _to_image(scale_image(img, self.scaling))
+            expl_img = scale_image(img, self.scaling)
             expl_img.save(expl_fname)
-        self.images = {"explosion": expl_img}
+        self.images = {"explosion": _to_image(expl_img)}
         self.colors = _make_colors(nplayers)
         for n in range(nplayers):
             rgb = self.colors[n]
@@ -130,9 +130,9 @@ class Config:
                         font=self.small_font,
                         anchor="mm",
                     )
-                    img = _to_image(scale_image(img, self.scaling))
+                    img = scale_image(img, self.scaling)
                     img.save(img_fname)
-                self.images[img_name] = img
+                self.images[img_name] = _to_image(img)
 
     def generate_base_images(self, n: int, rgb: tuple):
         name = "base"
@@ -156,9 +156,9 @@ class Config:
             name_img = Image.open(name_img_fname)
         else:
             img = _make_base_image(self.resources, name, rgb)
-            name_img = _to_image(scale_image(img, self.scaling))
+            name_img = scale_image(img, self.scaling)
             name_img.save(name_img_fname)
-        self.images[name_img_name] = name_img
+        self.images[name_img_name] = _to_image(name_img)
 
         name_c_img_name = f"{name}_{n}_C"
         name_c_img_fname = os.path.join(
@@ -176,9 +176,9 @@ class Config:
                 font=self.large_font,
                 anchor="mm",
             )
-            name_c_img = _to_image(scale_image(img, self.scaling))
+            name_c_img = scale_image(img, self.scaling)
             name_c_img.save(name_c_img_fname)
-        self.images[name_c_img_name] = name_c_img
+        self.images[name_c_img_name] = _to_image(name_c_img)
 
         for health in range(0, MAX_HEALTH + 1, 10):
             health_img_name = f"health_{health}"
@@ -197,9 +197,9 @@ class Config:
                     font=self.medium_font,
                     anchor="mm",
                 )
-                health_img = _to_image(scale_image(img, self.scaling))
+                health_img = scale_image(img, self.scaling)
                 health_img.save(health_img_fname)
-            self.images[health_img_name] = health_img
+            self.images[health_img_name] = _to_image(health_img)
         for mines in range(0, 20):
             mine_img_name = f"mines_{mines}"
             mine_img_fname = os.path.join(
@@ -217,9 +217,9 @@ class Config:
                     font=self.medium_font,
                     anchor="mm",
                 )
-                mine_img = _to_image(scale_image(img, self.scaling))
+                mine_img = scale_image(img, self.scaling)
                 mine_img.save(mine_img_fname)
-            self.images[mine_img_name] = mine_img
+            self.images[mine_img_name] = _to_image(mine_img)
 
     def generate_dead_images(self, n: int, rgb: tuple):
         name = "cross"
