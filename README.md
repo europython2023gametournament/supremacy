@@ -169,7 +169,7 @@ Look at the comments in the `template_ai.py` for details on what information is 
 - Any visit makes anything in that part of the map permanently visible.
 - This is basically what defines which enemy bases and vehicles you get in your info every time step.
 
-![Screenshot at 2023-07-17 10-07-55](https://github.com/europython2023gametournament/supremacy/assets/39047984/350da216-3eb2-49d5-9f63-944a778ff766)
+![Screenshot at 2023-07-17 14-27-22](https://github.com/europython2023gametournament/supremacy/assets/39047984/fe37e030-b9ef-43d8-8d60-138c3ddb7b45)
 
 ## Optimizing development
 
@@ -178,7 +178,8 @@ There are 3 ways you can speed up your development.
 ### 1. The high contrast mode
 
 Activate `high_contrast = True` to see the land borders better and competing areas for mines:
-![Screenshot at 2023-07-17 10-08-09](https://github.com/europython2023gametournament/supremacy/assets/39047984/9498479d-6a3b-440f-828e-289186b92bf1)
+
+![Screenshot at 2023-07-17 10-08-09](https://github.com/europython2023gametournament/supremacy/assets/39047984/762506cc-d444-439e-ab67-2701f91846d4)
 
 ### 2. Crystal boost
 
