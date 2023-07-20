@@ -32,6 +32,9 @@ class GameMap:
         norm = Normalize()
         if high_contrast:
             to_image = np.flipud(self.array * 255)
+            to_image = np.broadcast_to(
+                to_image.reshape(to_image.shape + (1,)), to_image.shape + (3,)
+            )
         else:
             gy, gx = np.gradient(np.flipud(self.array))
             contour = np.abs(gy) + np.abs(gx)
