@@ -245,8 +245,8 @@ class Engine:
                     self.players[name].remove_base(uid)
             if len(self.players[name].bases) == 0:
                 print(f"Player {name} died!")
-                self.dead_players.append(name)
                 self.players[name].update_score(len(self.dead_players))
+                self.dead_players.append(name)
                 self.players[name].rip()
                 rip_players.append(name)
         if dead_bases:
