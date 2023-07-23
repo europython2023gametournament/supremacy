@@ -55,10 +55,10 @@ class Base:
         if self.high_contrast:
             rgb = config.colors[self.number]
             self.shape = pyglet.shapes.Rectangle(
-                x=self.x - config.competing_mine_radius,
-                y=self.y - config.competing_mine_radius,
-                width=config.competing_mine_radius * 2,
-                height=config.competing_mine_radius * 2,
+                x=self.screen_x - (config.competing_mine_radius * config.scaling),
+                y=self.screen_y - (config.competing_mine_radius * config.scaling),
+                width=config.competing_mine_radius * 2 * config.scaling,
+                height=config.competing_mine_radius * 2 * config.scaling,
                 color=tuple(int(round(c * 255)) for c in rgb[:-1]) + (50,),
                 batch=batch,
             )
