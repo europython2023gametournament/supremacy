@@ -5,7 +5,7 @@ from itertools import chain
 from typing import Any, Iterator, Tuple
 
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageOps
 import pyglet
 
 from . import config
@@ -191,6 +191,7 @@ class Player:
 
     def dump_map(self):
         im = Image.fromarray((self.game_map.array.astype(np.uint8) + 1) * 127)
+        im = ImageOps.flip(im)
         im.save(f"{self.team}_map.png")
 
     def init_cross_animation(self):
