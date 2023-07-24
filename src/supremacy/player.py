@@ -190,7 +190,7 @@ class Player:
         self.make_avatar_base_image()
 
     def dump_map(self):
-        im = Image.fromarray((self.game_map.array.astype(np.uint8) + 1) * 127)
+        im = Image.fromarray(np.flipud((self.game_map.array.astype(np.uint8) + 1) * 127))
         im.save(f"{self.team}_map.png")
 
     def init_cross_animation(self):
