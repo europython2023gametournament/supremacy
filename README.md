@@ -113,7 +113,7 @@ Preview
   <tr>
     <td>Health</td>
     <td>50</td>
-    <td>80</td>
+    <td>200</td>
     <td>50</td>
   </tr>
   <tr>
