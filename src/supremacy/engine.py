@@ -144,7 +144,13 @@ class Engine:
                         )
                     ]
                 )
-                base.crystal += self.crystal_boost * 2 * len(base.mines) / nbases
+                base.crystal += (
+                    self.crystal_boost
+                    * 2
+                    * (30.0 / config.fps)
+                    * len(base.mines)
+                    / nbases
+                )
                 before = base.competing
                 base.competing = nbases > 1
                 if before != base.competing:

@@ -73,8 +73,8 @@ class Config:
 
     def initialize(self, nplayers: int, fullscreen=False):
         dy = self.taskbar_height * (not fullscreen)
-        ref_nx = 1800 - self.scoreboard_width
-        ref_ny = 1012 - dy
+        ref_nx = 1920 - self.scoreboard_width
+        ref_ny = 1080 - dy
         max_nx = 3840
         max_ny = 2160
         area = nplayers * (ref_nx * ref_ny) / 10
@@ -155,7 +155,7 @@ class Config:
             self.images[f"mines_{mines}"] = _to_image(scale_image(img, self.scaling))
 
     def generate_dead_images(self, n: int, rgb: tuple):
-        name = "cross"
+        name = "skull"
         self.images[f"{name}_{n}"] = scale_image(
             _make_base_image(self.resources, name, rgb), self.scaling
         )

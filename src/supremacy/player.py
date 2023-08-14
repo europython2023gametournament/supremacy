@@ -136,7 +136,7 @@ class Player:
 
     def make_avatar_base_image(self):
         self.avatar_base_image = Image.new("RGBA", (100, 24), (0, 0, 0, 0))
-        key = "cross" if self.dead else "player"
+        key = "skull" if self.dead else "player"
         self.avatar_base_image.paste(config.images[f"{key}_{self.number}"], (0, 0))
         self.avatar_base_image.paste(
             text_to_raw_image(
