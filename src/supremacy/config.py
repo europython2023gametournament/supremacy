@@ -9,7 +9,7 @@ from matplotlib import font_manager
 import matplotlib.pyplot as plt
 from PIL import Image, ImageFont, ImageDraw
 
-MAX_HEALTH = 100
+# MAX_HEALTH = 100
 
 
 def _recenter_image(img: pyglet.image.ImageData) -> pyglet.image.ImageData:
@@ -55,7 +55,7 @@ def _make_colors(num_colors: int) -> List[Tuple[float, ...]]:
 class Config:
     def __init__(self):
         self.speed = {"tank": 10, "ship": 5, "jet": 20, "base": 0}
-        self.health = {"tank": 50, "ship": 80, "jet": 50, "base": 100, "mine": 50}
+        self.health = {"tank": 50, "ship": 200, "jet": 50, "base": 100, "mine": 50}
         self.attack = {"tank": 20, "ship": 10, "jet": 30, "base": 0, "mine": 0}
         self.cost = {"tank": 500, "ship": 2000, "jet": 4000, "mine": 1000}
         self.view_radius = 20
@@ -102,7 +102,7 @@ class Config:
 
     def generate_vehicle_images(self, n: int, rgb: tuple):
         for name in ("jet", "ship", "tank"):
-            for health in range(0, MAX_HEALTH + 1, 10):
+            for health in range(0, self.health[name] + 1, 10):
                 img = _make_base_image(self.resources, name, rgb)
                 d = ImageDraw.Draw(img)
                 d.text(
@@ -131,7 +131,7 @@ class Config:
         )
         self.images[f"{name}_{n}_C"] = _to_image(scale_image(img, self.scaling))
 
-        for health in range(0, MAX_HEALTH + 1, 10):
+        for health in range(0, self.health["base"] + 1, 10):
             img = Image.new("RGBA", (24, 24), (0, 0, 0, 0))
             d = ImageDraw.Draw(img)
             d.text(

@@ -3,6 +3,7 @@
 import uuid
 from typing import Any
 
+import numpy as np
 import pyglet
 
 
@@ -161,6 +162,7 @@ class Base:
                 "mines": len(self.mines),
                 "crystal": self.crystal,
                 "uid": self.uid,
+                "position": self.get_position(),
             }
         return self._as_info
 
@@ -291,6 +293,12 @@ class Base:
             return distance_on_plane(self.x, self.y, x, y)
         else:
             return distance_on_torus(self.x, self.y, x, y)
+
+    def get_position(self) -> np.ndarray:
+        """
+        Return the curent position of the vehicle (x, y).
+        """
+        return np.array([self.x, self.y])
 
 
 class BaseProxy:

@@ -58,9 +58,13 @@ class GameMap:
             np.arange(self.nseeds), size=len(players), replace=False
         )
         locations = {}
+        niter = 0
         for n, player in enumerate(players):
             not_set = True
             while not_set:
+                niter += 1
+                if niter > 500:
+                    raise RuntimeError("Could not find a suitable location for a base")
                 direction = np.random.randint(4)
                 i = self.xseed[inds[n]]
                 j = self.yseed[inds[n]]
