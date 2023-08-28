@@ -1,5 +1,3 @@
-## Register your team here https://forms.gle/v2s9oHZ1xLTUo5ov7 !
-
 ![supremacy](https://github.com/europython2023gametournament/supremacy/assets/39047984/fd147b1a-252b-4aed-b949-e2cb943f80dd)
 
 # EuroPython 2023 AI game tournament
