@@ -13,8 +13,8 @@ class PlayerAi:
 
     def __init__(self):
         self.team = CREATOR  # Mandatory attribute
-        # Record the choice of vehicle to build for each base
-        self.build_sequence = {}
+        self.ntanks = {}
+        self.nships = {}
 
     def run(self, t: float, dt: float, info: dict, game_map: np.ndarray):
         """
@@ -79,23 +79,26 @@ class PlayerAi:
 
         # Iterate through all my bases (vehicles belong to bases)
         for base in myinfo["bases"]:
+            # Bookkeeping
+            uid = base.uid
+            if uid not in self.ntanks:
+                self.ntanks[uid] = 0
+                self.nships[uid] = 0
+
             # Firstly, each base should build a mine if it has less than 3 mines
             if base.mines < 3:
                 if base.crystal > base.cost("mine"):
                     base.build_mine()
             # If we have enough mines, pick something at random
             else:
-                if self.build_sequence.get(base.uid) is None:
-                    self.build_sequence[base.uid] = (["tank"] * 5) + (["ship"] * 3)
-                if len(self.build_sequence[base.uid]) != 0:
-                    if self.build_sequence[base.uid][0] == "tank":
-                        if base.crystal > base.cost("tank"):
-                            tank = base.build_tank(heading=360 * np.random.random())
-                            self.build_sequence[base.uid].pop(0)
-                    elif self.build_sequence[base.uid][0] == "ship":
-                        if base.crystal > base.cost("ship"):
-                            ship = base.build_ship(heading=360 * np.random.random())
-                            self.build_sequence[base.uid].pop(0)
+                if self.ntanks[uid] < 5:
+                    if base.crystal > base.cost("tank"):
+                        tank = base.build_tank(heading=360 * np.random.random())
+                        self.ntanks[uid] += 1
+                elif self.nships[uid] < 3:
+                    if base.crystal > base.cost("ship"):
+                        ship = base.build_ship(heading=360 * np.random.random())
+                        self.nships[uid] += 1
                 elif base.crystal > base.cost("jet"):
                     jet = base.build_jet(heading=360 * np.random.random())
 
