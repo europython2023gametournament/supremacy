@@ -32,6 +32,7 @@ class Vehicle:
         self.kind = kind
         self.batch = batch
         self.stopped = False
+        self.previous_position = None
 
         x, y = tls.wrap_position(x, y)
         self.x = x
@@ -82,6 +83,8 @@ class Vehicle:
                 "vector": self.get_vector(),
                 "position": self.get_position(),
                 "stopped": self.stopped,
+                "stuck": self.stuck(),
+                "kind": self.kind,
             }
         return self._as_info
 
@@ -187,6 +190,12 @@ class Vehicle:
     def start(self):
         self.stopped = False
 
+    def move(self):
+        self.previous_position = self.get_position()
+
+    def stuck(self):
+        return all(self.get_position() == self.previous_position)
+
 
 class VehicleProxy:
     def __init__(self, vehicle: Vehicle):
@@ -221,6 +230,7 @@ class Tank(Vehicle):
         super().__init__(*args, kind="tank", **kwargs)
 
     def move(self, x: float, y: float, map_value: int):
+        super().move()
         if map_value == 1:
             self.set_position(x, y)
 
@@ -230,6 +240,7 @@ class Ship(Vehicle):
         super().__init__(*args, kind="ship", **kwargs)
 
     def move(self, x: float, y: float, map_value: int):
+        super().move()
         if map_value == 0:
             self.set_position(x, y)
 
@@ -256,4 +267,5 @@ class Jet(Vehicle):
         super().__init__(*args, kind="jet", **kwargs)
 
     def move(self, x: float, y: float, map_value: int):
+        super().move()
         self.set_position(x, y)
