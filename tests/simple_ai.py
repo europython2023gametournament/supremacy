@@ -60,9 +60,9 @@ class PlayerAi:
 
         # Iterate through all my bases and process build queue
         for base in myinfo["bases"]:
+            # Calling the build_queue will return the object that was built by the base.
+            # It will return None if the base did not have enough resources to build.
             obj = self.build_queue(base)
-            if (obj is not None) and (obj.kind == "tank"):
-                obj.set_heading(90)
 
         # Try to find an enemy target
         # If there are multiple teams in the info, find the first team that is not mine

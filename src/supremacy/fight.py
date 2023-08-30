@@ -26,7 +26,7 @@ def fight(players, batch: Any) -> Tuple[dict, dict, dict]:
     for a_ind, d_ind in zip(attackers, defenders):
         attacker = troops[a_ind]
         defender = troops[d_ind]
-        if attacker.team != defender.team:
+        if (attacker.team != defender.team) and (defender.health > 0):
             defender.health -= attacker.attack
             if defender.health <= 0:
                 if defender.kind == "base":
