@@ -1,6 +1,5 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
-import template_ai
 import simple_ai
 
 # import my_ai
@@ -16,10 +15,10 @@ names = [
     "Simon",
     "Tobias",
     "Isobel",
+    "Oliver",
 ]
 
-players = {name: template_ai for name in names}
-players["Simple"] = simple_ai
+players = {name: simple_ai for name in names}
 # players[my_ai.CREATOR] = my_ai
 
 supremacy.start(
